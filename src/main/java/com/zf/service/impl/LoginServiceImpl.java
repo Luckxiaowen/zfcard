@@ -3,6 +3,7 @@ package com.zf.service.impl;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.LoginUser;
 import com.zf.domain.vo.ResponseVo;
+import com.zf.enums.AppHttpCodeEnum;
 import com.zf.service.LoginService;
 import com.zf.utils.JwtUtil;
 import com.zf.utils.RedisCache;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -43,7 +45,16 @@ public class LoginServiceImpl implements LoginService {
         map.put("token",token);
         //TODO 把完整的用户信息存入到redis userid作为key
         redisCache.setCacheObject("login:"+userId,loginUser);
-        return new ResponseVo(200, "登录成功",map);
+        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(),map);
+    }
+
+    @Override
+    public ResponseVo logout() {
+        UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authenticationToken.getPrincipal();
+        Long userId = loginUser.getSysUser().getId();
+        redisCache.deleteObject("login:"+userId);
+        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"注销成功",null);
     }
 
 
