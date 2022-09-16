@@ -1,4 +1,4 @@
-package com.zf.config;
+package com.zf.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.ParserConfig;

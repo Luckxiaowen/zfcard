@@ -56,13 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 // 允许匿名访问
-                .antMatchers("/admin/upload").permitAll()
-                .antMatchers(HttpMethod.GET, "/admin/**").hasAnyRole("admin", "visitor")
-                .antMatchers("/admin/**").hasAnyRole("admin")
-                .antMatchers("/user/login").permitAll()
-                .antMatchers("/user/logout", "/comment/release","/user/modify").authenticated()
-                .antMatchers("swagger-ui.html").permitAll()
-                .antMatchers("doc.html").permitAll()
+                .antMatchers("/admin/").permitAll()
                 .anyRequest().permitAll();
 
 

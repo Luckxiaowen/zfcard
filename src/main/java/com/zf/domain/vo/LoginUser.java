@@ -1,8 +1,7 @@
-package com.zf.domain;
+package com.zf.domain.vo;
 
 import com.alibaba.fastjson.annotation.JSONField;
-
-import com.zf.domain.entity.User;
+import com.zf.domain.entity.SysUser;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,13 +17,13 @@ import java.util.stream.Collectors;
 
 public class LoginUser implements UserDetails {
 
-    private User user;
+    private SysUser sysUser;
 
     //存储权限信息
     private List<String> permissions;
 
-    public LoginUser(User user, List<String> permissions) {
-        this.user = user;
+    public LoginUser(SysUser sysUser, List<String> permissions) {
+        this.sysUser = sysUser;
         this.permissions = permissions;
     }
 
@@ -47,12 +46,12 @@ public class LoginUser implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return sysUser.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return sysUser.getUsername();
     }
 
     @Override
