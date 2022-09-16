@@ -2,7 +2,7 @@ package com.zf.handler;
 
 import com.alibaba.fastjson.JSON;
 
-import com.zf.domain.ResponseResult;
+import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.utils.WebUtils;
 import org.springframework.security.core.AuthenticationException;
@@ -21,7 +21,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         authException.printStackTrace();
 
-        ResponseResult result = new ResponseResult().error(AppHttpCodeEnum.NEED_LOGIN.getCode(), AppHttpCodeEnum.NEED_LOGIN.getMsg());
+        ResponseVo result = new ResponseVo().error(AppHttpCodeEnum.NEED_LOGIN.getCode(), AppHttpCodeEnum.NEED_LOGIN.getMsg());
         WebUtils.renderString(response, JSON.toJSONString(result));
     }
 }

@@ -1,7 +1,7 @@
 package com.zf.exception;
 
 
-import com.zf.domain.ResponseResult;
+import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
@@ -20,11 +20,11 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(SystemException.class)
-    public ResponseResult systemExceptionHandler(SystemException e) {
+    public ResponseVo systemExceptionHandler(SystemException e) {
         //打印异常信息
         log.error("出现了异常！ {}", e);
         //从异常对象中获取提示信息封装返回
-        return ResponseResult.errorResult(e.getCode(), e.getMsg());
+        return ResponseVo.errorResult(e.getCode(), e.getMsg());
     }
 
     /**
@@ -34,11 +34,11 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseResult loginExceptionHandler(UsernameNotFoundException e) {
+    public ResponseVo loginExceptionHandler(UsernameNotFoundException e) {
         //打印异常信息
         log.error("出现了异常！ {}", e);
         //从异常对象中获取提示信息封装返回
-        return ResponseResult.errorResult(AppHttpCodeEnum.LOGIN_ERROR);
+        return ResponseVo.errorResult(AppHttpCodeEnum.LOGIN_ERROR);
     }
 
     /**
@@ -48,11 +48,11 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(NullPointerException.class)
-    public ResponseResult nullPointerExceptionHandler(NullPointerException e) {
+    public ResponseVo nullPointerExceptionHandler(NullPointerException e) {
         //打印异常信息
         log.error("出现了异常！ {}", e);
         //从异常对象中获取提示信息封装返回
-        return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        return ResponseVo.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
     }
 
     /**
@@ -62,11 +62,11 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseResult accessDeniedExceptionHandler(AccessDeniedException e) {
+    public ResponseVo accessDeniedExceptionHandler(AccessDeniedException e) {
         //打印异常信息
         log.error("出现了异常！ {}", e);
         //从异常对象中获取提示信息封装返回
-        return ResponseResult.errorResult(AppHttpCodeEnum.NO_OPERATOR_AUTH);
+        return ResponseVo.errorResult(AppHttpCodeEnum.NO_OPERATOR_AUTH);
     }
 
 
@@ -77,13 +77,13 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(Exception.class)
-    public ResponseResult exceptionHandler(Exception e) {
+    public ResponseVo exceptionHandler(Exception e) {
         //打印异常信息
         log.error("出现了异常！ {}", e);
         //从异常对象中获取提示信息封装返回
         if (e instanceof InternalAuthenticationServiceException) {
-            return ResponseResult.errorResult(AppHttpCodeEnum.LOGIN_ERROR.getCode(), e.getMessage());
+            return ResponseVo.errorResult(AppHttpCodeEnum.LOGIN_ERROR.getCode(), e.getMessage());
         }
-        return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR.getCode(), e.getMessage());
+        return ResponseVo.errorResult(AppHttpCodeEnum.SYSTEM_ERROR.getCode(), e.getMessage());
     }
 }
