@@ -16,3 +16,8 @@ mybatis-plus:
       logic-not-delete-value: 1
       id-type: auto
   mapper-locations: classpath:mapper/**/*Mapper.xml
+
+# swagger 扫描爆红问题
+logging:
+  level:
+    io.swagger.models.parameters.AbstractSerializableParameter: error
