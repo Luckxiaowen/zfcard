@@ -19,7 +19,7 @@ public class JwtUtil {
     //有效期为
     public static final Long JWT_TTL = 60 * 60 * 1000 * 48L;// 60 * 60 *1000*48  2天
     //设置秘钥明文
-    public static final String JWT_KEY = "CLMMWENQQQ";
+    public static final String JWT_KEY = "zhifei10";
 
     public static String getUUID() {
         String token = UUID.randomUUID().toString().replaceAll("-", "");
@@ -82,9 +82,10 @@ public class JwtUtil {
     }
 
     public static void main(String[] args) throws Exception {
-        String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJjYWM2ZDVhZi1mNjVlLTQ0MDAtYjcxMi0zYWEwOGIyOTIwYjQiLCJzdWIiOiJzZyIsImlzcyI6InNnIiwiaWF0IjoxNjM4MTA2NzEyLCJleHAiOjE2MzgxMTAzMTJ9.JVsSbkP94wuczb4QryQbAke3ysBDIL5ou8fWsbt_ebg";
-        Claims claims = parseJWT(token);
-        System.out.println(claims);
+        String qweqweqwe = JwtUtil.createJWT("123123123");
+        System.out.println("qweqweqwe = " + qweqweqwe);
+        Claims claims = JwtUtil.parseJWT("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJjN2MxMGU1NGNkOWY0NzJmOGFjMjc5OTgyOThlZmU3NCIsInN1YiI6IjEyMzEyMzEyMyIsImlzcyI6InNnIiwiaWF0IjoxNjYzMjk2NjI3LCJleHAiOjE2NjM0Njk0Mjd9.GYxY9cky2gNRlLYrQUejHdDPNzd7XYWrHViZ82ZOjg8");
+        System.out.println("claims = " + claims.getSubject());
     }
 
     /**

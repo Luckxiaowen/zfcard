@@ -2,8 +2,8 @@ package com.zf.filter;
 
 import com.alibaba.fastjson.JSON;
 
-import com.zf.domain.LoginUser;
-import com.zf.domain.ResponseResult;
+import com.zf.domain.vo.LoginUser;
+import com.zf.domain.vo.ResponseVo;
 import com.zf.utils.JwtUtil;
 import com.zf.utils.RedisCache;
 import com.zf.utils.WebUtils;
@@ -47,7 +47,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             e.printStackTrace();
             //token超时  token非法
             //响应告诉前端需要重新登录
-            ResponseResult result = new ResponseResult(401, "token非法,请重新登录");
+            ResponseVo result = new ResponseVo(401, "token非法,请重新登录");
             WebUtils.renderString(response, JSON.toJSONString(result));
             return;
         }
@@ -56,7 +56,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         LoginUser loginUser = redisCache.getCacheObject(redisKey);
         if (Objects.isNull(loginUser)) {
             //说明登录过期  提示重新登录
-            ResponseResult result = new ResponseResult(401, "登录过期,请重新登录");
+            ResponseVo result = new ResponseVo(401, "登录过期,请重新登录");
             WebUtils.renderString(response, JSON.toJSONString(result));
             return;
         }
