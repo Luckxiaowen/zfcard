@@ -25,8 +25,6 @@ public class SuperAdminController {
      * 3.Put用来更新
      * 4.Delete用来删除*/
 
-    @Autowired
-    private SysUserService sysUserService;
 
     @Autowired
     private CompanyService companyService;
@@ -38,6 +36,7 @@ public class SuperAdminController {
         return companyService.insert(company);
     }
 
+    @ApiOperation(value = "公司删除接口")
     @DeleteMapping("/delete-company/{companyid}")
     public ResponseVo delete(@RequestHeader("token") String token,@PathVariable("companyid") Long companyid){
         return companyService.delete(companyid);

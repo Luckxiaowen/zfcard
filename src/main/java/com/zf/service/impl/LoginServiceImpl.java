@@ -40,7 +40,6 @@ public class LoginServiceImpl implements LoginService {
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
         String userId = loginUser.getSysUser().getId().toString();
         String token = JwtUtil.createJWT(userId);
-
         Map<String, String> map = new HashMap<>();
         map.put("token",token);
         //TODO 把完整的用户信息存入到redis userid作为key
