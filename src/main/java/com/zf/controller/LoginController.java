@@ -8,10 +8,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @Api(value = "登录与注销接口管理", tags = "登录与注销接口管理")
@@ -40,4 +37,10 @@ public class LoginController {
         return  loginService.logout();
     }
 
+
+    @ApiOperation(value = "邮箱验证码获取接口")
+    @GetMapping("/code")
+    public ResponseVo getCode(String email){
+        return loginService.getCode(email);
+    }
 }

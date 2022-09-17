@@ -7,4 +7,6 @@ public interface LoginService {
     ResponseVo login(SysUser sysUser);
 
     ResponseVo logout();
+
+    ResponseVo getCode(String email);
 }

@@ -7,6 +7,9 @@ import com.zf.enums.AppHttpCodeEnum;
 import com.zf.service.LoginService;
 import com.zf.utils.JwtUtil;
 import com.zf.utils.RedisCache;
+import com.zf.utils.Validator;
+import com.zf.utils.emailutil.RandomUtil;
+import com.zf.utils.emailutil.SendMailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -56,5 +59,16 @@ public class LoginServiceImpl implements LoginService {
         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"注销成功",null);
     }
 
+    @Override
+    public ResponseVo getCode(String email) {
+        if (Validator.isEmail(email)){
+            String code = RandomUtil.randomCode();
+            System.out.println("code = " + code);
+            SendMailUtil.send(email,null, code);
 
+            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"验证码发送成功",null);
+        }else{
+            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"邮箱格式有误",null);
+        }
+    }
 }

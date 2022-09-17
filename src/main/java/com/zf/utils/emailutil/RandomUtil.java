@@ -2,7 +2,7 @@ package com.zf.utils.emailutil;
 
 public class RandomUtil {
 
-    public String randomCode() {
+    public static String randomCode() {
         String strRand = "";
         for (int i = 0; i < 6; i++) {
             strRand += String.valueOf((int) (Math.random() * 10));
