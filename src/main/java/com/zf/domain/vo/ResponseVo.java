@@ -2,14 +2,21 @@ package com.zf.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.zf.enums.AppHttpCodeEnum;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 
 import java.io.Serializable;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@ApiModel(value = "响应的VO对象",description = "封装接口返回给前端的数据")
 public class ResponseVo<T> implements Serializable {
+
+    @ApiModelProperty(value = "响应状态码",dataType = "int")
     private Integer code;
+    @ApiModelProperty(value = "响应提示信息",dataType = "string")
     private String msg;
+    @ApiModelProperty(value = "响应数据",dataType = "object")
     private T data;
 
     public ResponseVo() {

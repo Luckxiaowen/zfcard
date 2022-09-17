@@ -2,6 +2,7 @@ package com.zf.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zf.domain.entity.Company;
+import com.zf.domain.vo.ResponseVo;
 
 /**
 * @author Amireux
@@ -10,4 +11,7 @@ import com.zf.domain.entity.Company;
 */
 public interface CompanyService extends IService<Company> {
 
+    ResponseVo insert(Company company);
+
+    ResponseVo delete(Long companyid);
 }
