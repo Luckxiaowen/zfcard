@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 曝光统计
+ * 曝光统计表
  * @TableName exposure_total
  */
 @Data

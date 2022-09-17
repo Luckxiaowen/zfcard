@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 公司简介
+ * 公司简介表
  * @TableName company_info
  */
 @Data

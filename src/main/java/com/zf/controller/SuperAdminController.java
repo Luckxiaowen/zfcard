@@ -1,5 +1,6 @@
 package com.zf.controller;
 
+import com.zf.domain.entity.Company;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
@@ -18,32 +19,28 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin")
 public class SuperAdminController {
 
+    /**
+     * 1.Get是查询请求,用来获取资源
+     * 2.Post是用来新建资源的,也可以用来更新
+     * 3.Put用来更新
+     * 4.Delete用来删除*/
+
     @Autowired
     private SysUserService sysUserService;
 
     @Autowired
     private CompanyService companyService;
 
-    @Autowired
-    private LoginService loginService;
 
-    @ApiOperation(value = "用户登录接口")
-    @ApiImplicitParams({
-            @ApiImplicitParam(dataType = "string", name = "username", value = "用户登录账号", required = true),
-            @ApiImplicitParam(dataType = "string", name = "password", value = "用户登录密码", required = true)
-    })
-    @PostMapping("/login")
-    public ResponseVo login(@RequestParam(value = "username")String username,@RequestParam(value = "password")String password){
-        SysUser sysUser=new SysUser();
-        sysUser.setUsername(username);
-        sysUser.setPassword(password);
-        return loginService.login(sysUser);
+    @ApiOperation(value = "增加公司接口")
+    @PostMapping("/add-company")
+    public ResponseVo add(@RequestHeader("token") String token, @RequestBody Company company ){
+        return companyService.insert(company);
     }
 
-    @ApiOperation(value = "用户注销接口")
-    @PostMapping("/logout")
-    public ResponseVo logout(@RequestHeader("token") String token){
-       return  loginService.logout();
+    @DeleteMapping("/delete-company/{companyid}")
+    public ResponseVo delete(@RequestHeader("token") String token,@PathVariable("companyid") Long companyid){
+        return companyService.delete(companyid);
     }
 
 
@@ -52,4 +49,10 @@ public class SuperAdminController {
     public ResponseVo list(@RequestHeader("token")String token){
        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(),companyService.list());
     }
+
+
+
+
+
+
 }

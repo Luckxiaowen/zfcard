@@ -11,4 +11,7 @@ import com.zf.domain.vo.ResponseVo;
 */
 public interface CompanyService extends IService<Company> {
 
+    ResponseVo insert(Company company);
+
+    ResponseVo delete(Long companyid);
 }
