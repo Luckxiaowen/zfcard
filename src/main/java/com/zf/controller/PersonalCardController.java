@@ -87,6 +87,8 @@ public class PersonalCardController {
     map.put("address",address);
     map.put("phoneNumber",phoneNumber);
 
+    System.out.println("123");
+
 
     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg(),map);
   }
