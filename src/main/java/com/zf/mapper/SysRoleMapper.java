@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zf.domain.entity.SysRole;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
 * @author Amireux
 * @description 针对表【sys_role(角色表)】的数据库操作Mapper
@@ -15,4 +17,5 @@ import org.springframework.stereotype.Repository;
 public interface SysRoleMapper extends BaseMapper<SysRole> {
 
 
+    List<SysRole> getAllRole();
 }
