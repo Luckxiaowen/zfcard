@@ -31,10 +31,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //TODO 查询用户信息
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
-        System.out.println("username = " + username);
         queryWrapper.eq(SysUser::getUsername,username);
         SysUser sysUser = sysUserMapper.selectOne(queryWrapper);
-        System.out.println("sysUser = " + sysUser);
         //TODO 判断如果为空
         if (Objects.isNull(sysUser)) {
             throw new RuntimeException("用户名或者密码错误!");

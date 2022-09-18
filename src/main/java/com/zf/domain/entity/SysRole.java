@@ -3,9 +3,15 @@ package com.zf.domain.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
+
 
 /**
  * 角色表
@@ -22,11 +28,13 @@ public class SysRole implements Serializable {
     /**
      * 角色名称 角色名称
      */
+    @NotBlank(message = "角色名称不能为空!")
     private String name;
 
     /**
      * 角色权限字符串 角色权限字符串
      */
+    @NotBlank(message = "角色路由不能为空!")
     private String roleKey;
 
     /**
@@ -47,22 +55,30 @@ public class SysRole implements Serializable {
     /**
      * 
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
     private Date createTime;
 
     /**
      * 
      */
+
     private Long updateBy;
 
     /**
      * 
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
     /**
      * 
      */
     private String remark;
+
+    @TableField(exist = false)
+    private String createUser;
 
     private static final long serialVersionUID = 1L;
 

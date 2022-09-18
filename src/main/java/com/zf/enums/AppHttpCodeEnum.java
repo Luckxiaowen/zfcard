@@ -3,6 +3,7 @@ package com.zf.enums;
 public enum AppHttpCodeEnum {
     // 成功
     SUCCESS(200, "操作成功"),
+    FAIL(201, "操作失败"),
     // 登录
     NEED_LOGIN(401, "需要登录后操作"),
     NO_OPERATOR_AUTH(403, "无权限操作"),
