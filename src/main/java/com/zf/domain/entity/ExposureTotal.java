@@ -80,76 +80,10 @@ public class ExposureTotal implements Serializable {
      */
     private Long weekAddClient;
 
-    private static final long serialVersionUID = 1L;
+    /**
+     * 每日转发名片数量
+     */
+    private Long dayForwardNum;
 
-    @Override
-    public boolean equals(Object that) {
-        if (this == that) {
-            return true;
-        }
-        if (that == null) {
-            return false;
-        }
-        if (getClass() != that.getClass()) {
-            return false;
-        }
-        ExposureTotal other = (ExposureTotal) that;
-        return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getCreateBy() == null ? other.getCreateBy() == null : this.getCreateBy().equals(other.getCreateBy()))
-            && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
-            && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
-            && (this.getVisitorTotal() == null ? other.getVisitorTotal() == null : this.getVisitorTotal().equals(other.getVisitorTotal()))
-            && (this.getClientTotalNum() == null ? other.getClientTotalNum() == null : this.getClientTotalNum().equals(other.getClientTotalNum()))
-            && (this.getSevenTotal() == null ? other.getSevenTotal() == null : this.getSevenTotal().equals(other.getSevenTotal()))
-            && (this.getDayTotal() == null ? other.getDayTotal() == null : this.getDayTotal().equals(other.getDayTotal()))
-            && (this.getDayDownloadNum() == null ? other.getDayDownloadNum() == null : this.getDayDownloadNum().equals(other.getDayDownloadNum()))
-            && (this.getDayNotes() == null ? other.getDayNotes() == null : this.getDayNotes().equals(other.getDayNotes()))
-            && (this.getDayAddContact() == null ? other.getDayAddContact() == null : this.getDayAddContact().equals(other.getDayAddContact()))
-            && (this.getDayAddClient() == null ? other.getDayAddClient() == null : this.getDayAddClient().equals(other.getDayAddClient()))
-            && (this.getWeekAddClient() == null ? other.getWeekAddClient() == null : this.getWeekAddClient().equals(other.getWeekAddClient()));
-    }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getCreateBy() == null) ? 0 : getCreateBy().hashCode());
-        result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
-        result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
-        result = prime * result + ((getVisitorTotal() == null) ? 0 : getVisitorTotal().hashCode());
-        result = prime * result + ((getClientTotalNum() == null) ? 0 : getClientTotalNum().hashCode());
-        result = prime * result + ((getSevenTotal() == null) ? 0 : getSevenTotal().hashCode());
-        result = prime * result + ((getDayTotal() == null) ? 0 : getDayTotal().hashCode());
-        result = prime * result + ((getDayDownloadNum() == null) ? 0 : getDayDownloadNum().hashCode());
-        result = prime * result + ((getDayNotes() == null) ? 0 : getDayNotes().hashCode());
-        result = prime * result + ((getDayAddContact() == null) ? 0 : getDayAddContact().hashCode());
-        result = prime * result + ((getDayAddClient() == null) ? 0 : getDayAddClient().hashCode());
-        result = prime * result + ((getWeekAddClient() == null) ? 0 : getWeekAddClient().hashCode());
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", createBy=").append(createBy);
-        sb.append(", createTime=").append(createTime);
-        sb.append(", updateTime=").append(updateTime);
-        sb.append(", visitorTotal=").append(visitorTotal);
-        sb.append(", clientTotalNum=").append(clientTotalNum);
-        sb.append(", sevenTotal=").append(sevenTotal);
-        sb.append(", dayTotal=").append(dayTotal);
-        sb.append(", dayDownloadNum=").append(dayDownloadNum);
-        sb.append(", dayNotes=").append(dayNotes);
-        sb.append(", dayAddContact=").append(dayAddContact);
-        sb.append(", dayAddClient=").append(dayAddClient);
-        sb.append(", weekAddClient=").append(weekAddClient);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
-    }
 }
