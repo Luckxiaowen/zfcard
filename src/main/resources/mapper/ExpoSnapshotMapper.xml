@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zf.domain.entity.ExpoSnapshot">
+
+    <resultMap id="BaseResultMap" type="com.zf.domain.entity.ExpoSnapshot">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="expoTotalId" column="expo_total_id" jdbcType="BIGINT"/>
+            <result property="dayTotal" column="day_total" jdbcType="BIGINT"/>
+            <result property="dayNotesNum" column="day_notes_num" jdbcType="BIGINT"/>
+            <result property="dayDownloadNum" column="day_download_num" jdbcType="BIGINT"/>
+            <result property="dayAddContact" column="day_add_contact" jdbcType="BIGINT"/>
+            <result property="dayAddClient" column="day_add_client" jdbcType="BIGINT"/>
+            <result property="weekVisitorNum" column="week_visitor_num" jdbcType="BIGINT"/>
+            <result property="weekClientNum" column="week_client_num" jdbcType="BIGINT"/>
+            <result property="createTime" column="create_time" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,expo_total_id,day_total,
+        day_notes_num,day_download_num,day_add_contact,
+        day_add_client,week_visitor_num,week_client_num,
+        create_time
+    </sql>
+</mapper>
