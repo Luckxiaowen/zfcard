@@ -41,7 +41,7 @@ public class SendMailUtil {
         mailInfo.setPassword("cacruzxolthydjhc");// 发送者邮箱授权码
         mailInfo.setFromAddress("2293667568@qq.com"); // 发送者邮箱
         mailInfo.setToAddress(toAdd); // 接收者邮箱
-        mailInfo.setSubject("用户"+id+"的验证码为"); // 邮件主题
+        mailInfo.setSubject("尊敬的用户您的验证码为"); // 邮件主题
         mailInfo.setContent(code); // 邮件文本
         return mailInfo;
     }
