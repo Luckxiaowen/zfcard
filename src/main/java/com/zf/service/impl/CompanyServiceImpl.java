@@ -12,8 +12,7 @@ import com.zf.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author Amireux
@@ -128,5 +127,11 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
                 }
             }
         }
+    }
+
+    @Override
+    public ResponseVo searchCompany(String conditions) {
+        System.out.println("conditions = " + conditions);
+        return null;
     }
 }

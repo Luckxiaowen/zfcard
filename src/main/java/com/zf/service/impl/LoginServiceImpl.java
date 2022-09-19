@@ -32,8 +32,11 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public ResponseVo login(SysUser sysUser) {
+        if (!Validator.isMobile(sysUser.getPhonenumber())){
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "手机号格式有误请检查");
+        }
         // TODO 使用authenticationManger authenticate 进行用户认证
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(sysUser.getUsername(), sysUser.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(sysUser.getPhonenumber(), sysUser.getPassword());
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
         // TODO 没通过给出相应的注解
         if (Objects.isNull(authenticate)) {

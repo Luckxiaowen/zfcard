@@ -1,14 +1,15 @@
 package com.zf.service.impl;
 
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
+
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zf.domain.entity.Company;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.ResponseVo;
+import com.zf.domain.vo.SearchUserVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.mapper.SysUserMapper;
 import com.zf.service.SysUserService;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -106,7 +108,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             } else {
                 sysUser.setDelFlag(1);
                 sysUser.setUpdateBy(Long.parseLong(updateId));
-                Wrapper<SysUser> wrapper = new UpdateWrapper<>();
                 if (sysUserMapper.updateById(sysUser)>0) {
                     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "删除成功");
                 } else {
@@ -177,8 +178,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public ResponseVo selectAll() {
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysUser::getDelFlag,"0");
+        queryWrapper.eq(SysUser::getDelFlag,0);
         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(), sysUserMapper.selectList(queryWrapper));
+    }
+
+    @Override
+    public ResponseVo selectByConditions(String conditions) throws JsonProcessingException {
+        if (conditions.length()==0){
+            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(),sysUserMapper.selectList(null));
+        }else{
+            ObjectMapper objectMapper=new ObjectMapper();
+            SearchUserVo searchUserVo = objectMapper.readValue(conditions, SearchUserVo.class);
+           List<SysUser>sysUserList= sysUserMapper.selectByConditions(searchUserVo);
+            System.out.println("sysUserList = " + sysUserList);
+        }
+        return null;
     }
 
 }

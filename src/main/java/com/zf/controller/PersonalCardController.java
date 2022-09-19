@@ -79,14 +79,11 @@ public class PersonalCardController {
     ExposureTotal total = exposureTotalMapper.selectOne(query);
 
     if (total==null){
-
       Date date = new Date();
       ExposureTotal exposure = new ExposureTotal(null, id.longValue(), date, date, 0L, 0L, 0L,
         0L, 0L, 0L, 0L, 0L, 0L,0L);
-
       exposureTotalMapper.insert(exposure);
     }
-
 
     LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
     queryWrapper.like(SysRole::getId,roleId);
@@ -110,7 +107,6 @@ public class PersonalCardController {
     map.put("username",username);
     map.put("address",address);
     map.put("phoneNumber",phoneNumber);
-
     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg(),map);
   }
 

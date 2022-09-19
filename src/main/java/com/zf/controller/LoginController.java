@@ -20,13 +20,13 @@ public class LoginController {
 
     @ApiOperation(value = "用户登录接口")
     @ApiImplicitParams({
-            @ApiImplicitParam(dataType = "string", name = "username", value = "用户登录账号", required = true),
+            @ApiImplicitParam(dataType = "string", name = "phoneNumber", value = "用户登录账号", required = true),
             @ApiImplicitParam(dataType = "string", name = "password", value = "用户登录密码", required = true)
     })
     @PostMapping("/login")
-    public ResponseVo login(@RequestParam(value = "username")String username, @RequestParam(value = "password")String password){
+    public ResponseVo login(@RequestParam(value = "phoneNumber")String phoneNumber, @RequestParam(value = "password")String password){
         SysUser sysUser=new SysUser();
-        sysUser.setUsername(username);
+        sysUser.setPhonenumber(phoneNumber);
         sysUser.setPassword(password);
         return loginService.login(sysUser);
     }
