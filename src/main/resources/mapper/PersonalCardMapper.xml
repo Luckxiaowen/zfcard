@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zf.mapper.PersonalCardMapper">
 
-    <resultMap id="BaseResultMap" type="com.zf.domain.entity.PersonalCard">
+    <resultMap id="BaseResultMap" type="com.zf.domain.vo.PersonalCardVo">
 
       <id column="roleId" jdbcType="INTEGER" property="roleId" />
             <result property="username" column="username" jdbcType="VARCHAR"/>

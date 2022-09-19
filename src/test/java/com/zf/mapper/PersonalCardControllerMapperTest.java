@@ -1,6 +1,7 @@
 package com.zf.mapper;
 
-import com.zf.domain.entity.PersonalCard;
+
+import com.zf.domain.vo.PersonalCardVo;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -32,7 +33,8 @@ public class PersonalCardControllerMapperTest {
 
   @Test
   public void selectPersonalCardById() {
-    PersonalCard personalCard = personalCardMapper.selectPersonalCardById(1);
-    System.out.println(personalCard);
+
+    PersonalCardVo personalCardVo = personalCardMapper.selectPersonalCardById(1);
+    System.out.println(personalCardVo);
   }
 }
