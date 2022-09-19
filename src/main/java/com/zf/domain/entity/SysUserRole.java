@@ -2,6 +2,7 @@ package com.zf.domain.entity;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,8 @@ public class SysUserRole implements Serializable {
     private Long roleId;
 
     private static final long serialVersionUID = 1L;
+
+
 
     @Override
     public boolean equals(Object that) {

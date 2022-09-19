@@ -2,6 +2,7 @@ package com.zf.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zf.domain.entity.SysRole;
+import com.zf.domain.vo.ResponseVo;
 
 /**
 * @author Amireux
@@ -10,4 +11,7 @@ import com.zf.domain.entity.SysRole;
 */
 public interface SysRoleService extends IService<SysRole> {
 
+    ResponseVo addRole(SysRole role);
+
+    ResponseVo getAllRole();
 }
