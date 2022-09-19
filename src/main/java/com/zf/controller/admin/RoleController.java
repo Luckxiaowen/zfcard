@@ -22,14 +22,14 @@ public class RoleController {
     @Resource
     private SysRoleService roleService;
 
-    @ApiOperation(value = "新增权限角色")
+    @ApiOperation(value = "新增权限角色接口")
     @PostMapping("/role")
     @PreAuthorize("hasAnyAuthority('sys:role:add')")
     public ResponseVo addRole(@RequestHeader("token") String token,@RequestBody SysRole role){
         return roleService.addRole(role);
     }
 
-    @ApiOperation(value = "查看所有角色")
+    @ApiOperation(value = "查看所有角色接口")
     @GetMapping("/role")
     @PreAuthorize("hasAnyAuthority('sys:role:select')")
     public ResponseVo getAllRole(@RequestHeader("token") String token){

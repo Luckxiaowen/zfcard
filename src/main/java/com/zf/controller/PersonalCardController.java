@@ -110,7 +110,7 @@ public class PersonalCardController {
     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg(),map);
   }
 
-  @ApiOperation("保存名片")
+  @ApiOperation("保存名片接口")
   @GetMapping("/save-card")
   public ResponseVo saveCard(@RequestHeader("token") String token){
 
@@ -132,7 +132,7 @@ public class PersonalCardController {
     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg());
   }
 
-  @ApiOperation("转发名片")
+  @ApiOperation("转发名片接口")
   @GetMapping("/forward-card")
   public ResponseVo forwardCard(@RequestHeader("token") String token){
 
@@ -154,7 +154,7 @@ public class PersonalCardController {
     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg());
   }
 
-  @ApiOperation("保存电话")
+  @ApiOperation("保存电话接口")
   @GetMapping("/save-num")
   public ResponseVo saveNum(@RequestHeader("token") String token){
 
