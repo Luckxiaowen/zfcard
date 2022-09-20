@@ -33,7 +33,7 @@ public class CompanyInfo implements Serializable {
     /**
      * 所属公司Id 所属公司Id
      */
-    private String companyId;
+    private Integer companyId;
 
     /**
      * 创建时间 创建时间
@@ -112,4 +112,6 @@ public class CompanyInfo implements Serializable {
         sb.append("]");
         return sb.toString();
     }
+
+
 }
