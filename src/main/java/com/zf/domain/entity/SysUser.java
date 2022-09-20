@@ -110,5 +110,10 @@ public class SysUser implements Serializable {
      */
     private Long companyid;
 
+    /**
+     *  微信openedId 微信openedId
+     */
+    private String openedId;
+
 
 }

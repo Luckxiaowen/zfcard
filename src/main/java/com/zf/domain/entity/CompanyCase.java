@@ -23,7 +23,7 @@ public class CompanyCase implements Serializable {
     /**
      * 公司id 公司Id
      */
-    private String companyId;
+    private Long companyId;
 
     /**
      * 分类名称 分类名称
@@ -33,7 +33,7 @@ public class CompanyCase implements Serializable {
     /**
      * 删除标志（0代表未删除，1代表已删除） 删除标志（0代表未删除，1代表已删除）
      */
-    private String delFlag;
+    private Integer delFlag;
 
     /**
      * 创建人 创建人
