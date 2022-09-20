@@ -64,6 +64,6 @@ public class UserInfoController {
         hashMap.put("photo",avatar);
         new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(),hashMap);
         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(), hashMap);
-
     }
+
 }
