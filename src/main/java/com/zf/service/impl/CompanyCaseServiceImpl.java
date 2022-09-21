@@ -41,6 +41,7 @@ public class CompanyCaseServiceImpl extends ServiceImpl<CompanyCaseMapper, Compa
                 if (Objects.isNull(sysUserMapper.selectById(Long.parseLong(userId)).getCompanyid())) {
                     return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "当前用户未加入任何公司不能创建案列分类");
                 } else {
+
                     LambdaQueryWrapper<CompanyCase> queryWrapper = new LambdaQueryWrapper<>();
                     queryWrapper.eq(CompanyCase::getCompanyId, sysUserMapper.selectById(Long.parseLong(userId)).getCompanyid());
                     queryWrapper.and(wrapper -> {
@@ -68,7 +69,35 @@ public class CompanyCaseServiceImpl extends ServiceImpl<CompanyCaseMapper, Compa
 
     @Override
     public ResponseVo deleteCompanyCase(String userId, Long comCaseId) {
-
+        LambdaQueryWrapper<CompanyCase> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(CompanyCase::getCompanyId, sysUserMapper.selectById(Long.parseLong(userId)).getCompanyid());
+        queryWrapper.and(wrapper -> {
+            wrapper.eq(CompanyCase::getId, comCaseId);
+        });
+        if (Objects.isNull(companyCaseMapper.selectOne(queryWrapper))){
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "当前公司未添加案列分类标题");
+        }else{
+            queryWrapper=new LambdaQueryWrapper<>();
+            queryWrapper.eq(CompanyCase::getCompanyId, sysUserMapper.selectById(Long.parseLong(userId)).getCompanyid());
+            queryWrapper.and(wrapper -> {
+                wrapper.eq(CompanyCase::getId, comCaseId);
+                wrapper.eq(CompanyCase::getDelFlag, 1);
+            });
+            if (Objects.isNull(companyCaseMapper.selectOne(queryWrapper))){
+                //TODO 执行操作
+                queryWrapper=new LambdaQueryWrapper<>();
+                queryWrapper.eq(CompanyCase::getCompanyId, sysUserMapper.selectById(Long.parseLong(userId)).getCompanyid());
+                queryWrapper.and(wrapper -> {
+                    wrapper.eq(CompanyCase::getId, comCaseId);
+                    wrapper.eq(CompanyCase::getDelFlag, 0);
+                });
+                CompanyCase companyCase = companyCaseMapper.selectOne(queryWrapper);
+                companyCase.setDelFlag(0);
+                companyCase.setUpdateBy(Long.parseLong(userId));
+                companyCase.setUpdateTime(new Date());
+                companyCaseMapper.updateById(companyCase);
+            }
+        }
         return null;
     }
 }

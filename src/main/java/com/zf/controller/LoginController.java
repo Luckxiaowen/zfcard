@@ -40,6 +40,7 @@ public class LoginController {
 
     @ApiOperation(value = "邮箱验证码获取接口")
     @GetMapping("/code")
+    //TODO 测试操作
     public ResponseVo getCode(String email){
         return loginService.getCode(email);
     }

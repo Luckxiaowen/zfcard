@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 
 public @interface SysLog {
-  //你好兄弟
+    //123asfdw efge
+//todo 1231231124e
     String businessName();
 }
