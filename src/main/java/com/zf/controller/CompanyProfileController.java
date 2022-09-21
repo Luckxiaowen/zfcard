@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @RestController
-@RequestMapping("/company")
+@RequestMapping("/companyprofile")
 @Api(tags = "个性化简介")
 public class CompanyProfileController {
 
@@ -46,7 +46,7 @@ public class CompanyProfileController {
     @Autowired
     private CompanyImgService companyImgService;
     @ApiOperation(value = "顶部图片接口")
-    @GetMapping("/companypictures")
+    @GetMapping("/company_pictures")
     public ResponseVo companyPictures(@RequestHeader("token") String token) throws Exception {
 
         Integer id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
@@ -66,7 +66,7 @@ public class CompanyProfileController {
 
     }
     @ApiOperation(value = "个性化简介名称及内容接口")
-    @GetMapping("/companyprofile")
+    @GetMapping("/company_profile")
     public ResponseVo companyProfile(@RequestHeader("token") String token) throws Exception {
         Integer id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
 

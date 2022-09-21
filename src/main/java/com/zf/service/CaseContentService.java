@@ -3,6 +3,8 @@ package com.zf.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zf.domain.entity.CaseContent;
+import com.zf.domain.vo.ResponseVo;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author Amireux
@@ -10,5 +12,7 @@ import com.zf.domain.entity.CaseContent;
 * @createDate 2022-09-16 08:47:16
 */
 public interface CaseContentService extends IService<CaseContent> {
+
+    ResponseVo getCaseContent(@Param("companyid") Integer companyid);
 
 }
