@@ -5,6 +5,8 @@ public enum AppHttpCodeEnum {
     SUCCESS(200, "操作成功"),
     FAIL(201, "操作失败"),
     // 登录
+    COMPANY_NOF_FIND(500,"该公司不存在"),
+    NOT_YOU_COMPANY(500,"这不是你的公司哦!"),
     NEED_LOGIN(401, "需要登录后操作"),
     NO_OPERATOR_AUTH(403, "无权限操作"),
     SYSTEM_ERROR(500, "出现错误"),
