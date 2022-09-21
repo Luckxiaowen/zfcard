@@ -23,7 +23,7 @@ public class RoleController {
     @Resource
     private SysRoleService roleService;
 
-    @ApiOperation(value = "新增权限角色1")
+    @ApiOperation(value = "新增权限角色")
     @PostMapping("/role")
     @PreAuthorize("hasAnyAuthority('sys:role:add')")
     public ResponseVo addRole(@RequestHeader("token") String token,@RequestBody SysRole role){
