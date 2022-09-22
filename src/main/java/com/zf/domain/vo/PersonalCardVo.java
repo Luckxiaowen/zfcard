@@ -1,4 +1,4 @@
-package com.zf.domain.entity;
+package com.zf.domain.vo;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
@@ -13,7 +13,7 @@ import java.math.BigInteger;
  * DateTime: 2022/9/17 17:10
  */
 @Data
-public class PersonalCard {
+public class PersonalCardVo {
 
   private String username;
 

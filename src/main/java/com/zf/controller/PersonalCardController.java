@@ -8,6 +8,7 @@ import com.zf.domain.entity.ExposureTotal;
 import com.zf.domain.entity.SysRole;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.LoginUser;
+import com.zf.domain.vo.PersonalCardVo;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.mapper.CompanyMapper;
@@ -70,9 +71,9 @@ public class PersonalCardController {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     LoginUser loginUser = (LoginUser) authentication.getPrincipal();
     Integer id = Math.toIntExact(loginUser.getSysUser().getId());
-    com.zf.domain.entity.PersonalCard personalCard = personalCardService.personalCardById(id);
-    int roleId = personalCard.getRoleId();
-    int companyId = personalCard.getCompanyId();
+    PersonalCardVo PersonalCardVo = personalCardService.personalCardById(id);
+    int roleId = PersonalCardVo.getRoleId();
+    int companyId = PersonalCardVo.getCompanyId();
 
     LambdaQueryWrapper<ExposureTotal> query = new LambdaQueryWrapper<>();
     query.like(ExposureTotal::getCreateBy,id);
@@ -100,9 +101,9 @@ public class PersonalCardController {
     String address = company.getAddress();
 
     HashMap<String, Object> map = new HashMap<>();
-    String email = personalCard.getEmail();
-    String username = personalCard.getUsername();
-    BigInteger phoneNumber = personalCard.getPhoneNumber();
+    String email = PersonalCardVo.getEmail();
+    String username = PersonalCardVo.getUsername();
+    BigInteger phoneNumber = PersonalCardVo.getPhoneNumber();
 
     map.put("roleName",roleName);
     map.put("companyName",companyName);
@@ -115,7 +116,7 @@ public class PersonalCardController {
   }
 
   @ApiOperation("保存名片")
-  @GetMapping("/save-card")
+  @PutMapping("/save-card")
   public ResponseVo saveCard(@RequestHeader("token") String token){
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -137,7 +138,7 @@ public class PersonalCardController {
   }
 
   @ApiOperation("转发名片")
-  @GetMapping("/forward-card")
+  @PutMapping("/forward-card")
   public ResponseVo forwardCard(@RequestHeader("token") String token){
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -159,7 +160,7 @@ public class PersonalCardController {
   }
 
   @ApiOperation("保存电话")
-  @GetMapping("/save-num")
+  @PutMapping("/save-num")
   public ResponseVo saveNum(@RequestHeader("token") String token){
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
