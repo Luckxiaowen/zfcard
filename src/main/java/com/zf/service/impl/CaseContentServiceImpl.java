@@ -1,7 +1,6 @@
 package com.zf.service.impl;
 
 
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.entity.CaseContent;
 import com.zf.domain.entity.SysUser;
@@ -41,25 +40,12 @@ implements CaseContentService {
         SysUser sysUser = sysUserMapper.selectById(userid);
         Integer companyid = Math.toIntExact(sysUser.getCompanyid());
         List<CaseContent> caseContent = caseContentMapper.getCaseContent(companyid);
+//        ResponseVo caseContent = caseContentMapper.getCaseContent(companyid);
+
+//        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg(),caseContent);
+
+
+//        List<CaseContent> caseContent = caseContentMapper.getCaseContent(companyid);
         return ResponseVo.okResult(caseContent);
-    }
-
-    @Override
-    public ResponseVo getsaveCard(Integer caseId) {
-
-       CaseContent caseContentOne = caseContentMapper.selectById(caseId);
-
-        System.out.println(caseContentOne);
-
-        Integer visitorNum = caseContentOne.getVisitorNum();
-
-        Integer visitornum = visitorNum+1;
-
-        LambdaUpdateWrapper<CaseContent> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(CaseContent::getId,caseId);
-        updateWrapper.set(CaseContent::getVisitorNum,visitornum);
-        caseContentMapper.update(null,updateWrapper);
-
-        return ResponseVo.okResult();
     }
 }

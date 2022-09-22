@@ -64,11 +64,17 @@ public class CompanyContentController {
         return caseContentService.getCaseContent(token);
     }
     @ApiOperation("案例内容浏览量接口")
-    @PutMapping("/company_case_views/{caseId}")
-    public ResponseVo saveCard( @PathVariable("caseId") Integer caseId){
+    @PutMapping("/company_case_views/{id}")
+    public ResponseVo saveCard(@RequestHeader("token") String token, @PathVariable("id") Integer id){
 
-        return caseContentService.getsaveCard(caseId);
+        LambdaQueryWrapper<CaseContent> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(CaseContent::getId,id);
 
+        CaseContent selectOne = caseContentMapper.selectOne(lambdaQueryWrapper);
+        selectOne.setVisitorNum(selectOne.getVisitorNum()+1);
+        caseContentMapper.updateById(selectOne);
+
+        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg());
     }
 
 

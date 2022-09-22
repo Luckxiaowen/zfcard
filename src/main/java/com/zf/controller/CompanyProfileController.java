@@ -49,6 +49,6 @@ public class CompanyProfileController {
     @GetMapping("/company_profile")
     public ResponseVo companyProfile(@RequestHeader("token") String token) {
         return companyProfileVoService.getcompanyProfile(token);
-//        return null;
+
     }
 }

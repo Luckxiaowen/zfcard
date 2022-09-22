@@ -16,6 +16,6 @@ public interface CaseContentService extends IService<CaseContent> {
 
     ResponseVo getCaseContent(@Param("token") String token);
 
-    ResponseVo getsaveCard(@PathVariable("caseId") Integer caseId);
+//    ResponseVo getsaveCard(@PathVariable("caseId") Integer caseId);
 
 }
