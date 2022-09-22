@@ -11,12 +11,10 @@ import com.zf.domain.vo.LoginUser;
 import com.zf.domain.vo.PersonalCardVo;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
-import com.zf.mapper.CompanyMapper;
-import com.zf.mapper.ExposureTotalMapper;
-import com.zf.mapper.SysRoleMapper;
-import com.zf.mapper.SysUserMapper;
+import com.zf.mapper.*;
 import com.zf.service.PersonalCardService;
 import com.zf.service.SysUserService;
+import com.zf.utils.JwtUtil;
 import com.zf.utils.PdUtils;
 import io.swagger.annotations.Api;
 
@@ -42,145 +40,47 @@ import java.util.Map;
 @RestController
 @Api(value = "个人名片", tags = "名片模块")
 @RequestMapping("/user")
-public class PersonalCardController {
 
-  @Autowired
-  private SysUserService sysUserService;
+public class PersonalCardController {
 
   @Autowired
   private PersonalCardService personalCardService;
 
-  @Autowired
-  private CompanyMapper companyMapper;
-
-  @Autowired
-  private SysRoleMapper sysRoleMapper;
-
-  @Autowired
-  private SysUserMapper sysUserMapper;
-
-  @Autowired
-  private ExposureTotalMapper exposureTotalMapper;
-
-  PdUtils pdUtils;
 
   @ApiOperation(value = "名片接口")
   @GetMapping("/personal-card")
-  public ResponseVo PCard(@RequestHeader("token") String token){
-
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-    Integer id = Math.toIntExact(loginUser.getSysUser().getId());
-    PersonalCardVo PersonalCardVo = personalCardService.personalCardById(id);
-    int roleId = PersonalCardVo.getRoleId();
-    int companyId = PersonalCardVo.getCompanyId();
-
-    LambdaQueryWrapper<ExposureTotal> query = new LambdaQueryWrapper<>();
-    query.like(ExposureTotal::getCreateBy,id);
-    ExposureTotal total = exposureTotalMapper.selectOne(query);
-
-    if (total==null){
-
-      Date date = new Date();
-      ExposureTotal exposure = new ExposureTotal(null, id.longValue(), date, date, 0L, 0L, 0L,
-        0L, 0L, 0L, 0L, 0L, 0L,0L);
-
-      exposureTotalMapper.insert(exposure);
-    }
-
-
-    LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
-    queryWrapper.like(SysRole::getId,roleId);
-    SysRole sysRole = sysRoleMapper.selectOne(queryWrapper);
-    String roleName = sysRole.getName();
-
-    LambdaQueryWrapper<Company> companyQueryWrapper = new LambdaQueryWrapper<>();
-    companyQueryWrapper.like(Company::getId,companyId);
-    Company company = companyMapper.selectOne(companyQueryWrapper);
-    String companyName = company.getCompany();
-    String address = company.getAddress();
-
-    HashMap<String, Object> map = new HashMap<>();
-    String email = PersonalCardVo.getEmail();
-    String username = PersonalCardVo.getUsername();
-    BigInteger phoneNumber = PersonalCardVo.getPhoneNumber();
-
-    map.put("roleName",roleName);
-    map.put("companyName",companyName);
-    map.put("email",email);
-    map.put("username",username);
-    map.put("address",address);
-    map.put("phoneNumber",phoneNumber);
-
-    return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg(),map);
+  public ResponseVo pCard(@RequestHeader("token") String token){
+    return personalCardService.selectPersonalCard(token);
   }
 
   @ApiOperation("保存名片")
-  @PutMapping("/save-card")
-  public ResponseVo saveCard(@RequestHeader("token") String token){
+  @PostMapping("/save-card")
+  public ResponseVo saveCard(@RequestHeader("token") String token,@RequestParam("phoneNum") Long phoneNum){
 
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-    Integer id = Math.toIntExact(loginUser.getSysUser().getId());
-
-    LambdaQueryWrapper<ExposureTotal> queryWrapper = new LambdaQueryWrapper<>();
-    queryWrapper.like(ExposureTotal::getCreateBy,id);
-    ExposureTotal total = exposureTotalMapper.selectOne(queryWrapper);
-
-    Long dayDownloadNum = total.getDayDownloadNum();
-    Long dayDownload = dayDownloadNum+1;
-
-    LambdaUpdateWrapper<ExposureTotal> updateWrapper = new LambdaUpdateWrapper<>();
-    updateWrapper.set(ExposureTotal::getDayDownloadNum,dayDownload);
-    exposureTotalMapper.update(total,updateWrapper);
-
-    return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg());
+   return personalCardService.savePersonalCard(token,phoneNum);
   }
 
   @ApiOperation("转发名片")
-  @PutMapping("/forward-card")
-  public ResponseVo forwardCard(@RequestHeader("token") String token){
+  @PostMapping("/forward-card")
+  public ResponseVo forwardCard(@RequestHeader("token") String token,@RequestParam("phoneNum") Long phoneNum){
 
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-    Integer id = Math.toIntExact(loginUser.getSysUser().getId());
-
-    LambdaQueryWrapper<ExposureTotal> queryWrapper = new LambdaQueryWrapper<>();
-    queryWrapper.like(ExposureTotal::getCreateBy,id);
-    ExposureTotal total = exposureTotalMapper.selectOne(queryWrapper);
-
-    Long dayForwardNum = total.getDayForwardNum();
-    Long forwardNum = dayForwardNum+1;
-
-    LambdaUpdateWrapper<ExposureTotal> updateWrapper = new LambdaUpdateWrapper<>();
-    updateWrapper.set(ExposureTotal::getDayForwardNum,forwardNum);
-    exposureTotalMapper.update(total,updateWrapper);
-
-    return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg());
+   return personalCardService.forwardPersonalCard(token,phoneNum);
   }
 
   @ApiOperation("保存电话")
-  @PutMapping("/save-num")
-  public ResponseVo saveNum(@RequestHeader("token") String token){
+  @PostMapping("/save-num")
+  public ResponseVo saveNum(@RequestHeader("token") String token,@RequestParam("phoneNum") Long phoneNum){
+    return personalCardService.savePhoneNum(token,phoneNum);
+  }
 
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-    Integer id = Math.toIntExact(loginUser.getSysUser().getId());
+  @ApiOperation("公开留言展示")
+  @GetMapping("/public-message")
+  public ResponseVo publicMessage(@RequestHeader("token") String token) throws Exception {
 
-    LambdaQueryWrapper<ExposureTotal> queryWrapper = new LambdaQueryWrapper<>();
-    queryWrapper.like(ExposureTotal::getCreateBy,id);
-    ExposureTotal total = exposureTotalMapper.selectOne(queryWrapper);
-
-    Long dayAddContact = total.getDayAddContact();
-    long addContact = dayAddContact + 1;
-
-    LambdaUpdateWrapper<ExposureTotal> updateWrapper = new LambdaUpdateWrapper<>();
-    updateWrapper.set(ExposureTotal::getDayAddContact,addContact);
-    exposureTotalMapper.update(total,updateWrapper);
+    Integer id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
 
     return ResponseVo.okResult();
   }
-
 
 
 }

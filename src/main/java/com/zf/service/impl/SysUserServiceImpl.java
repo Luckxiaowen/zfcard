@@ -1,26 +1,41 @@
 package com.zf.service.impl;
 
 
-
-import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zf.domain.entity.Company;
+import com.zf.domain.entity.ExposureTotal;
+import com.zf.domain.entity.SysRole;
 import com.zf.domain.entity.SysUser;
+import com.zf.domain.vo.LoginUser;
+import com.zf.domain.vo.PersonalCardVo;
 import com.zf.domain.vo.ResponseVo;
-import com.zf.domain.vo.SearchUserVo;
 import com.zf.enums.AppHttpCodeEnum;
-import com.zf.mapper.SysUserMapper;
+import com.zf.mapper.*;
+import com.zf.service.PersonalCardService;
 import com.zf.service.SysUserService;
+import com.zf.utils.JwtUtil;
 import com.zf.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author Amireux
@@ -35,6 +50,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+
 
 
     @Override
@@ -108,6 +125,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             } else {
                 sysUser.setDelFlag(1);
                 sysUser.setUpdateBy(Long.parseLong(updateId));
+                Wrapper<SysUser> wrapper = new UpdateWrapper<>();
                 if (sysUserMapper.updateById(sysUser)>0) {
                     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "删除成功");
                 } else {
@@ -178,21 +196,103 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public ResponseVo selectAll() {
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysUser::getDelFlag,0);
+        queryWrapper.eq(SysUser::getDelFlag,"0");
         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(), sysUserMapper.selectList(queryWrapper));
     }
 
-    @Override
-    public ResponseVo selectByConditions(String conditions) throws JsonProcessingException {
-        if (conditions.length()==0){
-            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(),sysUserMapper.selectList(null));
-        }else{
-            ObjectMapper objectMapper=new ObjectMapper();
-            SearchUserVo searchUserVo = objectMapper.readValue(conditions, SearchUserVo.class);
-           List<SysUser>sysUserList= sysUserMapper.selectByConditions(searchUserVo);
-            System.out.println("sysUserList = " + sysUserList);
-        }
-        return null;
+
+  @Override
+  public ResponseVo selectUserInfo(String token) {
+
+    Integer id = null;
+    try {
+      id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
+    } catch (Exception e) {
+      e.printStackTrace();
     }
+
+    SysUser sysUser = sysUserMapper.selectById(id);
+    String avatar = sysUser.getAvatar();
+    String info = sysUser.getInfo();
+
+    HashMap<String, String> map = new HashMap<>();
+    map.put("photo",avatar);
+    map.put("info",info);
+
+    return ResponseVo.okResult(map);
+  }
+
+  @Override
+  public ResponseVo updateUserPhoton(String token, MultipartFile photo) {
+
+    String photoPath = null;
+
+    if(!photo.isEmpty()){
+      //获取上传的文件的文件名
+      String fileName = photo.getOriginalFilename();
+      //获取上传的文件的后缀名
+      String suffixName = fileName.substring(fileName.lastIndexOf("."));
+      //将UUID作为文件名
+      String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+      //将uuid和后缀名拼接后的结果作为最终的文件名
+      fileName = uuid + suffixName;
+      //通过ResourceUtils获取服务器中photo目录的路径
+      String path = null;
+      try {
+        path = new File(ResourceUtils.getURL("classpath:").getPath()).getAbsolutePath();
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+      String pathName = path +  File.separator + "resources" + File.separator +"userImg";
+      File file = new File(pathName);
+      //判断photoPath所对应路径是否存在
+      if (!file.exists()) {
+        //若不存在，则创建目录
+        file.mkdir();
+      }
+
+      photoPath = "userImg/" + fileName;
+
+      String finalPath = pathName + File.separator + fileName;
+      //上传文件
+      try {
+        photo.transferTo(new File(finalPath));
+      } catch (IOException exception) {
+        exception.printStackTrace();
+      }
+    }
+
+    Integer id = null;
+    try {
+      id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    LambdaUpdateWrapper<SysUser> updateWrapper = new LambdaUpdateWrapper<>();
+    updateWrapper.eq(SysUser::getId,id);
+    updateWrapper.set(SysUser::getAvatar,photoPath);
+    sysUserMapper.update(null,updateWrapper);
+
+    return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg());
+  }
+
+  @Override
+  public ResponseVo updateInfo(String token, String info) {
+
+    Integer id = null;
+    try {
+      id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    LambdaUpdateWrapper<SysUser> updateWrapper = new LambdaUpdateWrapper<>();
+    updateWrapper.eq(SysUser::getId,id);
+    updateWrapper.set(SysUser::getInfo,info);
+    sysUserMapper.update(null,updateWrapper);
+
+    return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg());
+  }
 
 }

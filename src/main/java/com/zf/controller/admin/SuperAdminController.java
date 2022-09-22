@@ -31,7 +31,6 @@ public class SuperAdminController {
     @ApiOperation(value = "增加公司接口")
     @PostMapping("/add-company")
     public ResponseVo add(@RequestHeader("token") String token, @RequestBody Company company ) throws Exception {
-
         return companyService.insert(company,JwtUtil.parseJWT(token).getSubject());
     }
 
