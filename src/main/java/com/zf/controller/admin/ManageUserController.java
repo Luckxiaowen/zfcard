@@ -1,5 +1,6 @@
-package com.zf.controller;
+package com.zf.controller.admin;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.service.SysUserService;
@@ -46,4 +47,11 @@ public class ManageUserController {
     public ResponseVo list(@RequestHeader("token")String token){
         return sysUserService.selectAll();
     }
+
+    @ApiOperation(value = "条件查询员工接口")
+    @GetMapping("/search-user")
+    public ResponseVo searchByConditions(@RequestHeader("token")String token,@RequestParam("conditions")String conditions) throws JsonProcessingException {
+        return sysUserService.selectByConditions(conditions);
+    }
+
 }

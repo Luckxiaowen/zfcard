@@ -2,6 +2,7 @@ package com.zf.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zf.domain.entity.CompanyInfo;
+import com.zf.domain.vo.ResponseVo;
 
 /**
 * @author Amireux
@@ -10,4 +11,12 @@ import com.zf.domain.entity.CompanyInfo;
 */
 public interface CompanyInfoService extends IService<CompanyInfo> {
 
+    ResponseVo insert(String token, CompanyInfo companyInfo);
+
+    ResponseVo delete(String subject, Long cominfoid);
+
+    ResponseVo modify(String userId, CompanyInfo companyInfo);
+
+
+    ResponseVo selectAll(String userId);
 }

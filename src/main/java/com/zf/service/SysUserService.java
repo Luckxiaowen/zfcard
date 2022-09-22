@@ -1,5 +1,6 @@
 package com.zf.service;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.ResponseVo;
 import org.springframework.stereotype.Service;
@@ -19,4 +20,6 @@ public interface SysUserService extends IService<SysUser> {
     ResponseVo modify(SysUser sysUser,String updateId);
 
     ResponseVo selectAll();
+
+    ResponseVo selectByConditions(String conditions) throws JsonProcessingException;
 }

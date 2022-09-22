@@ -8,12 +8,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * 公司案列内容表
  * @TableName case_content
  */
-
+@ToString
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

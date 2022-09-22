@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zf.domain.entity.Company;
 import com.zf.domain.vo.ResponseVo;
 
+import java.util.List;
+import java.util.Map;
+
 /**
 * @author Amireux
 * @description 针对表【company(公司表)】的数据库操作Service
@@ -16,4 +19,6 @@ public interface CompanyService extends IService<Company> {
     ResponseVo delete(Long companyid,String updateId);
 
     ResponseVo modify(Company company,String updateId);
+
+    ResponseVo searchCompany(String conditions);
 }
