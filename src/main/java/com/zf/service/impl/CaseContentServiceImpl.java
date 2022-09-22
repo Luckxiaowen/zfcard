@@ -12,17 +12,17 @@ import com.zf.enums.AppHttpCodeEnum;
 import com.zf.mapper.CaseContentMapper;
 import com.zf.mapper.SysUserMapper;
 import com.zf.service.CaseContentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.zf.utils.JwtUtil;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import com.zf.mapper.SysUserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import java.util.List;
 
 /**
  * @author Amireux
@@ -146,18 +146,6 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
         }
     }
 
-    @Override
-    public ResponseVo selectAll(String userId) {
-        if (sysUserMapper.selectById(userId)==null||"".equals(sysUserMapper.selectById(userId))){
-            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "当前用户不属于任何公司查询失败");
-        }else{
-            LambdaQueryWrapper<CaseContent> queryWrapper=new LambdaQueryWrapper<>();
-            queryWrapper.eq(CaseContent::getCreateBy,Long.parseLong(userId));
-            queryWrapper.and(wrapper->{wrapper.eq(CaseContent::getDelFlag,0);});
-            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(),caseContentMapper.selectList(queryWrapper));
-        }
-
-    }
 
     @Override
     public ResponseVo getCaseContent(@Param("token") String token) {

@@ -3,9 +3,9 @@ package com.zf.service;
 import com.zf.domain.entity.CompanyCase;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zf.domain.vo.ResponseVo;
+import org.apache.ibatis.annotations.Param;
 
 import com.zf.domain.vo.ResponseVo;
-import org.apache.ibatis.annotations.Param;
 
 /**
 * @author Amireux
@@ -14,6 +14,7 @@ import org.apache.ibatis.annotations.Param;
 */
 public interface CompanyCaseService extends IService<CompanyCase> {
 
+    ResponseVo getcaseNames(@Param("token") String token);
     ResponseVo addCompanyCase(String userId, String caseName);
 
     ResponseVo deleteCompanyCase(String userId, Long comCaseId);
@@ -21,5 +22,4 @@ public interface CompanyCaseService extends IService<CompanyCase> {
     ResponseVo updateCompanyCase(String userId, CompanyCase companyCase);
 
     ResponseVo selectAll(String userId);
-    ResponseVo getcaseNames(@Param("token") String token);
 }
