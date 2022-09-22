@@ -72,6 +72,11 @@ public class GlobalExceptionHandler {
         return ResponseVo.errorResult(AppHttpCodeEnum.NO_OPERATOR_AUTH);
     }
 
+    /**
+     * 参数校验异常
+     * @param e
+     * @return
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseVo methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e){
         //打印异常信息

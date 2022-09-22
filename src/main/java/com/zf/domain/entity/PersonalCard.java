@@ -1,5 +1,6 @@
 package com.zf.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.math.BigInteger;
@@ -15,9 +16,13 @@ import java.math.BigInteger;
 public class PersonalCard {
 
   private String username;
+
   private int companyId;
+
   private int roleId;
+
   private BigInteger phoneNumber;
+
   private String email;
 
 

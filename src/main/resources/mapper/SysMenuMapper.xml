@@ -42,5 +42,32 @@
           AND m.`status` = 0
     </select>
 
+    <select id="getSysMenuByUserId" resultType="com.zf.domain.entity.SysMenu">
+        SELECT
+            sm.id,
+            sm.menu_name,
+            sm.parent_id,
+            sm.path,
+            sm.icon
+        FROM
+            sys_role sr
+                LEFT JOIN sys_user_role sur ON sur.role_id = sr.id
+                LEFT JOIN sys_role_menu srm ON srm.role_id = sr.id
+                LEFT JOIN sys_menu sm ON sm.id = srm.menu_id
+        WHERE
+              <if test="parentId == -1">
+                  sm.parent_id = #{parentId}
+              </if>
+              <if test="id != null">
+                  sm.parent_id = #{id}
+              </if>
+              <if test="userId != null">
+                  AND  sur.user_id = #{userId}
+              </if>
+
+
+
+    </select>
+
 
 </mapper>

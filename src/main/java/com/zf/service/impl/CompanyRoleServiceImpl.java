@@ -65,6 +65,13 @@ public class CompanyRoleServiceImpl extends ServiceImpl<CompanyRoleMapper, Compa
         return res ? ResponseVo.okResult() : ResponseVo.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
     }
 
+    @Override
+    public ResponseVo updateCompanyRole(CompanyRole companyRole) {
+
+        updateById(companyRole);
+        return null;
+    }
+
     public List<CompanyRole> getChildrenRole(Integer id){
         LambdaQueryWrapper<CompanyRole> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(CompanyRole::getParentId,id);

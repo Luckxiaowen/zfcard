@@ -1,10 +1,14 @@
 package com.zf.service.impl;
 
+import com.zf.domain.entity.SysMenu;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.LoginUser;
+import com.zf.domain.vo.MenuVo;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.service.LoginService;
+import com.zf.service.SysMenuService;
+import com.zf.utils.BeanCopyUtils;
 import com.zf.utils.JwtUtil;
 import com.zf.utils.RedisCache;
 import com.zf.utils.Validator;
@@ -14,12 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import javax.annotation.Resource;
+import java.util.*;
 
 @Service
 public class LoginServiceImpl implements LoginService {
@@ -29,6 +33,9 @@ public class LoginServiceImpl implements LoginService {
 
     @Autowired
     private RedisCache redisCache;
+
+    @Resource
+    private SysMenuService menuService;
 
     @Override
     public ResponseVo login(SysUser sysUser) {
@@ -43,8 +50,13 @@ public class LoginServiceImpl implements LoginService {
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
         String userId = loginUser.getSysUser().getId().toString();
         String token = JwtUtil.createJWT(userId);
-        Map<String, String> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("token",token);
+        //获取动态菜单
+        List<MenuVo> sysMenus = menuService.getSysMenuByUserId(Long.valueOf(userId));
+
+
+        map.put("menu",sysMenus);
         //TODO 把完整的用户信息存入到redis userid作为key
         redisCache.setCacheObject("login:"+userId,loginUser);
         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(),map);

@@ -34,4 +34,11 @@ public class CompanyRoleController {
         return companyRoleService.addCompanyRole(companyRole);
     }
 
+    @ApiOperation(value = "修改公司角色信息")
+    @PutMapping("/company-role")
+    public ResponseVo updateCompanyRole(@RequestHeader String token,@Valid @RequestBody CompanyRole companyRole){
+        return companyRoleService.updateCompanyRole(companyRole);
+    }
+
+
 }

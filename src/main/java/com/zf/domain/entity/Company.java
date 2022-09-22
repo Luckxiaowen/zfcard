@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * 公司表
  * @TableName company
@@ -26,6 +28,7 @@ public class Company implements Serializable {
     /**
      * 公司名称 公司名称
      */
+    @NotBlank(message = "公司名称不能为空")
     private String company;
 
     /**

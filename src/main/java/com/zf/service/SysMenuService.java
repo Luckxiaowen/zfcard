@@ -2,6 +2,9 @@ package com.zf.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zf.domain.entity.SysMenu;
+import com.zf.domain.vo.MenuVo;
+
+import java.util.List;
 
 /**
 * @author Amireux
@@ -9,5 +12,5 @@ import com.zf.domain.entity.SysMenu;
 * @createDate 2022-09-16 08:47:17
 */
 public interface SysMenuService extends IService<SysMenu> {
-
+    List<MenuVo> getSysMenuByUserId(Long id);
 }

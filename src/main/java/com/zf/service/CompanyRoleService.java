@@ -13,4 +13,6 @@ public interface CompanyRoleService extends IService<CompanyRole> {
     ResponseVo getCompanyFramework(String token);
 
     ResponseVo addCompanyRole(CompanyRole companyRole);
+
+    ResponseVo updateCompanyRole(CompanyRole companyRole);
 }
