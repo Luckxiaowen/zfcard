@@ -3,6 +3,7 @@ package com.zf.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zf.domain.entity.CaseContent;
+import com.zf.domain.vo.ResponseVo;
 
 /**
 * @author Amireux
@@ -11,4 +12,11 @@ import com.zf.domain.entity.CaseContent;
 */
 public interface CaseContentService extends IService<CaseContent> {
 
+    ResponseVo addCaseContent(String userId, CaseContent caseContent);
+
+    ResponseVo deleteCaseContent(Long userId, Long casecontentid);
+
+    ResponseVo updateCaseContent(long parseLong, CaseContent caseContent);
+
+    ResponseVo selectAll(String userId);
 }

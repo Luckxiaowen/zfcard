@@ -23,6 +23,7 @@ public class LoginController {
             @ApiImplicitParam(dataType = "string", name = "phoneNumber", value = "用户登录账号", required = true),
             @ApiImplicitParam(dataType = "string", name = "password", value = "用户登录密码", required = true)
     })
+
     @PostMapping("/login")
     public ResponseVo login(@RequestParam(value = "phoneNumber")String phoneNumber, @RequestParam(value = "password")String password){
         SysUser sysUser=new SysUser();
@@ -40,7 +41,6 @@ public class LoginController {
 
     @ApiOperation(value = "邮箱验证码获取接口")
     @GetMapping("/code")
-    //TODO 测试操作
     public ResponseVo getCode(String email){
         return loginService.getCode(email);
     }

@@ -63,6 +63,7 @@ public class PersonalCardController {
 
   PdUtils pdUtils;
 
+
   @ApiOperation(value = "名片接口")
   @GetMapping("/personal-card")
   public ResponseVo PCard(@RequestHeader("token") String token){
@@ -158,6 +159,7 @@ public class PersonalCardController {
   @GetMapping("/save-num")
   public ResponseVo saveNum(@RequestHeader("token") String token){
 
+
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     LoginUser loginUser = (LoginUser) authentication.getPrincipal();
     Integer id = Math.toIntExact(loginUser.getSysUser().getId());
@@ -172,10 +174,7 @@ public class PersonalCardController {
     LambdaUpdateWrapper<ExposureTotal> updateWrapper = new LambdaUpdateWrapper<>();
     updateWrapper.set(ExposureTotal::getDayAddContact,addContact);
     exposureTotalMapper.update(total,updateWrapper);
-
     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg());
   }
-
-
 
 }

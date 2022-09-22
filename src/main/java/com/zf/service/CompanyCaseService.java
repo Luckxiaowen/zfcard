@@ -11,7 +11,11 @@ import com.zf.domain.vo.ResponseVo;
 */
 public interface CompanyCaseService extends IService<CompanyCase> {
 
-    ResponseVo addCompanyCase(String token, String caseName);
+    ResponseVo addCompanyCase(String userId, String caseName);
 
     ResponseVo deleteCompanyCase(String userId, Long comCaseId);
+
+    ResponseVo updateCompanyCase(String userId, CompanyCase companyCase);
+
+    ResponseVo selectAll(String userId);
 }

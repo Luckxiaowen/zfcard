@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 
 public @interface SysLog {
-    //123asfdw efge
-//todo 1231231124e
+
+
     String businessName();
 }
