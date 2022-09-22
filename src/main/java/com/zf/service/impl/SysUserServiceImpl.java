@@ -36,7 +36,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
 
     @Override
-    public ResponseVo add(SysUser sysUser,String userId) {
+    public ResponseVo add(SysUser sysUser,String updateId) {
         if ("".equals(sysUser.getUsername()) || sysUser.getUsername() == null) {
             return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "员工姓名不能为空");
         } else {
@@ -67,10 +67,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                                             } else {
                                                 //TODO 数据库操作
                                                 if (Validator.isMobile(sysUser.getPhonenumber())) {
+                                                    sysUser.setCompanyid( sysUserMapper.selectById(updateId).getCompanyid());
                                                     sysUser.setCreateTime(new Date());
                                                     sysUser.setUpdateTime(new Date());
-                                                    sysUser.setCreateBy(Long.parseLong(userId));
-                                                    sysUser.setUpdateBy(Long.parseLong(userId));
+                                                    sysUser.setCreateBy(Long.parseLong(updateId));
+                                                    sysUser.setUpdateBy(Long.parseLong(updateId));
                                                     sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
                                                     if (sysUserMapper.insert(sysUser) > 0) {
                                                         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "添加成功");

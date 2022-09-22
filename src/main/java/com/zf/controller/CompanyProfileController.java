@@ -13,6 +13,7 @@ import com.zf.mapper.CompanyProfileVoMapper;
 import com.zf.mapper.SysUserMapper;
 import com.zf.service.CompanyImgService;
 import com.zf.service.CompanyInfoService;
+import com.zf.service.CompanyProfileVoService;
 import com.zf.utils.JwtUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,52 +32,23 @@ import java.util.stream.Stream;
 @Api(tags = "个性化简介")
 public class CompanyProfileController {
 
-    @Autowired
-    private CompanyImgMapper companyImgMapper;
 
     @Autowired
-    private CompanyInfoMapper companyInfoMapper;
-
-    @Autowired
-    private SysUserMapper sysUserMapper;
-
-    @Autowired
-    private CompanyProfileVoMapper companyProfileVoMapper;
+    private CompanyProfileVoService companyProfileVoService;
 
     @Autowired
     private CompanyImgService companyImgService;
     @ApiOperation(value = "顶部图片接口")
     @GetMapping("/company_pictures")
-    public ResponseVo companyPictures(@RequestHeader("token") String token) throws Exception {
+    public ResponseVo companyPictures(@RequestHeader("token") String token) {
 
-        Integer id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
-        SysUser sysUser = sysUserMapper.selectById(id);
-        Long companyid = sysUser.getCompanyid();
-
-        LambdaQueryWrapper<CompanyImg> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(CompanyImg::getCompanyId,companyid);
-        CompanyImg companyImg = companyImgMapper.selectOne(queryWrapper);
-
-        String imgPath = companyImg.getImgPath();
-
-        HashMap<String, String> map = new HashMap<>();
-        map.put("imgPath",imgPath);
-
-        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg(),map);
+        return companyImgService.getcompanyPictures(token);
 
     }
     @ApiOperation(value = "个性化简介名称及内容接口")
     @GetMapping("/company_profile")
-    public ResponseVo companyProfile(@RequestHeader("token") String token) throws Exception {
-        Integer id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
-
-        LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(SysUser::getId,id);
-        SysUser user = sysUserMapper.selectOne(queryWrapper);
-        Integer companyid = Math.toIntExact(user.getCompanyid());
-
-        List<CompanyProfileVo> companyProfileVoList = companyProfileVoMapper.companyProfile(companyid);
-
-        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg(),companyProfileVoList);
+    public ResponseVo companyProfile(@RequestHeader("token") String token) {
+        return companyProfileVoService.getcompanyProfile(token);
+//        return null;
     }
 }

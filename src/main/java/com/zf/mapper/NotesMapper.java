@@ -2,8 +2,14 @@ package com.zf.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zf.domain.entity.CaseContent;
 import com.zf.domain.entity.Notes;
+import com.zf.domain.vo.NotesVo;
+import com.zf.domain.vo.ResponseVo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
 * @author Amireux
@@ -13,6 +19,8 @@ import org.springframework.stereotype.Repository;
 */
 @Repository
 public interface NotesMapper extends BaseMapper<Notes> {
+
+    List<NotesVo> getUserAndNotesPublicAll(@Param("id") Integer id);
 
 
 }

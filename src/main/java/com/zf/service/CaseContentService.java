@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zf.domain.entity.CaseContent;
 import com.zf.domain.vo.ResponseVo;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.PathVariable;
 
 /**
 * @author Amireux
@@ -13,6 +14,8 @@ import org.apache.ibatis.annotations.Param;
 */
 public interface CaseContentService extends IService<CaseContent> {
 
-    ResponseVo getCaseContent(@Param("companyid") Integer companyid);
+    ResponseVo getCaseContent(@Param("token") String token);
+
+    ResponseVo getsaveCard(@PathVariable("caseId") Integer caseId);
 
 }

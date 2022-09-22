@@ -2,6 +2,8 @@ package com.zf.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zf.domain.entity.CompanyImg;
+import com.zf.domain.vo.ResponseVo;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author Amireux
@@ -10,4 +12,6 @@ import com.zf.domain.entity.CompanyImg;
 */
 public interface CompanyImgService extends IService<CompanyImg> {
 
+    //    获取顶部图片
+    ResponseVo getcompanyPictures(@Param("token") String token);
 }

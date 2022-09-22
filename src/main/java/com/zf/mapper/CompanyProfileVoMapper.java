@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CompanyProfileVoMapper extends BaseMapper<CompanyInfo> {
+public interface CompanyProfileVoMapper extends BaseMapper<CompanyProfileVo> {
 
     List<CompanyProfileVo> companyProfile(@Param("companyId") Integer companyId);
 

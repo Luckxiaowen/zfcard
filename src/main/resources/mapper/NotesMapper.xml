@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zf.domain.entity.Notes">
+<mapper namespace="com.zf.mapper.NotesMapper">
 
     <resultMap id="BaseResultMap" type="com.zf.domain.entity.Notes">
             <id property="id" column="id" jdbcType="BIGINT"/>
@@ -21,4 +21,13 @@
         reply_id,notes_content,del_flag,
         is_public,create_by,create_time
     </sql>
+
+    <select id="getUserAndNotesPublicAll" resultType="com.zf.domain.vo.NotesVo">
+        SELECT n.id,s.username,s.avatar,s.phonenumber,n.client_name,n.del_flag,n.user_id,n.notes_content,n.reply_id,n.is_public,n.create_by,n.create_time
+        FROM sys_user s
+                 LEFT JOIN notes n
+                           ON n.user_id = s.id
+        where s.id = #{id}
+    </select>
+
 </mapper>
