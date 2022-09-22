@@ -6,14 +6,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.entity.Company;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
+import com.zf.exception.SystemException;
 import com.zf.mapper.CompanyMapper;
 import com.zf.service.CompanyService;
 import com.zf.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author Amireux
@@ -74,7 +74,8 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
             return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "您的访问有误");
         } else {
             if (company.getDelFlag() == 1) {
-                return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "未添加此公司或者此公司已删除，请刷新页面");
+                throw new SystemException(AppHttpCodeEnum.COMPANY_NOF_FIND);
+//                return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "未添加此公司或者此公司已删除，请刷新页面");
             } else {
                 company.setDelFlag(1);
                 company.setUpdateBy(Long.parseLong(updateId));
@@ -128,5 +129,11 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
                 }
             }
         }
+    }
+
+    @Override
+    public ResponseVo searchCompany(String conditions) {
+        System.out.println("conditions = " + conditions);
+        return null;
     }
 }

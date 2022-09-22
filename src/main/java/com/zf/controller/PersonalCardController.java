@@ -178,7 +178,7 @@ public class PersonalCardController {
     updateWrapper.set(ExposureTotal::getDayAddContact,addContact);
     exposureTotalMapper.update(total,updateWrapper);
 
-    return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg());
+    return ResponseVo.okResult();
   }
 
 

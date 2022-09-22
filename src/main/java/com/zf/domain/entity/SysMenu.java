@@ -2,7 +2,11 @@ package com.zf.domain.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +22,7 @@ public class SysMenu implements Serializable {
     /**
      * 菜单Id
      */
+    @TableId
     private Long id;
 
     /**
@@ -70,6 +75,8 @@ public class SysMenu implements Serializable {
      */
     private Long updateBy;
 
+    private Long parentId;
+
     /**
      * 更新时间
      */
@@ -78,7 +85,11 @@ public class SysMenu implements Serializable {
     /**
      * 是否删除 删除标志（0代表未删除，1代表已删除）
      */
+    @TableLogic
     private Integer delFlag;
+
+    @TableField(exist = false)
+    private List<SysMenu> childrenMenu;
 
     /**
      * 备注

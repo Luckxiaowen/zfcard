@@ -6,6 +6,7 @@ import com.zf.domain.entity.SysRole;
 import com.zf.domain.vo.LoginUser;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
+import com.zf.exception.SystemException;
 import com.zf.mapper.SysRoleMapper;
 import com.zf.service.SysRoleService;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * @author Amireux
@@ -49,5 +51,20 @@ implements SysRoleService {
     public ResponseVo getAllRole() {
         List<SysRole> roleList = roleMapper.getAllRole();
         return ResponseVo.okResult(roleList);
+    }
+
+    @Override
+    public ResponseVo updateRole(SysRole role) {
+        if (role.getId() == null){
+            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+        roleMapper.updateById(role);
+        return ResponseVo.okResult();
+    }
+
+    @Override
+    public ResponseVo delRole(List<Long> roleIdList) {
+        boolean res = removeByIds(roleIdList);
+        return res ? ResponseVo.okResult() : ResponseVo.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
     }
 }

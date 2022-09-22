@@ -8,5 +8,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SysLog {
+    /**
+     * 日志
+     * @return
+     */
     String businessName();
 }

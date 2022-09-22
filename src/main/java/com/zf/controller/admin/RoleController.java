@@ -9,6 +9,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @Author wenqin
@@ -25,7 +27,7 @@ public class RoleController {
     @ApiOperation(value = "新增权限角色")
     @PostMapping("/role")
     @PreAuthorize("hasAnyAuthority('sys:role:add')")
-    public ResponseVo addRole(@RequestHeader("token") String token,@RequestBody SysRole role){
+    public ResponseVo addRole(@RequestHeader("token") String token,@Valid @RequestBody SysRole role){
         return roleService.addRole(role);
     }
 
@@ -34,6 +36,21 @@ public class RoleController {
     @PreAuthorize("hasAnyAuthority('sys:role:select')")
     public ResponseVo getAllRole(@RequestHeader("token") String token){
         return roleService.getAllRole();
+    }
+
+    @ApiOperation(value = "更新角色")
+    @PutMapping("/role")
+    @PreAuthorize("hasAnyAuthority('sys:role:update')")
+    public ResponseVo updateRole(@RequestHeader("token") String token,@Valid @RequestBody SysRole role){
+        return roleService.updateRole(role);
+    }
+
+
+    @ApiOperation(value = "根据角色ID删除角色")
+    @DeleteMapping("/role")
+    @PreAuthorize("hasAnyAuthority('sys:role:del')")
+    public ResponseVo updateRole(@RequestHeader("token") String token,@RequestBody List<Long> roleIdList){
+        return roleService.delRole(roleIdList);
     }
 
 }

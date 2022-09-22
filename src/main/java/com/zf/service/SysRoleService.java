@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zf.domain.entity.SysRole;
 import com.zf.domain.vo.ResponseVo;
 
+import java.util.List;
+
 /**
 * @author Amireux
 * @description 针对表【sys_role(角色表)】的数据库操作Service
@@ -14,4 +16,8 @@ public interface SysRoleService extends IService<SysRole> {
     ResponseVo addRole(SysRole role);
 
     ResponseVo getAllRole();
+
+    ResponseVo updateRole(SysRole role);
+
+    ResponseVo delRole(List<Long> roleIdList);
 }

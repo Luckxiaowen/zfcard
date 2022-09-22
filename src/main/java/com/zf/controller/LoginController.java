@@ -19,16 +19,9 @@ public class LoginController {
     private LoginService loginService;
 
     @ApiOperation(value = "用户登录接口")
-    @ApiImplicitParams({
-            @ApiImplicitParam(dataType = "string", name = "username", value = "用户登录账号", required = true),
-            @ApiImplicitParam(dataType = "string", name = "password", value = "用户登录密码", required = true)
-    })
     @PostMapping("/login")
-    public ResponseVo login(@RequestParam(value = "username")String username, @RequestParam(value = "password")String password){
-        SysUser sysUser=new SysUser();
-        sysUser.setUsername(username);
-        sysUser.setPassword(password);
-        return loginService.login(sysUser);
+    public ResponseVo login(@RequestBody SysUser user){
+        return loginService.login(user);
     }
 
     @ApiOperation(value = "用户注销接口")

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zf.domain.entity.Company">
+<mapper namespace="com.zf.mapper.CompanyMapper">
 
     <resultMap id="BaseResultMap" type="com.zf.domain.entity.Company">
             <id property="id" column="id" jdbcType="BIGINT"/>
@@ -13,11 +13,16 @@
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createBy" column="create_by" jdbcType="BIGINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,company,address,
         tel,create_by,create_time,
-        del_flag,update_time
+        del_flag,update_time,create_by
     </sql>
+
+    <select id="selectByConditions" resultType="com.zf.domain.entity.Company">
+        select * from company where
+    </select>
 </mapper>

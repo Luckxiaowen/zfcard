@@ -26,8 +26,8 @@ public class UserInfoController {
     @Autowired
     private SysUserMapper sysUserMapper;
 
-    @ApiOperation(value = "个人简介接口")
 
+    @ApiOperation(value = "个人简介接口")
     @GetMapping("/userinfo")
     public ResponseVo info(@RequestHeader("token")String token){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -46,28 +46,24 @@ public class UserInfoController {
         ResponseVo<HashMap<String, String>> vo = new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(), hashMap);
         return vo;
     }
-    @ApiOperation(value = "个人职业照接口")
 
-    @GetMapping("/Professional-photo")
+    @ApiOperation(value = "个人职业照接口")
+    @GetMapping("/professional-photo")
     public ResponseVo ProPhoto(@RequestHeader("token")String token){
 
 //        获取token
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         Integer id = Math.toIntExact(loginUser.getSysUser().getId());
-
 //        将查询条件放入LambdaQueryWrapper中
         LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.like(SysUser::getId,id);
         SysUser sysUser = sysUserMapper.selectOne(lambdaQueryWrapper);
-
         String avatar = sysUser.getAvatar();
-
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("photo",avatar);
         new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(),hashMap);
-
         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(), hashMap);
-
     }
+
 }

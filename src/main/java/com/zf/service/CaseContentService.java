@@ -6,7 +6,6 @@ import com.zf.domain.entity.CaseContent;
 import com.zf.domain.vo.ResponseVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.PathVariable;
-
 /**
 * @author Amireux
 * @description 针对表【case_content(公司案列内容表)】的数据库操作Service
@@ -14,6 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 */
 public interface CaseContentService extends IService<CaseContent> {
 
+    ResponseVo addCaseContent(String userId, CaseContent caseContent);
+
+    ResponseVo deleteCaseContent(Long userId, Long casecontentid);
+
+    ResponseVo updateCaseContent(long parseLong, CaseContent caseContent);
+
+    ResponseVo selectAll(String userId);
     ResponseVo getCaseContent(@Param("token") String token);
 
 //    ResponseVo getsaveCard(@PathVariable("caseId") Integer caseId);

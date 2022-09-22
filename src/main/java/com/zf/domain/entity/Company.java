@@ -3,9 +3,13 @@ package com.zf.domain.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * 公司表
@@ -18,11 +22,13 @@ public class Company implements Serializable {
     /**
      * 公司Id 公司id
      */
+    @TableId
     private Long id;
 
     /**
      * 公司名称 公司名称
      */
+    @NotBlank(message = "公司名称不能为空")
     private String company;
 
     /**
@@ -48,6 +54,7 @@ public class Company implements Serializable {
     /**
      * 是否删除 删除标志（0代表未删除，1代表已删除）
      */
+    @TableLogic
     private Integer delFlag;
 
     /**

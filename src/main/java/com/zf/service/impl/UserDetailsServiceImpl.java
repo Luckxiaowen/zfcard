@@ -28,10 +28,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String phoneNumber) throws UsernameNotFoundException {
         //TODO 查询用户信息
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysUser::getUsername,username);
+        queryWrapper.eq(SysUser::getPhonenumber,phoneNumber);
         SysUser sysUser = sysUserMapper.selectOne(queryWrapper);
         //TODO 判断如果为空
         if (Objects.isNull(sysUser)) {
