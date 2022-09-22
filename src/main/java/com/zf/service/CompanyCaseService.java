@@ -4,6 +4,9 @@ import com.zf.domain.entity.CompanyCase;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zf.domain.vo.ResponseVo;
 
+import com.zf.domain.vo.ResponseVo;
+import org.apache.ibatis.annotations.Param;
+
 /**
 * @author Amireux
 * @description 针对表【company_case(公司案列分类表)】的数据库操作Service
@@ -18,4 +21,5 @@ public interface CompanyCaseService extends IService<CompanyCase> {
     ResponseVo updateCompanyCase(String userId, CompanyCase companyCase);
 
     ResponseVo selectAll(String userId);
+    ResponseVo getcaseNames(@Param("token") String token);
 }

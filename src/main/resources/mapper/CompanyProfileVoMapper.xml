@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zf.mapper.CompanyProfileVoMapper">
+
+    <resultMap id="BaseResultMap" type="com.zf.domain.vo.CompanyProfileVo">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="infoName" column="info_name" jdbcType="VARCHAR"/>
+        <result property="infoContent" column="info_content" jdbcType="VARCHAR"/>
+        <result property="companyId" column="company_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="companyProfile" resultMap="BaseResultMap">
+        select id,info_name,info_content,company_id
+        from company_info
+        where company_id = #{companyId}
+    </select>
+
+
+</mapper>

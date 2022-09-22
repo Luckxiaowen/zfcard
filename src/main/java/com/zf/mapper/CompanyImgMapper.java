@@ -3,6 +3,8 @@ package com.zf.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zf.domain.entity.CompanyImg;
+import com.zf.domain.vo.ResponseVo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Repository;
 */
 @Repository
 public interface CompanyImgMapper extends BaseMapper<CompanyImg> {
+
 
 
 }
