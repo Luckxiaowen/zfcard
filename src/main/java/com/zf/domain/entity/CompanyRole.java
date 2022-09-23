@@ -39,17 +39,21 @@ public class CompanyRole {
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private Date createTime;
 
+    @ApiModelProperty(value = "公司Id",dataType = "long")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
-
+    @ApiModelProperty(value = "创建人",dataType = "long")
     private Integer createBy;
 
+    @ApiModelProperty(value = "更新人",dataType = "long")
     private Integer updateBy;
 
+    @ApiModelProperty(value = "删除标志（0代表未删除，1代表已删除）",dataType = "Integer")
     @TableLogic
     private Integer delFlag;
 
+    @ApiModelProperty(value = "角色列表",dataType = "List")
     @TableField(exist = false)
     private List<CompanyRole> children;
 

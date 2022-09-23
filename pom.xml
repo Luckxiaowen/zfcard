@@ -46,7 +46,10 @@
             <version>6.1.0.Final</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>mysql</groupId>

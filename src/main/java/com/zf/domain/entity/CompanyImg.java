@@ -3,6 +3,7 @@ package com.zf.domain.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,41 +19,50 @@ public class CompanyImg implements Serializable {
     /**
      * id 图片Id
      */
+    @ApiModelProperty(value = "图片Id",dataType = "long")
     private Long id;
 
     /**
      * 公司Id 所属公司Id
      */
+    @ApiModelProperty(value = "所属公司Id",dataType = "companyId")
     private Long companyId;
 
     /**
      * 图片路径 图片路径
      */
+    @ApiModelProperty(value = "图片路径",dataType = "String")
     private String imgPath;
 
     /**
      * 是否删除 删除标志（0代表未删除，1代表已删除）
      */
+    @ApiModelProperty(value = "删除标志（0代表未删除，1代表已删除）",dataType = "Integer")
     private Integer delFalg;
 
     /**
      * 创建人 创建人
      */
+
+    @ApiModelProperty(value = "创建人",dataType = "Long")
     private Long createBy;
 
     /**
      * 创建时间 创建时间
      */
+    @ApiModelProperty(value = "创建时间",dataType = "Date")
     private Date createTime;
 
     /**
      * 更新人 更新人
      */
+    @ApiModelProperty(value = "更新人",dataType = "Long")
     private Long updateBy;
 
     /**
      * 更新时间 更新时间
      */
+    @ApiModelProperty(value = "更新时间",dataType = "Date")
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;

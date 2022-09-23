@@ -48,4 +48,9 @@ public class ManageUserController {
         return sysUserService.selectAll();
     }
 
+    @ApiOperation(value = "条件查询员工接口")
+    @GetMapping("/search-user")
+    public ResponseVo searchByConditions(@RequestHeader("token")String token,@RequestParam("conditions")String conditions) throws JsonProcessingException {
+        return sysUserService.selectByConditions(conditions);
+    }
 }
