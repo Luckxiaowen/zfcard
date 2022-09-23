@@ -53,5 +53,4 @@ public class ManageUserController {
     public ResponseVo searchByConditions(@RequestHeader("token")String token,@RequestParam("conditions")String conditions) throws JsonProcessingException {
         return sysUserService.selectByConditions(conditions);
     }
-
 }

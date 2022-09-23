@@ -77,7 +77,6 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
                 } else {
                     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "当前公司已有相同文章标题的文章，请修改标题");
                 }
-
             }
         }
     }

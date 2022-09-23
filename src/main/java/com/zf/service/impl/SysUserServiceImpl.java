@@ -301,4 +301,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return null;
     }
 
+    @Override
+    public ResponseVo updateUserOpenId(String userId, String openId) {
+        long uId = Long.parseLong(userId);
+        SysUser sysUser = sysUserMapper.selectById(uId);
+        sysUser.setOpenedId(openId);
+        int i = sysUserMapper.updateById(sysUser);
+        if (i>0){
+            return ResponseVo.okResult("绑定成功");
+        }else{
+            return ResponseVo.okResult("绑定失败");
+        }
+    }
 }

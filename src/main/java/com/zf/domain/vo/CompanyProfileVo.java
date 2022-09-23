@@ -8,7 +8,7 @@ public class CompanyProfileVo {
 
     @ApiModelProperty(value = "id",dataType = "long")
     private Long id;
-    @ApiModelProperty(value = "公司Id",dataType = "long")
+    @ApiModelProperty(value = "公司Id",dataType = "String")
     private String infoName;
     @ApiModelProperty(value = "公司Id",dataType = "long")
     private String infoContent;
