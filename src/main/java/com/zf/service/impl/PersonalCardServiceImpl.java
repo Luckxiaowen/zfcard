@@ -59,7 +59,7 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
       e.printStackTrace();
     }
 
-    PersonalCardVo personalCardVo = personalCardById(id);
+    PersonalCardVo personalCardVo = personalCardMapper.selectPersonalCardById(id);
     int roleId = personalCardVo.getRoleId();
     int companyId = personalCardVo.getCompanyId();
 
