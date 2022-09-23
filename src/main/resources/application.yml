@@ -21,3 +21,9 @@ mybatis-plus:
 logging:
   level:
     io.swagger.models.parameters.AbstractSerializableParameter: error
+
+oss:
+  accessKey: c8rBYMwnVssCCEnfMiHZx6Jo0g-_630xIZMDi2Nj
+  secretKey: 4f4_3Pb0svNkbcGYHzBD6o1tIMZllSA7cxS7qhFz
+  bucket: wen-vue-blog
+  url: img.wenstudy.top/

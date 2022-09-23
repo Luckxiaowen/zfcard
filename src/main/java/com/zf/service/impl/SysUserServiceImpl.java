@@ -295,4 +295,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg());
   }
 
+    @Override
+    public ResponseVo selectByConditions(String conditions) {
+        return null;
+    }
+
 }
