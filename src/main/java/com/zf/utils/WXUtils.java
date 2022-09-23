@@ -17,6 +17,8 @@ import java.util.Map;
 public class WXUtils {
 
     /**
+     * 吴松：wx2026ed61968ede2f   7c76c90ed8a4390220f7fd73bb6c7654
+     *
      * WXLogin:
      * <p>
      * APP_ID: wxafcffece6679f01a
@@ -25,8 +27,8 @@ public class WXUtils {
      * GRANT_TYPE: authorization_code
      */
 
-    private static final String APP_ID = "wx2026ed61968ede2f";
-    private static final String SECRET = "7c76c90ed8a4390220f7fd73bb6c7654";
+    private static final String APP_ID = "wxafcffece6679f01a";
+    private static final String SECRET = "83b297e0e7412cf259b6e0346ed5d1f6";
     private static final String JS_CODE = "023G9A00018tyO1pFT300RY3XL3G9A03";
     private static final String GRANT_TYPE = "authorization_code";
 
