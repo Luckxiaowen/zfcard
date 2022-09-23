@@ -1,6 +1,7 @@
 package com.zf.domain.vo;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigInteger;
@@ -15,14 +16,15 @@ import java.math.BigInteger;
 @Data
 public class PersonalCardVo {
 
+  @ApiModelProperty(value = "公司Id",dataType = "long")
   private String username;
-
+  @ApiModelProperty(value = "公司Id",dataType = "long")
   private int companyId;
-
+  @ApiModelProperty(value = "公司Id",dataType = "long")
   private int roleId;
-
+  @ApiModelProperty(value = "公司Id",dataType = "long")
   private BigInteger phoneNumber;
-
+  @ApiModelProperty(value = "公司Id",dataType = "long")
   private String email;
 
 

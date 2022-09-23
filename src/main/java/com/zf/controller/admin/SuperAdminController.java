@@ -37,6 +37,7 @@ public class SuperAdminController {
     @ApiOperation(value = "删除公司接口")
     @DeleteMapping("/delete-company/{companyid}")
     public ResponseVo delete(@RequestHeader("token") String token,@PathVariable("companyid") Long companyid) throws Exception {
+
         return companyService.delete(companyid,JwtUtil.parseJWT(token).getSubject());
     }
 
