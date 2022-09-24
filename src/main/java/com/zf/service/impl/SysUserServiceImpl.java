@@ -54,9 +54,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
-
-
     @Override
     public ResponseVo add(SysUser sysUser,String updateId) {
         if ("".equals(sysUser.getUsername()) || sysUser.getUsername() == null) {
@@ -202,7 +199,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         queryWrapper.eq(SysUser::getDelFlag,"0");
         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(), sysUserMapper.selectList(queryWrapper));
     }
-
 
   @Override
   public ResponseVo selectUserInfo(String token) {

@@ -137,4 +137,16 @@ public class LoginServiceImpl implements LoginService {
             }
         }
     }
+
+    @Override
+    public ResponseVo getWxOpenId(String code) throws IOException {
+        Map<String, Object> resultMap = WXUtils.getOpenId(code);
+        String openId = (String) resultMap.get("openId");
+        if (StringUtils.isEmpty(openId)){
+            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "未获取到用户openID");
+        }else{
+            return ResponseVo.okResult(resultMap);
+        }
+
+    }
 }
