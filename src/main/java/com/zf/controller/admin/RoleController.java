@@ -17,7 +17,7 @@ import java.util.List;
  * @Date 2022/9/17 15:36
  */
 
-@Api(value = "权限角色接口管理", tags = "权限角色接口管理")
+@Api(value = "权限角色接口管理", tags = "PC权限角色接口管理")
 @RestController
 @RequestMapping("/admin")
 public class RoleController {

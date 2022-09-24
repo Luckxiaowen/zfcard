@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Api(value = "管理公司个性化简介模块", tags = "分公司个性化管理接口")
+@Api(value = "管理公司个性化简介模块", tags = "PC分公司个性化管理接口")
 @RequestMapping("/admin")
 public class ManageComInfoController {
     /**

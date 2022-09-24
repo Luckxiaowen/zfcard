@@ -15,6 +15,8 @@ import com.zf.domain.vo.LoginUser;
 import com.zf.domain.vo.PersonalCardVo;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
+import com.zf.exception.GlobalExceptionHandler;
+import com.zf.exception.SystemException;
 import com.zf.mapper.*;
 import com.zf.service.PersonalCardService;
 import com.zf.service.SysUserService;
@@ -26,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -50,9 +53,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-
-
 
     @Override
     public ResponseVo add(SysUser sysUser,String updateId) {
@@ -200,7 +200,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(), sysUserMapper.selectList(queryWrapper));
     }
 
-
   @Override
   public ResponseVo selectUserInfo(String token) {
 
@@ -297,7 +296,24 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public ResponseVo selectByConditions(String conditions) {
+
         return null;
     }
 
+    @Override
+    public ResponseVo updateUserOpenId(String userId, String openId) {
+        long uId = Long.parseLong(userId);
+        SysUser sysUser = sysUserMapper.selectById(uId);
+        if (StringUtils.isEmpty(sysUser.getOpenedId())){
+            sysUser.setOpenedId(openId);
+            int i = sysUserMapper.updateById(sysUser);
+            if (i>0){
+                return ResponseVo.okResult("绑定成功");
+            }else{
+                return ResponseVo.okResult("绑定失败");
+            }
+        }else{
+            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"当前员已绑定微信号");
+        }
+    }
 }

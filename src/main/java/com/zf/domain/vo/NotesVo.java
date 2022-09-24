@@ -9,28 +9,29 @@ import java.util.Date;
 @Data
 public class NotesVo {
 
+    @ApiModelProperty(value = "公司Id",dataType = "long")
     private Integer id;
-
+    @ApiModelProperty(value = "公司Id",dataType = "long")
     private Integer userId;
-
+    @ApiModelProperty(value = "公司Id",dataType = "long")
     private String userName;
-
+    @ApiModelProperty(value = "公司Id",dataType = "long")
     private String phoneNumber;
-
+    @ApiModelProperty(value = "公司Id",dataType = "long")
     private String avatar;
-
+    @ApiModelProperty(value = "公司Id",dataType = "long")
     private String clientName;
-
+    @ApiModelProperty(value = "公司Id",dataType = "long")
     private Integer replyId;
-
+    @ApiModelProperty(value = "公司Id",dataType = "long")
     private String notesContent;
-
+    @ApiModelProperty(value = "公司Id",dataType = "long")
     private String del_flag;
-
+    @ApiModelProperty(value = "公司Id",dataType = "long")
     private Integer isPublic;
-
+    @ApiModelProperty(value = "公司Id",dataType = "long")
     private Integer createBy;
-
+    @ApiModelProperty(value = "公司Id",dataType = "long")
     private Date createTime;
 
     public NotesVo(Integer userId, String userName, String phoneNumber, String avatar, String clientName, Integer replyId, String notesContent, String del_flag, Integer isPublic, Integer createBy, Date createTime) {

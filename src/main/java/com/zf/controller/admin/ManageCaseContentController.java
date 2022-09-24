@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin")
-@Api(value = "管理公司个性化简介模块", tags = "个公司案列详情接口")
+@Api(value = "管理公司个性化简介模块", tags = "PC个公司案列详情接口")
 public class ManageCaseContentController {
 
     @Autowired

@@ -45,6 +45,9 @@ public interface SysUserService extends IService<SysUser> {
    */
   ResponseVo updateInfo(String token,String info);
 
-
     ResponseVo selectByConditions(String conditions);
+
+    ResponseVo updateUserOpenId(String userId, String openId);
+
+
 }

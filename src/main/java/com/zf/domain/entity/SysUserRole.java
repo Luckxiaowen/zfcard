@@ -3,6 +3,7 @@ package com.zf.domain.entity;
 import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,11 +19,13 @@ public class SysUserRole implements Serializable {
     /**
      * 用户id
      */
+    @ApiModelProperty(value = "用户id",dataType = "long")
     private Long userId;
 
     /**
      * 角色id
      */
+    @ApiModelProperty(value = "角色id",dataType = "long")
     private Long roleId;
 
     private static final long serialVersionUID = 1L;

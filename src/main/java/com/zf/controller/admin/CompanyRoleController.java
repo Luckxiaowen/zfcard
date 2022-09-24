@@ -15,7 +15,7 @@ import javax.validation.Valid;
  * @Author wenqin
  * @Date 2022/9/21 10:38
  */
-@Api(value = "公司角色接口管理", tags = "公司角色接口管理")
+@Api(value = "公司角色接口管理", tags = "PC公司角色接口管理")
 @RestController
 @RequestMapping("/admin")
 public class CompanyRoleController {
