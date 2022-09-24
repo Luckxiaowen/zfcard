@@ -17,5 +17,10 @@ import java.util.List;
 @Repository
 public interface PersonalCardMapper extends BaseMapper<PersonalCardVo> {
 
+  /**
+   * 查询个人名片
+   * @param id
+   * @return
+   */
   PersonalCardVo selectPersonalCardById(@Param("id") Integer id);
 }
