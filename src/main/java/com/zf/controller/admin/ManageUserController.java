@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Api(value = "提供超级管理员以及管理员对公司员工信息的增删改查", tags = "员工信息管理接口")
+@Api(value = "提供超级管理员以及管理员对公司员工信息的增删改查", tags = "PC员工信息管理接口")
 @RequestMapping("/admin")
 public class ManageUserController {
 
