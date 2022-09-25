@@ -93,6 +93,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                                                     sysUser.setUpdateBy(Long.parseLong(updateId));
                                                     sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
                                                     if (sysUserMapper.insert(sysUser) > 0) {
+
                                                         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "添加成功");
                                                     } else {
                                                         return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "添加失败，请重试");
@@ -302,18 +303,28 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public ResponseVo updateUserOpenId(String userId, String openId) {
+
+
         long uId = Long.parseLong(userId);
-        SysUser sysUser = sysUserMapper.selectById(uId);
-        if (StringUtils.isEmpty(sysUser.getOpenedId())){
-            sysUser.setOpenedId(openId);
-            int i = sysUserMapper.updateById(sysUser);
-            if (i>0){
-                return ResponseVo.okResult("绑定成功");
+        SysUser selectUser = sysUserMapper.selectById(uId);
+        if (StringUtils.isEmpty(selectUser.getOpenedId())){
+            LambdaQueryWrapper<SysUser>queryWrapper=new LambdaQueryWrapper<>();
+            queryWrapper.eq(SysUser::getOpenedId,openId);
+            SysUser sysUser = sysUserMapper.selectOne(queryWrapper);
+            if (Objects.isNull(sysUser)){
+                selectUser.setOpenedId(openId);
+                int i = sysUserMapper.updateById(selectUser);
+                if (i>0){
+                    return ResponseVo.okResult("绑定成功");
+                }else{
+                    return ResponseVo.okResult("绑定失败");
+                }
             }else{
-                return ResponseVo.okResult("绑定失败");
+                return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"该微信号已绑定员工账号，请直接登录");
             }
         }else{
             return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"当前员已绑定微信号");
         }
+
     }
 }

@@ -166,7 +166,6 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
 
 //        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg(),caseContent);
 
-
 //        List<CaseContent> caseContent = caseContentMapper.getCaseContent(companyid);
         return ResponseVo.okResult(caseContent);
     }
