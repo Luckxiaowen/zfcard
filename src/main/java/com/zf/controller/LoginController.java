@@ -45,10 +45,15 @@ public class LoginController {
         return loginService.wxAuthLogin(code);
     }
 
-    @ApiOperation(value = "用户绑定openId")
+    @ApiOperation(value = "员工绑定openId接口")
     @PutMapping("/updateOpenId")
     public ResponseVo addOpenId(@RequestHeader("token")String token ,@RequestBody SysUser sysUser) throws Exception {
         return   sysUserService.updateUserOpenId(JwtUtil.parseJWT(token).getSubject(),sysUser.getOpenedId());
+    }
+    @ApiOperation(value = "获取openId接口")
+    @GetMapping("/getopenid/{code}")
+    public ResponseVo getOpenId(@PathVariable("code")String code) throws IOException {
+        return loginService.getWxOpenId(code);
     }
 
     @ApiOperation(value = "邮箱验证码获取接口")

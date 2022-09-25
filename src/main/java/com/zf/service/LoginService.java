@@ -13,4 +13,6 @@ public interface LoginService {
     ResponseVo getCode(String email);
 
     ResponseVo wxAuthLogin(String code) throws IOException;
+
+    ResponseVo getWxOpenId(String code) throws IOException;
 }

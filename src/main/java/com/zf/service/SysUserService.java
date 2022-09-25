@@ -6,6 +6,9 @@ import com.zf.domain.vo.ResponseVo;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+
 /**
  * @author Amireux
  * @description 针对表【sys_user(用户表)】的数据库操作Service
@@ -52,4 +55,8 @@ public interface SysUserService extends IService<SysUser> {
     ResponseVo selectByConditions(String conditions);
 
     ResponseVo updateUserOpenId(String userId, String openId);
+
+
+
+     ResponseVo updateUserWxCode(String token, HttpServletRequest request, MultipartFile file);
 }

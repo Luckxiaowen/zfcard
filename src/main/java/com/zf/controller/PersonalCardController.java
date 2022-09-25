@@ -48,9 +48,9 @@ public class PersonalCardController {
 
 
   @ApiOperation(value = "名片接口")
-  @GetMapping("/personal-card")
-  public ResponseVo pCard(@RequestHeader("token") String token){
-    return personalCardService.selectPersonalCard(token);
+  @GetMapping("/personal-card/{id}")
+  public ResponseVo pCard(@PathVariable("id")String id){
+    return personalCardService.selectPersonalCard(id);
   }
 
   @ApiOperation("保存名片")

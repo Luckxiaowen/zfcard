@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@Api(value = "提供超级管理员对公司的增删改查", tags = "公司管理")
+@Api(value = "提供超级管理员对公司的增删改查", tags = "PC公司管理")
 @RequestMapping("/superadmin")
 public class SuperAdminController {
 

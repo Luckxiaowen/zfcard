@@ -3,6 +3,7 @@ package com.zf.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zf.domain.entity.Client;
+import com.zf.domain.vo.ResponseVo;
 
 /**
 * @author Amireux
@@ -11,4 +12,5 @@ import com.zf.domain.entity.Client;
 */
 public interface ClientService extends IService<Client> {
 
+    ResponseVo addClient(Client client);
 }

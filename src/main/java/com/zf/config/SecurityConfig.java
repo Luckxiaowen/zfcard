@@ -56,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 // 允许匿名访问
-//                .antMatchers("/admin/**").hasAnyRole("super_admin")
+                .antMatchers("/user/personal-card/**").permitAll()
                 .anyRequest().permitAll();
 
 
