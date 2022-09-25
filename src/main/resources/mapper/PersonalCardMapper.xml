@@ -4,23 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zf.mapper.PersonalCardMapper">
 
-    <resultMap id="BaseResultMap" type="com.zf.domain.vo.PersonalCardVo">
 
-      <id column="roleId" jdbcType="INTEGER" property="roleId" />
-            <result property="username" column="username" jdbcType="VARCHAR"/>
-            <result property="companyId" column="companyId" jdbcType="BIGINT"/>
-            <result property="phoneNumber" column="phoneNumber" jdbcType="BIGINT"/>
-            <result property="email" column="email" jdbcType="VARCHAR"/>
-    </resultMap>
-
-    <sql id="Base_Column_List">
-      id,username,companyid,roleid,phonenumber,email
-    </sql>
-
-  <select id="selectPersonalCardById" resultMap="BaseResultMap">
-    SELECT distinct s.username,c.companyid,c.roleid,s.phonenumber,s.email
+  <select id="selectPersonalCardById" resultType="com.zf.domain.vo.PersonalCardVo">
+    SELECT distinct s.username,c.company_id,sur.role_id,s.phonenumber,s.email
     FROM sys_user s
-           LEFT JOIN company_role c on c.companyid=s.companyid
+           LEFT JOIN company_role c on c.company_id=s.companyid
            LEFT JOIN sys_user_role sur ON sur.user_id=s.id
     WHERE s.id=#{id,jdbcType=INTEGER}
   </select>

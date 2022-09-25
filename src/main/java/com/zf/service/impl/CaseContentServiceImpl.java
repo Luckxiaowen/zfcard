@@ -77,6 +77,7 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
                 } else {
                     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "当前公司已有相同文章标题的文章，请修改标题");
                 }
+
             }
         }
     }
@@ -145,13 +146,13 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
         }
     }
 
-    @Override
-    public ResponseVo selectAll(String userId) {
-        return null;
-    }
+  @Override
+  public ResponseVo selectAll(String userId) {
+    return null;
+  }
 
 
-    @Override
+  @Override
     public ResponseVo getCaseContent(@Param("token") String token) {
         Integer userid = null;
         try {
@@ -165,6 +166,7 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
 //        ResponseVo caseContent = caseContentMapper.getCaseContent(companyid);
 
 //        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg(),caseContent);
+
 
 //        List<CaseContent> caseContent = caseContentMapper.getCaseContent(companyid);
         return ResponseVo.okResult(caseContent);
