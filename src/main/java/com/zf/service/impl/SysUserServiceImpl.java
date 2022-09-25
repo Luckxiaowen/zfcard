@@ -3,42 +3,29 @@ package com.zf.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zf.domain.entity.Company;
-import com.zf.domain.entity.ExposureTotal;
-import com.zf.domain.entity.SysRole;
 import com.zf.domain.entity.SysUser;
-import com.zf.domain.vo.LoginUser;
-import com.zf.domain.vo.PersonalCardVo;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
-import com.zf.exception.GlobalExceptionHandler;
-import com.zf.exception.SystemException;
 import com.zf.mapper.*;
-import com.zf.service.PersonalCardService;
 import com.zf.service.SysUserService;
 import com.zf.utils.JwtUtil;
+import com.zf.utils.UpLoadUtil;
 import com.zf.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Amireux
@@ -53,6 +40,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
 
     @Override
     public ResponseVo add(SysUser sysUser,String updateId) {
@@ -93,7 +81,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                                                     sysUser.setUpdateBy(Long.parseLong(updateId));
                                                     sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
                                                     if (sysUserMapper.insert(sysUser) > 0) {
-
                                                         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "添加成功");
                                                     } else {
                                                         return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "添加失败，请重试");
@@ -240,10 +227,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
       String path = null;
       try {
         path = new File(ResourceUtils.getURL("classpath:").getPath()).getAbsolutePath();
+          System.out.println("path = " + path);
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
       String pathName = path +  File.separator + "resources" + File.separator +"userImg";
+        System.out.println("pathName = " + pathName);
       File file = new File(pathName);
       //判断photoPath所对应路径是否存在
       if (!file.exists()) {
@@ -254,6 +243,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
       photoPath = "userImg/" + fileName;
 
       String finalPath = pathName + File.separator + fileName;
+        System.out.println("finalPath = " + finalPath);
       //上传文件
       try {
         photo.transferTo(new File(finalPath));
@@ -276,6 +266,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg());
   }
+
+
 
   @Override
   public ResponseVo updateInfo(String token, String info) {
@@ -307,6 +299,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         long uId = Long.parseLong(userId);
         SysUser selectUser = sysUserMapper.selectById(uId);
+        Map<String,Object>map=new HashMap<>();
         if (StringUtils.isEmpty(selectUser.getOpenedId())){
             LambdaQueryWrapper<SysUser>queryWrapper=new LambdaQueryWrapper<>();
             queryWrapper.eq(SysUser::getOpenedId,openId);
@@ -315,16 +308,41 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 selectUser.setOpenedId(openId);
                 int i = sysUserMapper.updateById(selectUser);
                 if (i>0){
-                    return ResponseVo.okResult("绑定成功");
+                    map.put("userId",selectUser.getId());
+                    return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "绑定成功!",map);
                 }else{
+
                     return ResponseVo.okResult("绑定失败");
                 }
             }else{
-                return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"该微信号已绑定员工账号，请直接登录");
+                map.put("userId",selectUser.getId());
+                return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"该微信号已绑定员工账号，请直接登录",  map.put("userId",selectUser.getId()));
             }
         }else{
-            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"当前员已绑定微信号");
+            map.put("userId",selectUser.getId());
+            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"当前员已绑定微信号",  map.put("userId",selectUser.getId()));
         }
 
+    }
+
+
+    @Override
+    public ResponseVo updateUserWxCode(String token,HttpServletRequest request, MultipartFile file) {
+        HashMap map=new HashMap();
+        if(!file.isEmpty()){
+            UUID id=UUID.randomUUID();//生成文件名
+            try {
+                //参数就是图片保存在服务器的本地地址
+                file.transferTo(new File("/www/myproject/image/"+id+".png"));
+                map.put("url",request.getServerName()+":"+request.getServerPort()+"/images/"+id+".png");
+              return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "上传成功",map);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            map.put("url","上传失败");
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "上传失败",map);
+        }
+        map.put("url","上传失败");
+        return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "上传失败",map);
     }
 }

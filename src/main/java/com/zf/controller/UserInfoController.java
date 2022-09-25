@@ -35,7 +35,7 @@ public class UserInfoController {
         Integer id = Math.toIntExact(loginUser.getSysUser().getId());
         //        将查询条件放入LambdaQueryWrapper中
         LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.like(SysUser::getId,id);
+        lambdaQueryWrapper.eq(SysUser::getId,id);
 
         SysUser sysUser = sysUserMapper.selectOne(lambdaQueryWrapper);
 
@@ -50,14 +50,13 @@ public class UserInfoController {
     @ApiOperation(value = "个人职业照接口")
     @GetMapping("/professional-photo")
     public ResponseVo ProPhoto(@RequestHeader("token")String token){
-
 //        获取token
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         Integer id = Math.toIntExact(loginUser.getSysUser().getId());
 //        将查询条件放入LambdaQueryWrapper中
         LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.like(SysUser::getId,id);
+        lambdaQueryWrapper.eq(SysUser::getId,id);
         SysUser sysUser = sysUserMapper.selectOne(lambdaQueryWrapper);
         String avatar = sysUser.getAvatar();
         HashMap<String, String> hashMap = new HashMap<>();

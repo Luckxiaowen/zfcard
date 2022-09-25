@@ -78,6 +78,9 @@ public class LoginServiceImpl implements LoginService {
         //获取动态菜单
         List<MenuVo> sysMenus = menuService.getSysMenuByUserId(Long.valueOf(userId));
         map.put("menu", sysMenus);
+        map.put("username",loginUser.getSysUser().getUsername());
+        map.put("phoneNumber",loginUser.getSysUser().getPhonenumber());
+        map.put("userId",loginUser.getSysUser().getId());
         //TODO 把完整的用户信息存入到redis userid作为key
         redisCache.setCacheObject("login:" + userId, loginUser);
         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(), map);
@@ -133,6 +136,9 @@ public class LoginServiceImpl implements LoginService {
                 LoginUser loginUser =new LoginUser();
                 loginUser.setPermissions(list);
                 loginUser.setSysUser(sysUser);
+                map.put("username",loginUser.getSysUser().getUsername());
+                map.put("phoneNumber",loginUser.getSysUser().getPhonenumber());
+                map.put("userId",loginUser.getSysUser().getId());
                 redisCache.setCacheObject("login:" + id, loginUser);
                 return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(), map);
             }
