@@ -75,9 +75,11 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
             int roleId = personalCardVo.getRoleId();
             int companyId = personalCardVo.getCompanyId();
 
+
             LambdaQueryWrapper<ExposureTotal> query = new LambdaQueryWrapper<>();
             query.eq(ExposureTotal::getCreateBy, id);
             ExposureTotal total = exposureTotalMapper.selectOne(query);
+
 
             if (total == null) {
 
@@ -92,6 +94,7 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
             LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(SysRole::getId, roleId);
             SysRole sysRole = sysRoleMapper.selectOne(queryWrapper);
+            
             String roleName = sysRole.getName();
 
             LambdaQueryWrapper<Company> companyQueryWrapper = new LambdaQueryWrapper<>();
@@ -114,7 +117,7 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
             map.put("phoneNumber", phoneNumber);
             map.put("weixinCode",weixinCode);
             map.put("telWeixin",telWeixin);
-
+            
             return ResponseVo.okResult(map);
         }
 

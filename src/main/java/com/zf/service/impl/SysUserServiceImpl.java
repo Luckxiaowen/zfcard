@@ -266,6 +266,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public ResponseVo updateUserWxCode(String token,HttpServletRequest request, MultipartFile file) {
         HashMap map=new HashMap();
+        String fileName = file.getOriginalFilename();
+        String suffixName = fileName.substring(0,fileName.lastIndexOf("."));
         if(!file.isEmpty()){
             UUID id=UUID.randomUUID();//生成文件名
             try {
