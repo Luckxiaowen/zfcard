@@ -35,11 +35,11 @@ public interface SysUserService extends IService<SysUser> {
   /**
    * 修改个人职业照以及个人简介
    * @param token
-   * @param imgPath
+   * @param photo
    * @param info
    * @return
    */
-    ResponseVo updateUserPhotonAndInfo(String token, String imgPath,String info);
+    ResponseVo updateUserPhotonAndInfo(String token, MultipartFile photo,String info,HttpServletRequest request);
 
 
 
