@@ -45,7 +45,7 @@ public class ManageCaseContentController {
     @ApiOperation(value = "查询公司案列内容接口")
     @GetMapping("/list-casecontent")
     public ResponseVo listCaseContent(@RequestHeader String token) throws Exception {
-        return caseContentService.selectAll(JwtUtil.parseJWT(token).getSubject());
+        return null;
     }
 
 }
