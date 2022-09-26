@@ -25,9 +25,16 @@
     </sql>
     
     <select id="getAllRole" resultType="com.zf.domain.entity.SysRole">
-        SELECT sr.id,sr.name,sr.role_key,sr.create_time,su.username as create_user
-        FROM sys_role sr
-        LEFT JOIN sys_user su ON sr.create_by = su.id
+        SELECT
+            sr.id,
+            sr.`name`,
+            sr.create_time,
+            su.username AS create_user
+        FROM
+            sys_role sr
+                LEFT JOIN sys_user su ON sr.create_by = su.id
+        WHERE
+            sr.company_id = #{companyId}
     </select>
 
 </mapper>

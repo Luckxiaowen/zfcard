@@ -1,11 +1,13 @@
 package com.zf.controller.admin;
 
+import com.zf.domain.dto.RoleDto;
 import com.zf.domain.entity.SysRole;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.service.SysRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -26,31 +28,27 @@ public class RoleController {
 
     @ApiOperation(value = "新增权限角色")
     @PostMapping("/role")
-    @PreAuthorize("hasAnyAuthority('sys:role:add')")
-    public ResponseVo addRole(@RequestHeader("token") String token,@Valid @RequestBody SysRole role){
-        return roleService.addRole(role);
+    public ResponseVo<?> addRole(@RequestHeader("token") String token,@Valid @RequestBody RoleDto roleDto){
+        return roleService.addRole(roleDto);
     }
 
-    @ApiOperation(value = "查看所有角色")
+    @ApiOperation(value = "根据token获取公司所有角色")
     @GetMapping("/role")
-    @PreAuthorize("hasAnyAuthority('sys:role:select')")
     public ResponseVo getAllRole(@RequestHeader("token") String token){
         return roleService.getAllRole();
     }
 
     @ApiOperation(value = "更新角色")
     @PutMapping("/role")
-    @PreAuthorize("hasAnyAuthority('sys:role:update')")
-    public ResponseVo updateRole(@RequestHeader("token") String token,@Valid @RequestBody SysRole role){
-        return roleService.updateRole(role);
+    public ResponseVo updateRole(@RequestHeader("token") String token,@Validated @RequestBody RoleDto roleDto){
+        return roleService.updateRole(roleDto);
     }
 
 
     @ApiOperation(value = "根据角色ID删除角色")
-    @DeleteMapping("/role")
-    @PreAuthorize("hasAnyAuthority('sys:role:del')")
-    public ResponseVo updateRole(@RequestHeader("token") String token,@RequestBody List<Long> roleIdList){
-        return roleService.delRole(roleIdList);
+    @DeleteMapping("/role/{id}")
+    public ResponseVo updateRole(@RequestHeader("token") String token,@PathVariable Long id){
+        return roleService.delRole(id);
     }
 
 }
