@@ -15,6 +15,7 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -43,8 +44,8 @@ public class PersonalInfo {
 
   @ApiOperation("职业照上传以及个人简介修改")
   @PutMapping("/updatePhoto")
-  public ResponseVo updatePhotoAndInfo (@RequestHeader("token") String token,@RequestParam("imgPath") String imgPath,@RequestParam("info") String info){
-    return sysUserService.updateUserPhotonAndInfo(token, imgPath,info);
+  public ResponseVo updatePhotoAndInfo (@RequestHeader("token") String token, @RequestPart("photo") MultipartFile photo, @RequestParam("info") String info, HttpServletRequest request){
+    return sysUserService.updateUserPhotonAndInfo(token, photo,info,request);
   }
 
 }

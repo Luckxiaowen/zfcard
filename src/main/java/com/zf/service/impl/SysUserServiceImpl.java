@@ -17,13 +17,11 @@ import com.zf.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -212,7 +210,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
 
   @Override
-  public ResponseVo updateUserPhotonAndInfo(String token, String info,String imgPath) {
+  public ResponseVo updateUserPhotonAndInfo(String token, MultipartFile photo, String info,HttpServletRequest request) {
+
 
     Integer id = null;
     try {
@@ -221,12 +220,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
       e.printStackTrace();
     }
 
-    LambdaUpdateWrapper<SysUser> updateWrapper = new LambdaUpdateWrapper<>();
-    updateWrapper.eq(SysUser::getId,id);
-    updateWrapper.set(SysUser::getInfo,info);
-    sysUserMapper.update(null,updateWrapper);
+    HashMap map = UpLoadUtil.updateUserWxCode(token, request, photo);
 
-    return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg());
+    String url = (String) map.get("url");
+
+    SysUser sysUser = new SysUser();
+
+    sysUser.setId(Long.valueOf(id));
+    sysUser.setAvatar(url);
+    sysUser.setInfo(info);
+
+    sysUserMapper.updateById(sysUser);
+
+    return ResponseVo.okResult(map);
   }
 
 
