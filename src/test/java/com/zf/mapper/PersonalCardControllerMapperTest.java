@@ -15,6 +15,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 
 import static org.junit.Assert.*;
 
@@ -39,7 +44,7 @@ public class PersonalCardControllerMapperTest {
 
   @Test
   public void selectPersonalCardById() {
-    PersonalCardVo personalCard = personalCardMapper.selectPersonalCardById(1);
+    PersonalCardVo personalCard = personalCardMapper.selectPersonalCardById(1L);
     System.out.println(personalCard);
   }
 

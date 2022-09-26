@@ -49,7 +49,7 @@ public class PersonalCardController {
 
   @ApiOperation(value = "名片接口")
   @GetMapping("/personal-card")
-  public ResponseVo pCard(@RequestHeader("token") String token){
+  public ResponseVo pCard(@RequestHeader("token") String token) throws Exception {
     return personalCardService.selectPersonalCard(token);
   }
 

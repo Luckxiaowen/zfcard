@@ -9,6 +9,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @Api(value = "提供超级管理员以及管理员对公司员工信息的增删改查", tags = "员工信息管理接口")
@@ -48,9 +51,10 @@ public class ManageUserController {
         return sysUserService.selectAll();
     }
 
-    @ApiOperation(value = "条件查询员工接口")
-    @GetMapping("/search-user")
-    public ResponseVo searchByConditions(@RequestHeader("token")String token,@RequestParam("conditions")String conditions) throws JsonProcessingException {
-        return sysUserService.selectByConditions(conditions);
-    }
+
+    @ApiOperation(value = "添加员工微信二维码")
+    @PostMapping("/upload/file")
+    public ResponseVo uploadUserWxCode(@RequestHeader("token")String token,HttpServletRequest request,@RequestParam("file")MultipartFile file){
+        return sysUserService.updateUserWxCode(token,request,file);
+}
 }

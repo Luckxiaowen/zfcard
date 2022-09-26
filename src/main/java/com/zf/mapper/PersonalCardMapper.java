@@ -22,5 +22,5 @@ public interface PersonalCardMapper extends BaseMapper<PersonalCardVo> {
    * @param id
    * @return
    */
-  PersonalCardVo selectPersonalCardById(@Param("id") Integer id);
+  PersonalCardVo selectPersonalCardById(@Param("id") Long id);
 }

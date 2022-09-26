@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(value = "员工管理", tags = "员工管理")
+@Api(value = "客户管理", tags = "客户管理客户管理接口")
 @RestController
 public class ManageClientController {
 
@@ -18,7 +18,7 @@ public class ManageClientController {
     private ClientService clientService;
 
     @PostMapping("/addclient")
-    @ApiOperation(value = "添加员工接口")
+    @ApiOperation(value = "添加客户接口")
     public ResponseVo addClient(@RequestBody Client client){
         return clientService.addClient(client);
     }
