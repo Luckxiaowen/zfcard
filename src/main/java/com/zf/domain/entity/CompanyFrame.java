@@ -18,9 +18,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyRole {
+public class CompanyFrame {
 
     @TableId
+    @ApiModelProperty(value = "部门id名称")
     private Integer id;
 
     /**
@@ -28,11 +29,12 @@ public class CompanyRole {
      */
     private Long companyId;
 
-    @ApiModelProperty(value = "角色职位名称", required = true)
-    @NotBlank(message = "角色名不能为空哦!")
+    @ApiModelProperty(value = "部门名称", required = true)
+    @NotBlank(message = "部门名不能为空哦!")
     private String roleName;
 
-    @ApiModelProperty(value = "该角色的父ID,有就填，没就不填")
+    @ApiModelProperty(value = "该部门的父ID",required = true)
+    @NotNull(message = "部分父ID不能为空")
     private Integer parentId;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -55,6 +57,6 @@ public class CompanyRole {
 
     @ApiModelProperty(value = "角色列表",dataType = "List")
     @TableField(exist = false)
-    private List<CompanyRole> children;
+    private List<CompanyFrame> children;
 
 }

@@ -1,21 +1,29 @@
 package com.zf.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zf.domain.dto.RoleDto;
 import com.zf.domain.entity.SysRole;
+import com.zf.domain.entity.SysRoleMenu;
 import com.zf.domain.vo.LoginUser;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.exception.SystemException;
 import com.zf.mapper.SysRoleMapper;
+import com.zf.service.SysRoleMenuService;
 import com.zf.service.SysRoleService;
+import com.zf.utils.UserUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -31,40 +39,100 @@ implements SysRoleService {
     @Resource
     private SysRoleMapper roleMapper;
 
+    @Resource
+    private SysRoleMenuService roleMenuService;
+
     /**
      * @author wenqin
      * @return ResponseVo
      * @Date 2022-09-17 17:00:15
      */
     @Override
-    public ResponseVo addRole(SysRole role) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        role.setCreateBy(loginUser.getSysUser().getId());
-        role.setUpdateBy(loginUser.getSysUser().getId());
-        int res = roleMapper.insert(role);
-        log.info("add Role res:" + res);
-        return ResponseVo.okResult(AppHttpCodeEnum.SUCCESS.getCode(),"新增成功!");
+    @Transactional
+    public ResponseVo<?> addRole(RoleDto roleDto) {
+        LoginUser loginUser = UserUtils.getLoginUser();
+        SysRole tempRole = getTempRole(roleDto.getRoleName(),loginUser.getSysUser().getCompanyid());
+        if (!Objects.isNull(tempRole))
+            throw new SystemException(AppHttpCodeEnum.ROLE_EXIST);
+
+        SysRole role = new SysRole();
+        role
+                .setName(roleDto.getRoleName())
+                .setCompanyId(loginUser.getSysUser().getCompanyid())
+                .setCreateBy(loginUser.getSysUser().getId())
+                .setUpdateBy(loginUser.getSysUser().getId());
+        save(role);
+        roleDto.getMenuId().forEach(item -> {
+            SysRoleMenu roleMenu = new SysRoleMenu(role.getId(), item);
+            roleMenuService.save(roleMenu);
+        });
+
+        return ResponseVo.okResult(AppHttpCodeEnum.SUCCESS.getCode(),"添加成功!");
     }
 
     @Override
-    public ResponseVo getAllRole() {
-        List<SysRole> roleList = roleMapper.getAllRole();
+    public ResponseVo<?> getAllRole() {
+        LoginUser loginUser = UserUtils.getLoginUser();
+
+        List<SysRole> roleList = roleMapper.getAllRole(loginUser.getSysUser().getCompanyid());
+
         return ResponseVo.okResult(roleList);
     }
 
     @Override
-    public ResponseVo updateRole(SysRole role) {
-        if (role.getId() == null){
-            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
-        }
-        roleMapper.updateById(role);
+    @Transactional
+    public ResponseVo<?> updateRole(RoleDto roleDto) {
+        LoginUser loginUser = UserUtils.getLoginUser();
+
+        SysRole tempRole = getTempRole(roleDto.getRoleName(), loginUser.getSysUser().getCompanyid());
+        if (Objects.isNull(tempRole))
+            throw new SystemException(AppHttpCodeEnum.ROLE_NOT_EXIST);
+        tempRole.setName(roleDto.getRoleName());
+        tempRole.setUpdateBy(loginUser.getSysUser().getId());
+        updateById(tempRole);
+
+        LambdaQueryWrapper<SysRoleMenu> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysRoleMenu::getRoleId,tempRole.getId());
+        roleMenuService.remove(queryWrapper);
+
+        roleDto.getMenuId().forEach(item -> {
+            SysRoleMenu roleMenu = new SysRoleMenu(tempRole.getId(), item);
+            roleMenuService.save(roleMenu);
+        });
+
         return ResponseVo.okResult();
     }
 
     @Override
-    public ResponseVo delRole(List<Long> roleIdList) {
-        boolean res = removeByIds(roleIdList);
-        return res ? ResponseVo.okResult() : ResponseVo.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+    @Transactional
+    public ResponseVo<?> delRole(Long id) {
+        LoginUser loginUser = UserUtils.getLoginUser();
+        SysRole role = getById(id);
+        if (Objects.isNull(role))
+            throw new SystemException(AppHttpCodeEnum.ROLE_NOT_EXIST);
+        if ( !loginUser.getSysUser().getCompanyid().equals(role.getCompanyId()))
+            throw new SystemException(AppHttpCodeEnum.NO_OPERATOR_AUTH);
+        removeById(id);
+
+        LambdaQueryWrapper<SysRoleMenu> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysRoleMenu::getRoleId,id);
+        roleMenuService.remove(queryWrapper);
+
+        return ResponseVo.okResult();
     }
+
+    /**
+     *
+     * @param roleName 角色名
+     * @param companyId 公司id
+     * @return SysRole
+     */
+    private SysRole getTempRole(String roleName,Long companyId){
+        LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .eq(SysRole::getName,roleName)
+                .eq(SysRole::getCompanyId,companyId);
+        return getOne(queryWrapper);
+    }
+
 }

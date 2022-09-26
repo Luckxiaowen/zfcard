@@ -6,10 +6,16 @@ public enum AppHttpCodeEnum {
     FAIL(201, "操作失败"),
     // 登录
     COMPANY_NOF_FIND(405,"该公司不存在"),
-    NOT_YOU_COMPANY(406,"这不是你的公司哦!"),
+    PARAMETER_ERROR(400,"参数异常"),
+
 
     NEED_LOGIN(401, "需要登录后操作"),
     NO_OPERATOR_AUTH(403, "无权限操作"),
+    ROLE_EXIST(500,"该角色已存在!"),
+    ROLE_NOT_EXIST(500,"该角色不存在!"),
+
+    DEPARTMENT_NOT_EXIST(500,"该部门不存在!"),
+    DEPARTMENT_EXIST(500,"该部门已存在!"),
 
     SYSTEM_ERROR(500, "出现错误"),
 

@@ -1,6 +1,7 @@
 package com.zf.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zf.domain.dto.RoleDto;
 import com.zf.domain.entity.SysRole;
 import com.zf.domain.vo.ResponseVo;
 
@@ -13,11 +14,11 @@ import java.util.List;
 */
 public interface SysRoleService extends IService<SysRole> {
 
-    ResponseVo addRole(SysRole role);
+    ResponseVo<?> addRole(RoleDto roleDto);
 
-    ResponseVo getAllRole();
+    ResponseVo<?> getAllRole();
 
-    ResponseVo updateRole(SysRole role);
+    ResponseVo<?> updateRole(RoleDto roleDto);
 
-    ResponseVo delRole(List<Long> roleIdList);
+    ResponseVo<?> delRole(Long id);
 }

@@ -82,7 +82,7 @@ public class GlobalExceptionHandler {
         //打印异常信息
         log.error("出现了异常！ {}", e);
         //从异常对象中获取提示信息封装返回
-        return ResponseVo.errorResult(405, Objects.requireNonNull(e.getFieldError()).getDefaultMessage());
+        return ResponseVo.errorResult(400, Objects.requireNonNull(e.getFieldError()).getDefaultMessage());
     }
 
     /**

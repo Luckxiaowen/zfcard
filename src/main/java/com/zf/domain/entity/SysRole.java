@@ -7,10 +7,12 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
 
@@ -22,6 +24,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Accessors(chain = true)
 public class SysRole implements Serializable {
     /**
      * 角色Id 角色Id
@@ -40,12 +43,14 @@ public class SysRole implements Serializable {
      */
     @ApiModelProperty(value = "角色权限字符串",dataType = "String")
     @NotBlank(message = "角色路由不能为空!")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String roleKey;
 
     /**
      * 角色状态（0正常 1停用） 角色状态（0正常 1停用）
      */
     @ApiModelProperty(value = "角色状态（0正常 1停用）",dataType = "Integer")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer status;
 
     /**
@@ -53,18 +58,20 @@ public class SysRole implements Serializable {
      */
     @ApiModelProperty(value = "删除标志（0代表未删除，1代表已删除）",dataType = "Integer")
     @TableLogic
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer delFlag;
 
     /**
      * 
      */
-    @ApiModelProperty(value = "创建人",dataType = "long")
+    @ApiModelProperty(value = "创建人Id",dataType = "long")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long createBy;
 
     /**
      * 
      */
-    @ApiModelProperty(value = "公司Id",dataType = "long")
+    @ApiModelProperty(value = "创建时间",dataType = "date")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private Date createTime;
@@ -72,86 +79,35 @@ public class SysRole implements Serializable {
     /**
      * 
      */
-
+    @ApiModelProperty(value = "更新人id",dataType = "long")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long updateBy;
 
     /**
      * 
      */
+    @ApiModelProperty(value = "更新时间",dataType = "date")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Date updateTime;
+
+    @ApiModelProperty(value = "归属公司id",dataType = "date")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long companyId;
 
     /**
      * 
      */
-    @ApiModelProperty(value = "公司Id",dataType = "long")
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String remark;
-    @ApiModelProperty(value = "公司Id",dataType = "long")
+
+    @ApiModelProperty(value = "创建人",dataType = "long")
     @TableField(exist = false)
     private String createUser;
 
     private static final long serialVersionUID = 1L;
 
-    @Override
-    public boolean equals(Object that) {
-        if (this == that) {
-            return true;
-        }
-        if (that == null) {
-            return false;
-        }
-        if (getClass() != that.getClass()) {
-            return false;
-        }
-        SysRole other = (SysRole) that;
-        return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getRoleKey() == null ? other.getRoleKey() == null : this.getRoleKey().equals(other.getRoleKey()))
-            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-            && (this.getDelFlag() == null ? other.getDelFlag() == null : this.getDelFlag().equals(other.getDelFlag()))
-            && (this.getCreateBy() == null ? other.getCreateBy() == null : this.getCreateBy().equals(other.getCreateBy()))
-            && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
-            && (this.getUpdateBy() == null ? other.getUpdateBy() == null : this.getUpdateBy().equals(other.getUpdateBy()))
-            && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
-            && (this.getRemark() == null ? other.getRemark() == null : this.getRemark().equals(other.getRemark()));
-    }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result + ((getRoleKey() == null) ? 0 : getRoleKey().hashCode());
-        result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
-        result = prime * result + ((getDelFlag() == null) ? 0 : getDelFlag().hashCode());
-        result = prime * result + ((getCreateBy() == null) ? 0 : getCreateBy().hashCode());
-        result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
-        result = prime * result + ((getUpdateBy() == null) ? 0 : getUpdateBy().hashCode());
-        result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
-        result = prime * result + ((getRemark() == null) ? 0 : getRemark().hashCode());
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", name=").append(name);
-        sb.append(", roleKey=").append(roleKey);
-        sb.append(", status=").append(status);
-        sb.append(", delFlag=").append(delFlag);
-        sb.append(", createBy=").append(createBy);
-        sb.append(", createTime=").append(createTime);
-        sb.append(", updateBy=").append(updateBy);
-        sb.append(", updateTime=").append(updateTime);
-        sb.append(", remark=").append(remark);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
-    }
 }
