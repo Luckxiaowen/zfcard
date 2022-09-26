@@ -6,7 +6,6 @@
 
     <resultMap id="BaseResultMap" type="com.zf.domain.entity.Notes">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="clientName" column="client_name" jdbcType="VARCHAR"/>
             <result property="userId" column="user_id" jdbcType="BIGINT"/>
             <result property="replyId" column="reply_id" jdbcType="BIGINT"/>
             <result property="notesContent" column="notes_content" jdbcType="VARCHAR"/>
@@ -17,7 +16,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,client_name,user_id,
+        id,user_id,
         reply_id,notes_content,del_flag,
         is_public,create_by,create_time
     </sql>

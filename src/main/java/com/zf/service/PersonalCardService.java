@@ -29,7 +29,7 @@ public interface PersonalCardService extends IService<PersonalCardVo> {
    * @return
    */
 
-  ResponseVo selectPersonalCard(String token);
+  ResponseVo selectPersonalCard(String token) throws Exception;
 
   /**
    * 保存名片

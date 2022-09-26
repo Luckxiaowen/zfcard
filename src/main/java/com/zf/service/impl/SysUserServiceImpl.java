@@ -209,68 +209,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     return ResponseVo.okResult(map);
   }
 
-  @Override
-  public ResponseVo updateUserPhoton(String token, MultipartFile photo) {
-
-    String photoPath = null;
-
-    if(!photo.isEmpty()){
-      //获取上传的文件的文件名
-      String fileName = photo.getOriginalFilename();
-      //获取上传的文件的后缀名
-      String suffixName = fileName.substring(fileName.lastIndexOf("."));
-      //将UUID作为文件名
-      String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-      //将uuid和后缀名拼接后的结果作为最终的文件名
-      fileName = uuid + suffixName;
-      //通过ResourceUtils获取服务器中photo目录的路径
-      String path = null;
-      try {
-        path = new File(ResourceUtils.getURL("classpath:").getPath()).getAbsolutePath();
-          System.out.println("path = " + path);
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
-      String pathName = path +  File.separator + "resources" + File.separator +"userImg";
-        System.out.println("pathName = " + pathName);
-      File file = new File(pathName);
-      //判断photoPath所对应路径是否存在
-      if (!file.exists()) {
-        //若不存在，则创建目录
-        file.mkdir();
-      }
-
-      photoPath = "userImg/" + fileName;
-
-      String finalPath = pathName + File.separator + fileName;
-        System.out.println("finalPath = " + finalPath);
-      //上传文件
-      try {
-        photo.transferTo(new File(finalPath));
-      } catch (IOException exception) {
-        exception.printStackTrace();
-      }
-    }
-
-    Integer id = null;
-    try {
-      id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    LambdaUpdateWrapper<SysUser> updateWrapper = new LambdaUpdateWrapper<>();
-    updateWrapper.eq(SysUser::getId,id);
-    updateWrapper.set(SysUser::getAvatar,photoPath);
-    sysUserMapper.update(null,updateWrapper);
-
-    return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg());
-  }
-
 
 
   @Override
-  public ResponseVo updateInfo(String token, String info) {
+  public ResponseVo updateUserPhotonAndInfo(String token, String info,String imgPath) {
 
     Integer id = null;
     try {
@@ -287,11 +229,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg());
   }
 
-    @Override
-    public ResponseVo selectByConditions(String conditions) {
-
-        return null;
-    }
 
     @Override
     public ResponseVo updateUserOpenId(String userId, String openId) {

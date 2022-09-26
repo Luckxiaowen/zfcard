@@ -41,15 +41,10 @@ public class PersonalInfo {
     return sysUserService.selectUserInfo(token);
   }
 
-  @ApiOperation("职业照上传")
+  @ApiOperation("职业照上传以及个人简介修改")
   @PutMapping("/updatePhoto")
-  public ResponseVo updatePhoto (@RequestHeader("token") String token,@RequestPart("photo") MultipartFile photo){
-    return sysUserService.updateUserPhoton(token, photo);
+  public ResponseVo updatePhotoAndInfo (@RequestHeader("token") String token,@RequestParam("imgPath") String imgPath,@RequestParam("info") String info){
+    return sysUserService.updateUserPhotonAndInfo(token, imgPath,info);
   }
 
-  @ApiOperation("个人简介修改")
-  @PostMapping("/revise-info")
-  public ResponseVo reviseInfo(@RequestHeader("token") String token,@RequestParam("info") String info){
-   return sysUserService.updateInfo(token, info);
-  }
 }

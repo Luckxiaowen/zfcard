@@ -23,12 +23,6 @@ public class Notes implements Serializable {
     private Long id;
 
     /**
-     * 用户称呼
-     */
-    @ApiModelProperty(value = "用户称呼",dataType = "String")
-    private String clientName;
-
-    /**
      * 用户id 用户id
      */
     @ApiModelProperty(value = "用户id",dataType = "long")
@@ -70,64 +64,5 @@ public class Notes implements Serializable {
     @ApiModelProperty(value = "创建时间",dataType = "Date")
     private Date createTime;
 
-    private static final long serialVersionUID = 1L;
 
-    @Override
-    public boolean equals(Object that) {
-        if (this == that) {
-            return true;
-        }
-        if (that == null) {
-            return false;
-        }
-        if (getClass() != that.getClass()) {
-            return false;
-        }
-        Notes other = (Notes) that;
-        return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getClientName() == null ? other.getClientName() == null : this.getClientName().equals(other.getClientName()))
-            && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
-            && (this.getReplyId() == null ? other.getReplyId() == null : this.getReplyId().equals(other.getReplyId()))
-            && (this.getNotesContent() == null ? other.getNotesContent() == null : this.getNotesContent().equals(other.getNotesContent()))
-            && (this.getDelFlag() == null ? other.getDelFlag() == null : this.getDelFlag().equals(other.getDelFlag()))
-            && (this.getIsPublic() == null ? other.getIsPublic() == null : this.getIsPublic().equals(other.getIsPublic()))
-            && (this.getCreateBy() == null ? other.getCreateBy() == null : this.getCreateBy().equals(other.getCreateBy()))
-            && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()));
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getClientName() == null) ? 0 : getClientName().hashCode());
-        result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
-        result = prime * result + ((getReplyId() == null) ? 0 : getReplyId().hashCode());
-        result = prime * result + ((getNotesContent() == null) ? 0 : getNotesContent().hashCode());
-        result = prime * result + ((getDelFlag() == null) ? 0 : getDelFlag().hashCode());
-        result = prime * result + ((getIsPublic() == null) ? 0 : getIsPublic().hashCode());
-        result = prime * result + ((getCreateBy() == null) ? 0 : getCreateBy().hashCode());
-        result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", clientName=").append(clientName);
-        sb.append(", userId=").append(userId);
-        sb.append(", replyId=").append(replyId);
-        sb.append(", notesContent=").append(notesContent);
-        sb.append(", delFlag=").append(delFlag);
-        sb.append(", isPublic=").append(isPublic);
-        sb.append(", createBy=").append(createBy);
-        sb.append(", createTime=").append(createTime);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
-    }
 }

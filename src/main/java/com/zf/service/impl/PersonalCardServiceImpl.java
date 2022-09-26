@@ -1,6 +1,7 @@
 package com.zf.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.entity.*;
@@ -45,18 +46,29 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
     @Autowired
     private CompanyMapper companyMapper;
 
+    @Autowired
+    private SysUserMapper sysUserMapper;
+
     @Override
     public PersonalCardVo personalCardById(Integer id) {
         return personalCardMapper.selectPersonalCardById(Long.valueOf(id));
     }
 
     @Override
-    public ResponseVo selectPersonalCard(String token) {
+    public ResponseVo selectPersonalCard(String token) throws Exception {
 
-        if (StringUtils.isEmpty(token)){
+      Integer id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
+
+      LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+      lambdaQueryWrapper.eq(SysUser::getId,id);
+      SysUser sysUser = sysUserMapper.selectOne(lambdaQueryWrapper);
+      String weixinCode = sysUser.getWeixinCode();
+      String telWeixin = sysUser.getTelWeixin();
+
+      if (id==null){
             return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"用户id为空");
         }else{
-            PersonalCardVo personalCardVo = personalCardMapper.selectPersonalCardById(Long.parseLong(token));
+            PersonalCardVo personalCardVo = personalCardMapper.selectPersonalCardById(Long.valueOf(id));
             if (Objects.isNull(personalCardVo)){
                 return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"用户信息为空");
             }
@@ -64,14 +76,14 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
             int companyId = personalCardVo.getCompanyId();
 
             LambdaQueryWrapper<ExposureTotal> query = new LambdaQueryWrapper<>();
-            query.eq(ExposureTotal::getCreateBy, Long.parseLong(token));
+            query.eq(ExposureTotal::getCreateBy, id);
             ExposureTotal total = exposureTotalMapper.selectOne(query);
 
             if (total == null) {
 
                 Date date = new Date();
-                assert Integer.valueOf(token) != null;
-                ExposureTotal exposure = new ExposureTotal(null, Long.parseLong(token), date, date, 0L, 0L, 0L,
+                assert id != null;
+                ExposureTotal exposure = new ExposureTotal(null, Long.valueOf(id), date, date, 0L, 0L, 0L,
                         0L, 0L, 0L, 0L, 0L, 0L, 0L);
 
                 exposureTotalMapper.insert(exposure);
@@ -100,6 +112,8 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
             map.put("username", username);
             map.put("address", address);
             map.put("phoneNumber", phoneNumber);
+            map.put("weixinCode",weixinCode);
+            map.put("telWeixin",telWeixin);
 
             return ResponseVo.okResult(map);
         }

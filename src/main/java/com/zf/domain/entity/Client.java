@@ -27,6 +27,13 @@ public class Client implements Serializable {
     private Long id;
 
     /**
+     * 客户头像
+     */
+    @ApiModelProperty(value = "客户头像",dataType = "String")
+    private String avatar;
+
+
+    /**
      * 客户姓名 客户姓名
      */
     @ApiModelProperty(value = "客户姓名",dataType = "String")
@@ -79,6 +86,10 @@ public class Client implements Serializable {
      */
     @ApiModelProperty(value = "更新时间",dataType = "Date")
     private Date updatedTime;
+
+
+
+
 
 
 }

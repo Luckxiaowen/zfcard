@@ -51,11 +51,6 @@ public class ManageUserController {
         return sysUserService.selectAll();
     }
 
-    @ApiOperation(value = "条件查询员工接口")
-    @GetMapping("/search-user")
-    public ResponseVo searchByConditions(@RequestHeader("token")String token,@RequestParam("conditions")String conditions) throws JsonProcessingException {
-        return sysUserService.selectByConditions(conditions);
-    }
     @ApiOperation(value = "添加员工微信二维码")
     @PostMapping("/upload/file")
     public ResponseVo uploadUserWxCode(@RequestHeader("token")String token,HttpServletRequest request,@RequestParam("file")MultipartFile file){
