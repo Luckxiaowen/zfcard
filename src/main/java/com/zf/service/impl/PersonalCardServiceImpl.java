@@ -80,7 +80,6 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
             query.eq(ExposureTotal::getCreateBy, id);
             ExposureTotal total = exposureTotalMapper.selectOne(query);
 
-
             if (total == null) {
 
                 Date date = new Date();
@@ -129,7 +128,6 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         if (phoneNum == null) {
             return ResponseVo.errorResult(AppHttpCodeEnum.NO_OPERATOR_AUTH);
         }
-
         Integer id = null;
         try {
             id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
@@ -204,8 +202,6 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         LambdaUpdateWrapper<ExposureTotal> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.set(ExposureTotal::getDayAddContact, addContact);
         exposureTotalMapper.update(total, updateWrapper);
-
         return ResponseVo.okResult();
     }
-
 }

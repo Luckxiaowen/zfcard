@@ -47,5 +47,4 @@ public class PersonalInfo {
   public ResponseVo updatePhotoAndInfo (@RequestHeader("token") String token, @RequestPart("photo") MultipartFile photo, @RequestParam("info") String info, HttpServletRequest request){
     return sysUserService.updateUserPhotonAndInfo(token, photo,info,request);
   }
-
 }
