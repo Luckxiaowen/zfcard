@@ -146,13 +146,8 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
         }
     }
 
-  @Override
-  public ResponseVo selectAll(String userId) {
-    return null;
-  }
 
-
-  @Override
+    @Override
     public ResponseVo getCaseContent(@Param("token") String token) {
         Integer userid = null;
         try {

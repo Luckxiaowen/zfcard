@@ -32,7 +32,7 @@
                            ON su.companyid = coc.company_id
                  LEFT JOIN case_content cac
                            ON cac.case_id = coc.id
-        where su.companyid = #{companyid}
+        where su.id = #{id}
 
     </select>
 </mapper>

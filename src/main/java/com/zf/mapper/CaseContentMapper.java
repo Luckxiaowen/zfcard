@@ -18,7 +18,7 @@ import java.util.List;
 @Repository
 public interface CaseContentMapper extends BaseMapper<CaseContent> {
 
-    List<CaseContent> getCaseContent(@Param("companyid") Integer companyid);
+    List<CaseContent> getCaseContent(@Param("id") Integer id);
 
 
 }

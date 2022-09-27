@@ -8,134 +8,152 @@ import java.util.Date;
 
 @Data
 public class NotesVo {
+    /**
+     * id 客户id
+     */
+    @ApiModelProperty(value = "客户id",dataType = "long")
+    private Long clientId;
 
-    @ApiModelProperty(value = "公司Id",dataType = "long")
-    private Integer id;
-    @ApiModelProperty(value = "公司Id",dataType = "long")
-    private Integer userId;
-    @ApiModelProperty(value = "公司Id",dataType = "long")
-    private String userName;
-    @ApiModelProperty(value = "公司Id",dataType = "long")
-    private String phoneNumber;
-    @ApiModelProperty(value = "公司Id",dataType = "long")
+    /**
+     * 客户头像 客户头像
+     */
+    @ApiModelProperty(value = "客户头像",dataType = "String")
     private String avatar;
-    @ApiModelProperty(value = "公司Id",dataType = "long")
-    private String clientName;
-    @ApiModelProperty(value = "公司Id",dataType = "long")
-    private Integer replyId;
-    @ApiModelProperty(value = "公司Id",dataType = "long")
-    private String notesContent;
-    @ApiModelProperty(value = "公司Id",dataType = "long")
-    private String del_flag;
-    @ApiModelProperty(value = "公司Id",dataType = "long")
-    private Integer isPublic;
-    @ApiModelProperty(value = "公司Id",dataType = "long")
-    private Integer createBy;
-    @ApiModelProperty(value = "公司Id",dataType = "long")
-    private Date createTime;
 
-    public NotesVo(Integer userId, String userName, String phoneNumber, String avatar, String clientName, Integer replyId, String notesContent, String del_flag, Integer isPublic, Integer createBy, Date createTime) {
-        this.userId = userId;
-        this.userName = userName;
-        this.phoneNumber = phoneNumber;
-        this.avatar = avatar;
-        this.clientName = clientName;
-        this.replyId = replyId;
-        this.notesContent = notesContent;
-        this.del_flag = del_flag;
-        this.isPublic = isPublic;
-        this.createBy = createBy;
-        this.createTime = createTime;
-    }
+
+    /**
+     * 客户姓名 客户姓名
+     */
+    @ApiModelProperty(value = "客户姓名",dataType = "String")
+    private String name;
+
+    /**
+     * 客户电话 客户电话
+     */
+    @ApiModelProperty(value = "客户电话",dataType = "String")
+    private String tel;
+
+    /**
+     * 客户性别 客户性别
+     */
+    @ApiModelProperty(value = "客户性别",dataType = "String")
+    private String sex;
+
+    /**
+     * 客户地址 客户地址
+     */
+    @ApiModelProperty(value = "客户地址",dataType = "String")
+    private String address;
+
+    /**
+     * 是否删除 是否删除
+     */
+    @ApiModelProperty(value = "删除标志（0代表未删除，1代表已删)",dataType = "Integer")
+    private Integer delFlag;
+
+    /**
+     * 创建人 创建人
+     */
+    @ApiModelProperty(value = "创建人",dataType = "Long")
+    private Long createdBy;
+
+    /**
+     * 创建时间 创建时间
+     */
+    @ApiModelProperty(value = "创建时间",dataType = "Date")
+    private Date createdTime;
+
+    /**
+     * 更新人 更新人
+     */
+    @ApiModelProperty(value = "更新人",dataType = "Long")
+    private Long updatedBy;
+
+    /**
+     * 更新时间 更新时间
+     */
+    @ApiModelProperty(value = "更新时间",dataType = "Date")
+    private Date updatedTime;
+
+    /**
+     * id 留言Id
+     */
+    @ApiModelProperty(value = "留言Id",dataType = "long")
+
+    private Long id;
+
+
+
+    /**
+     * 用户id 用户id
+     */
+    @ApiModelProperty(value = "用户id",dataType = "long")
+
+    private Long userId;
+
+    /**
+     * 回复id 回复的哪一个留言
+     */
+    @ApiModelProperty(value = "回复id",dataType = "long")
+
+    private Long replyId;
+
+    /**
+     * 留言内容 留言内容
+     */
+    @ApiModelProperty(value = "留言内容",dataType = "String")
+
+    private String notesContent;
+    /**
+     * 回复内容 回复内容
+     */
+    @ApiModelProperty(value = "回复内容",dataType = "String")
+
+    private String notesContent1;
+
+
+    /**
+     * 是否公开 公开标志（0代表未公开，1代表私密）
+     */
+    @ApiModelProperty(value = "是否公开",dataType = "Integer")
+
+    private Integer isPublic;
+
+    /**
+     * 创建人 创建人
+     */
+    @ApiModelProperty(value = "创建人",dataType = "Long")
+
+    private Long createBy;
+
+    /**
+     * 创建时间 创建时间
+     */
+    @ApiModelProperty(value = "创建时间",dataType = "Date")
+
+    private Date createTime;
 
     public NotesVo() {
     }
 
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
+    public NotesVo(Long clientId, String avatar, String name, String tel, String sex, String address, Integer delFlag, Long createdBy, Date createdTime, Long updatedBy, Date updatedTime, Long id, Long userId, Long replyId, String notesContent, Integer isPublic, Long createBy, Date createTime) {
+        this.clientId = clientId;
         this.avatar = avatar;
-    }
-
-    public String getClientName() {
-        return clientName;
-    }
-
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
-    }
-
-    public Integer getReplyId() {
-        return replyId;
-    }
-
-    public void setReplyId(Integer replyId) {
+        this.name = name;
+        this.tel = tel;
+        this.sex = sex;
+        this.address = address;
+        this.delFlag = delFlag;
+        this.createdBy = createdBy;
+        this.createdTime = createdTime;
+        this.updatedBy = updatedBy;
+        this.updatedTime = updatedTime;
+        this.id = id;
+        this.userId = userId;
         this.replyId = replyId;
-    }
-
-    public String getNotesContent() {
-        return notesContent;
-    }
-
-    public void setNotesContent(String notesContent) {
         this.notesContent = notesContent;
-    }
-
-    public String getDel_flag() {
-        return del_flag;
-    }
-
-    public void setDel_flag(String del_flag) {
-        this.del_flag = del_flag;
-    }
-
-    public Integer getIsPublic() {
-        return isPublic;
-    }
-
-    public void setIsPublic(Integer isPublic) {
         this.isPublic = isPublic;
-    }
-
-    public Integer getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(Integer createBy) {
         this.createBy = createBy;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
