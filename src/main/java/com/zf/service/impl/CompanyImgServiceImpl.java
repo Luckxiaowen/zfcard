@@ -43,7 +43,7 @@ implements CompanyImgService {
         Long companyid = sysUser.getCompanyid();
 
         LambdaQueryWrapper<CompanyImg> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(CompanyImg::getCompanyId,companyid);
+        queryWrapper.eq(CompanyImg::getCompanyId,companyid);
         CompanyImg companyImg = companyImgMapper.selectOne(queryWrapper);
 
         String imgPath = companyImg.getImgPath();

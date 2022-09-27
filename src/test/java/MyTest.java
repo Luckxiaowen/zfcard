@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 
@@ -27,5 +29,11 @@ public class MyTest {
 
 
 
-
+    @Test
+    public void tesr(){
+        Date date = new Date( );
+        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd");
+        String format = ft.format(date);
+        System.out.println("format = " + format);
+}
 }

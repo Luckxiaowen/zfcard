@@ -56,21 +56,16 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
 
     @Override
     public ResponseVo selectPersonalCard(String token) throws Exception {
-
-      Integer id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
-
-      LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-      lambdaQueryWrapper.eq(SysUser::getId,id);
-      SysUser sysUser = sysUserMapper.selectOne(lambdaQueryWrapper);
-      String weixinCode = sysUser.getWeixinCode();
-      String telWeixin = sysUser.getTelWeixin();
-
-      if (id==null){
-            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"用户id为空");
-        }else{
+        Integer id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
+        LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(SysUser::getId, id);
+        SysUser sysUser = sysUserMapper.selectOne(lambdaQueryWrapper);
+        if (id == null) {
+            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "用户id为空");
+        } else {
             PersonalCardVo personalCardVo = personalCardMapper.selectPersonalCardById(Long.valueOf(id));
-            if (Objects.isNull(personalCardVo)){
-                return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"用户信息为空");
+            if (Objects.isNull(personalCardVo)) {
+                return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "用户信息为空");
             }
             int roleId = personalCardVo.getRoleId();
             int companyId = personalCardVo.getCompanyId();
@@ -93,7 +88,7 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
             LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(SysRole::getId, roleId);
             SysRole sysRole = sysRoleMapper.selectOne(queryWrapper);
-            
+
             String roleName = sysRole.getName();
 
             LambdaQueryWrapper<Company> companyQueryWrapper = new LambdaQueryWrapper<>();
@@ -114,13 +109,12 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
             map.put("username", username);
             map.put("address", address);
             map.put("phoneNumber", phoneNumber);
-            map.put("weixinCode",weixinCode);
-            map.put("telWeixin",telWeixin);
-            
+            map.put("weixinCode", sysUser.getWeixinCode());
+            map.put("telWeixin", sysUser.getTelWeixin());
             return ResponseVo.okResult(map);
         }
-
     }
+
 
     @Override
     public ResponseVo savePersonalCard(String token, Long phoneNum) {
@@ -142,7 +136,6 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
 
         Long dayDownloadNum = total.getDayDownloadNum();
         Long dayDownload = dayDownloadNum + 1;
-
         LambdaUpdateWrapper<ExposureTotal> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.set(ExposureTotal::getDayDownloadNum, dayDownload);
         updateWrapper.eq(ExposureTotal::getId, exposureTotalId);
