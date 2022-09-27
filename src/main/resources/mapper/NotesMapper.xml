@@ -14,6 +14,22 @@
             <result property="createBy" column="create_by" jdbcType="BIGINT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
+    <!--查询已回复Id Map-->
+    <resultMap id="NVo" type="com.zf.domain.vo.NVo">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userId" column="user_id" jdbcType="BIGINT"/>
+        <result property="replyId" column="reply_id" jdbcType="BIGINT"/>
+        <result property="notesContent" column="notes_content" jdbcType="VARCHAR"/>
+        <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
+        <result property="isPublic" column="is_public" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+
+        <collection property="notesList" ofType="com.zf.domain.vo.NVo">
+            <result property="replyId" column="replay_id" jdbcType="BIGINT"/>
+            <result property="notesContent" column="notes_content" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
 
     <sql id="Base_Column_List">
         id,user_id,
@@ -21,6 +37,11 @@
         is_public,create_by,create_time
     </sql>
 
-
+    <select id="selectNotesHaveReplyBid" resultType="com.zf.domain.vo.NVo" resultMap="NVo">
+        SELECT *
+        FROM notes n1
+            LEFT JOIN notes n2 on n2.reply_id=n1.id
+        WHERE n1.create_by=#{id}
+    </select>
 
 </mapper>

@@ -132,15 +132,8 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         LambdaQueryWrapper<ExposureTotal> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ExposureTotal::getCreateBy, id);
         ExposureTotal total = exposureTotalMapper.selectOne(queryWrapper);
-        Long exposureTotalId = total.getId();
-
-        Long dayDownloadNum = total.getDayDownloadNum();
-        Long dayDownload = dayDownloadNum + 1;
-        LambdaUpdateWrapper<ExposureTotal> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.set(ExposureTotal::getDayDownloadNum, dayDownload);
-        updateWrapper.eq(ExposureTotal::getId, exposureTotalId);
-        exposureTotalMapper.update(null, updateWrapper);
-
+        total.setDayDownloadNum(total.getDayDownloadNum()+1);
+        exposureTotalMapper.updateById(total);
         return ResponseVo.okResult();
     }
 

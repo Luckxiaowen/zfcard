@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class UpLoadUtil {
 
-    public static HashMap updateUserWxCode(String token, HttpServletRequest request, MultipartFile file) {
+    public static HashMap updateUserWxCode( HttpServletRequest request, MultipartFile file) {
         HashMap map=new HashMap();
         if(!file.isEmpty()){
           String url = System.getProperty("user.dir");
@@ -36,5 +36,4 @@ public class UpLoadUtil {
         map.put("msg",201);
         return map;
     }
-
 }

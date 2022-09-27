@@ -211,8 +211,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
   @Override
   public ResponseVo updateUserPhotonAndInfo(String token, MultipartFile photo, String info,HttpServletRequest request) {
-
-
     Integer id = null;
     try {
       id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
@@ -220,18 +218,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
       e.printStackTrace();
     }
 
-    HashMap map = UpLoadUtil.updateUserWxCode(token, request, photo);
-
+    HashMap map = UpLoadUtil.updateUserWxCode(request, photo);
     String url = (String) map.get("url");
-
     SysUser sysUser = new SysUser();
-
     sysUser.setId(Long.valueOf(id));
     sysUser.setAvatar(url);
     sysUser.setInfo(info);
-
     sysUserMapper.updateById(sysUser);
-
     return ResponseVo.okResult(map);
   }
 

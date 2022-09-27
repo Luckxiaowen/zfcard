@@ -13,12 +13,12 @@ public class NotesVoServiceTest {
     @Autowired
     private NotesVoMapper notesVoMapper;
 
-    @Test
+/*    @Test
     public void getAllNotesReplayById() {
         List<NotesVo> allNotesReplayById = notesVoMapper.getAllNotesReplayById(1);
         System.out.println(allNotesReplayById);
 
-    }
+    }*/
 
     @Test
     public void getNoteAdd() {

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zf.domain.entity.CaseContent;
 import com.zf.domain.entity.Notes;
 
+import com.zf.domain.vo.NVo;
 import com.zf.domain.vo.ResponseVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -21,12 +22,5 @@ import java.util.List;
 public interface NotesMapper extends BaseMapper<Notes> {
 
 
-
-
-
-
-
-
-
-
+    List<NVo> selectNotesHaveReplyBid(Long id);
 }
