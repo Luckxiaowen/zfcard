@@ -21,9 +21,15 @@ public class Notes implements Serializable {
     private Long id;
 
     /**
-     * 用户称呼
+     * 头像
      */
-    private String clientName;
+    private String avatar;
+
+    /**
+     * 姓名
+     */
+    private String name;
+
 
     /**
      * 用户id 用户id
@@ -75,7 +81,7 @@ public class Notes implements Serializable {
         }
         Notes other = (Notes) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getClientName() == null ? other.getClientName() == null : this.getClientName().equals(other.getClientName()))
+
             && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
             && (this.getReplyId() == null ? other.getReplyId() == null : this.getReplyId().equals(other.getReplyId()))
             && (this.getNotesContent() == null ? other.getNotesContent() == null : this.getNotesContent().equals(other.getNotesContent()))
@@ -90,7 +96,6 @@ public class Notes implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getClientName() == null) ? 0 : getClientName().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
         result = prime * result + ((getReplyId() == null) ? 0 : getReplyId().hashCode());
         result = prime * result + ((getNotesContent() == null) ? 0 : getNotesContent().hashCode());
@@ -108,7 +113,6 @@ public class Notes implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", clientName=").append(clientName);
         sb.append(", userId=").append(userId);
         sb.append(", replyId=").append(replyId);
         sb.append(", notesContent=").append(notesContent);

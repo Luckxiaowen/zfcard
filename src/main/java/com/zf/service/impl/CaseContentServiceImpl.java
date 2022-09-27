@@ -146,6 +146,11 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
         }
     }
 
+    @Override
+    public ResponseVo selectAll(String userId) {
+        return null;
+    }
+
 
     @Override
     public ResponseVo getCaseContent(@Param("token") String token) {
@@ -155,15 +160,9 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
         } catch (Exception e) {
             e.printStackTrace();
         }
-        SysUser sysUser = sysUserMapper.selectById(userid);
-        Integer companyid = Math.toIntExact(sysUser.getCompanyid());
-        List<CaseContent> caseContent = caseContentMapper.getCaseContent(companyid);
-//        ResponseVo caseContent = caseContentMapper.getCaseContent(companyid);
-
-//        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),AppHttpCodeEnum.SUCCESS.getMsg(),caseContent);
+        List<CaseContent> caseContent = caseContentMapper.getCaseContent(userid);
 
 
-//        List<CaseContent> caseContent = caseContentMapper.getCaseContent(companyid);
         return ResponseVo.okResult(caseContent);
     }
 }

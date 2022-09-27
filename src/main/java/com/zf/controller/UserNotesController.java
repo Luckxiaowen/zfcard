@@ -5,6 +5,7 @@ import com.zf.domain.entity.Notes;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.mapper.NotesMapper;
 import com.zf.service.NotesService;
+import com.zf.service.NotesVoService;
 import com.zf.utils.JwtUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,12 +23,13 @@ import java.util.stream.Collectors;
 @RequestMapping("/user_notes")
 public class UserNotesController {
     @Autowired
-    private NotesService notesService;
+    private NotesVoService notesVoService;
 
-    @ApiOperation(value = "留言板展示接口")
-    @GetMapping("/message_board")
-    public ResponseVo messageBoard(@RequestHeader("token") String token) {
+    @ApiOperation(value = "留言板留言及回复接口")
+    @GetMapping("/message_board_notes")
+    public ResponseVo messageBoardNotes(@RequestHeader("token") String token) {
 
-        return notesService.selectnotesListPublicAll(token);
+        return notesVoService.getNotesAndReplyAll(token);
     }
+
 }
