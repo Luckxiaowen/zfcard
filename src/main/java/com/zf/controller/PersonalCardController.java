@@ -46,7 +46,6 @@ public class PersonalCardController {
   @Autowired
   private PersonalCardService personalCardService;
 
-
   @ApiOperation(value = "名片接口")
   @GetMapping("/personal-card")
   public ResponseVo pCard(@RequestHeader("token") String token) throws Exception {
@@ -76,11 +75,8 @@ public class PersonalCardController {
   @ApiOperation("公开留言展示")
   @GetMapping("/public-message")
   public ResponseVo publicMessage(@RequestHeader("token") String token) throws Exception {
-
     Integer id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
-
     return ResponseVo.okResult();
   }
-
 
 }

@@ -33,6 +33,7 @@ public class Client implements Serializable {
     private String avatar;
 
 
+
     /**
      * 客户姓名 客户姓名
      */
@@ -86,10 +87,6 @@ public class Client implements Serializable {
      */
     @ApiModelProperty(value = "更新时间",dataType = "Date")
     private Date updatedTime;
-
-
-
-
 
 
 }

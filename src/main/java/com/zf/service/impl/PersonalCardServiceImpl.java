@@ -56,21 +56,16 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
 
     @Override
     public ResponseVo selectPersonalCard(String token) throws Exception {
-
         Integer id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
-
         LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(SysUser::getId,id);
+        lambdaQueryWrapper.eq(SysUser::getId, id);
         SysUser sysUser = sysUserMapper.selectOne(lambdaQueryWrapper);
-        String weixinCode = sysUser.getWeixinCode();
-        String telWeixin = sysUser.getTelWeixin();
-
-        if (id==null){
-            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"用户id为空");
-        }else{
+        if (id == null) {
+            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "用户id为空");
+        } else {
             PersonalCardVo personalCardVo = personalCardMapper.selectPersonalCardById(Long.valueOf(id));
-            if (Objects.isNull(personalCardVo)){
-                return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"用户信息为空");
+            if (Objects.isNull(personalCardVo)) {
+                return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "用户信息为空");
             }
             int roleId = personalCardVo.getRoleId();
             int companyId = personalCardVo.getCompanyId();
@@ -114,13 +109,12 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
             map.put("username", username);
             map.put("address", address);
             map.put("phoneNumber", phoneNumber);
-            map.put("weixinCode",weixinCode);
-            map.put("telWeixin",telWeixin);
-
+            map.put("weixinCode", sysUser.getWeixinCode());
+            map.put("telWeixin", sysUser.getTelWeixin());
             return ResponseVo.okResult(map);
         }
-
     }
+
 
     @Override
     public ResponseVo savePersonalCard(String token, Long phoneNum) {
@@ -140,10 +134,12 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         ExposureTotal total = exposureTotalMapper.selectOne(queryWrapper);
         Long exposureTotalId = total.getId();
 
-        Long dayDownloadNum = total.getDayDownloadNum() + 1;
-
-        total.setDayDownloadNum(dayDownloadNum);
-        exposureTotalMapper.updateById(total);
+        Long dayDownloadNum = total.getDayDownloadNum();
+        Long dayDownload = dayDownloadNum + 1;
+        LambdaUpdateWrapper<ExposureTotal> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.set(ExposureTotal::getDayDownloadNum, dayDownload);
+        updateWrapper.eq(ExposureTotal::getId, exposureTotalId);
+        exposureTotalMapper.update(null, updateWrapper);
 
         return ResponseVo.okResult();
     }
@@ -168,9 +164,9 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         Long dayForwardNum = total.getDayForwardNum();
         Long forwardNum = dayForwardNum + 1;
 
-        total.setDayForwardNum(forwardNum);
-
-        exposureTotalMapper.updateById(total);
+        LambdaUpdateWrapper<ExposureTotal> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.set(ExposureTotal::getDayForwardNum, forwardNum);
+        exposureTotalMapper.update(total, updateWrapper);
 
         return ResponseVo.okResult();
     }
@@ -195,9 +191,10 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
 
         Long dayAddContact = total.getDayAddContact();
         long addContact = dayAddContact + 1;
-        total.setDayAddContact(addContact);
 
-        exposureTotalMapper.updateById(total);
+        LambdaUpdateWrapper<ExposureTotal> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.set(ExposureTotal::getDayAddContact, addContact);
+        exposureTotalMapper.update(total, updateWrapper);
         return ResponseVo.okResult();
     }
 }

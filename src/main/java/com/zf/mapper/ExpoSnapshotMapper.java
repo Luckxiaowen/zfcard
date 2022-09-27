@@ -3,7 +3,10 @@ package com.zf.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zf.domain.entity.ExpoSnapshot;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
 * @author Amireux
@@ -15,4 +18,5 @@ import org.springframework.stereotype.Repository;
 public interface ExpoSnapshotMapper extends BaseMapper<ExpoSnapshot> {
 
 
+    List<Integer> selectSevenDayByDate(@Param("expoTotalId") Long expoTotalId,@Param("sevenDate") List<String> sevenDate);
 }
