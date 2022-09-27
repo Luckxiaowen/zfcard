@@ -198,6 +198,7 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         total.setDayAddContact(addContact);
 
         exposureTotalMapper.updateById(total);
+
         return ResponseVo.okResult();
     }
 }
