@@ -1,6 +1,7 @@
 package com.zf.domain.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ public class ExpoSnapshot implements Serializable {
     @ApiModelProperty(value = "id",dataType = "long")
     private Long id;
 
+    /**
     /**
      * 曝光统计表id 曝光统计表id
      */
@@ -73,7 +75,7 @@ public class ExpoSnapshot implements Serializable {
      * 创建时间 创建时间
      */
     @ApiModelProperty(value = "创建时间",dataType = "long")
-    private Long createTime;
+    private Date createTime;
 
     private static final long serialVersionUID = 1L;
 

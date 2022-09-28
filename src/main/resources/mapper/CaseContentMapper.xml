@@ -26,13 +26,13 @@
     </sql>
 
     <select id="getCaseContent" resultType="com.zf.domain.entity.CaseContent">
-        select cac.case_id,coc.case_name,cac.title,cac.img_path,cac.content,cac.create_by,cac.create_time,cac.update_by,cac.update_time,cac.del_flag,cac.visitor_num,coc.id,coc.company_id
+        select DISTINCT cac.case_id,coc.case_name,cac.title,cac.img_path,cac.content,cac.create_by,cac.create_time,cac.update_by,cac.update_time,cac.del_flag,cac.visitor_num,cac.id,coc.company_id
         FROM company_case coc
                  LEFT JOIN sys_user su
                            ON su.companyid = coc.company_id
                  LEFT JOIN case_content cac
                            ON cac.case_id = coc.id
-        where su.companyid = #{companyid}
+        where su.id = 1
 
     </select>
 </mapper>

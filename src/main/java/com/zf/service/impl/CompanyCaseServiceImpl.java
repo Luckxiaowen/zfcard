@@ -130,7 +130,7 @@ public class CompanyCaseServiceImpl extends ServiceImpl<CompanyCaseMapper, Compa
         Long companyid = user.getCompanyid();
 //        将用户信息中的公司id与案例名称中的公司id比对查找
         LambdaQueryWrapper<CompanyCase> wrapper = new LambdaQueryWrapper<>();
-        wrapper.like(CompanyCase::getCompanyId,companyid);
+        wrapper.eq(CompanyCase::getCompanyId,companyid);
 
         List<CompanyCase> companyCases = companyCaseMapper.selectList(wrapper);
 //        获取一列数据

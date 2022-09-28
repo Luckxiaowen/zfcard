@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,7 +45,7 @@ public class PersonalInfo {
 
   @ApiOperation("职业照上传以及个人简介修改")
   @PutMapping("/updatePhoto")
-  public ResponseVo updatePhotoAndInfo (@RequestHeader("token") String token, @RequestPart("photo") MultipartFile photo, @RequestParam("info") String info, HttpServletRequest request){
+  public ResponseVo updatePhotoAndInfo (@RequestHeader("token") String token, @RequestPart(value = "photo",required = false) MultipartFile photo, @RequestParam("info") String info, HttpServletRequest request){
     return sysUserService.updateUserPhotonAndInfo(token, photo,info,request);
   }
 }

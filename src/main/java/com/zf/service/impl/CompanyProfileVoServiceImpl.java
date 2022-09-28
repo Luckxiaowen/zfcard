@@ -39,7 +39,7 @@ public class CompanyProfileVoServiceImpl extends ServiceImpl<CompanyProfileVoMap
         }
 
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(SysUser::getId,id);
+        queryWrapper.eq(SysUser::getId,id);
         SysUser user = sysUserMapper.selectOne(queryWrapper);
         Integer companyid = Math.toIntExact(user.getCompanyid());
 

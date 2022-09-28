@@ -46,16 +46,15 @@ public class CompanyContentController {
     @ApiOperation(value = "顶部图片接口")
     @GetMapping("/company_pictures")
     public ResponseVo companyPictures(@RequestHeader("token") String token){
-
         return companyImgService.getcompanyPictures(token);
 
     }
+
 
     @ApiOperation(value = "案例分类名称接口")
     @GetMapping("/company_case_name")
     public ResponseVo caseName(@RequestHeader("token")String token){
         return companyCaseService.getcaseNames(token);
-
 
     }
     @ApiOperation(value = "案例内容接口")
@@ -63,13 +62,12 @@ public class CompanyContentController {
     public ResponseVo caseContent(@RequestHeader("token") String token){
         return caseContentService.getCaseContent(token);
     }
+
     @ApiOperation("案例内容浏览量接口")
     @PutMapping("/company_case_views/{id}")
     public ResponseVo saveCard(@RequestHeader("token") String token, @PathVariable("id") Integer id){
-
         LambdaQueryWrapper<CaseContent> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(CaseContent::getId,id);
-
         CaseContent selectOne = caseContentMapper.selectOne(lambdaQueryWrapper);
         selectOne.setVisitorNum(selectOne.getVisitorNum()+1);
         caseContentMapper.updateById(selectOne);

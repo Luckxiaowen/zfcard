@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiModelProperty;
 
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiModel(value = "响应的VO对象",description = "封装接口返回给前端的数据")
@@ -40,6 +42,7 @@ public class ResponseVo<T> implements Serializable {
         this.msg = msg;
     }
 
+
     public static ResponseVo errorResult(int code, String msg) {
         ResponseVo result = new ResponseVo();
         return result.error(code, msg);
@@ -62,6 +65,7 @@ public class ResponseVo<T> implements Serializable {
         }
         return result;
     }
+
 
     public static ResponseVo errorResult(AppHttpCodeEnum enums) {
         return setAppHttpCodeEnum(enums, enums.getMsg());
