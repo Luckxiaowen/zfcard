@@ -48,7 +48,8 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
     @Autowired
     private SysUserMapper sysUserMapper;
 
-    @Autowired private ClientMapper clientMapper;
+    @Autowired
+    private ClientMapper clientMapper;
 
     @Override
     public PersonalCardVo personalCardById(Integer id) {
@@ -133,10 +134,10 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         LambdaQueryWrapper<ExposureTotal> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ExposureTotal::getCreateBy, id);
         ExposureTotal total = exposureTotalMapper.selectOne(queryWrapper);
-        total.setDayDownloadNum(total.getDayDownloadNum()+1);
+        total.setDayDownloadNum(total.getDayDownloadNum() + 1);
         exposureTotalMapper.updateById(total);
         //TODO 添加用户
-        this.isExistClient(id,phoneNum,null);
+        this.isExistClient(id, phoneNum, null);
         return ResponseVo.okResult();
     }
 
@@ -162,7 +163,7 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         total.setDayForwardNum(forwardNum);
         exposureTotalMapper.updateById(total);
         //TODO 添加用户
-        this.isExistClient(id,phoneNum,null);
+        this.isExistClient(id, phoneNum, null);
         return ResponseVo.okResult();
     }
 
@@ -187,18 +188,18 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         Long dayAddContact = total.getDayAddContact();
         long addContact = dayAddContact + 1;
 
-       total.setDayAddContact(addContact);
+        total.setDayAddContact(addContact);
         exposureTotalMapper.updateById(total);
         //TODO 添加用户
-        this.isExistClient(id,phoneNum,null);
+        this.isExistClient(id, phoneNum, null);
         return ResponseVo.okResult();
     }
 
-    public void isExistClient(Integer userId,Long vTel,String name){
+    public void isExistClient(Integer userId, Long vTel, String name) {
 
         LambdaQueryWrapper<Client> Wrapper = new LambdaQueryWrapper<>();
-        Wrapper.eq(Client::getTel,vTel);
-        Wrapper.eq(Client::getCreatedBy,userId);
+        Wrapper.eq(Client::getTel, vTel);
+        Wrapper.eq(Client::getCreatedBy, userId);
         Client client = clientMapper.selectOne(Wrapper);
         int insert = 0;
         if (!Objects.isNull(client)) {
@@ -212,9 +213,9 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
             client.setUpdatedTime(new Date());
             client.setCreatedTime(new Date());
             insert = clientMapper.insert(client);
-            if (insert>0){
+            if (insert > 0) {
                 System.out.println("添加成功");
-            }else{
+            } else {
                 System.out.println("添加失败");
             }
         }
