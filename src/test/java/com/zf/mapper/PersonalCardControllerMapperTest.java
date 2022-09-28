@@ -68,15 +68,15 @@ public class PersonalCardControllerMapperTest {
 //    redisCache.setCacheObject(key,value);
 //    Integer cacheObject = redisCache.getCacheObject(key);
 //    System.out.println(cacheObject);
-    exposureUtils.incrementExposureOne(ExposureUtils.DOWNLOAD,1);
-    exposureUtils.incrementExposureOne(ExposureUtils.FORWARD,1);
-
-    ExposureTotal total = new ExposureTotal();
-    Integer downloadCount = exposureUtils.getExposureCount(ExposureUtils.DOWNLOAD,1);
-    Integer addContactCount = exposureUtils.getExposureCount(ExposureUtils.ADD_CONTACT,1);
-    total.setDayDownloadNum(downloadCount);
-    total.setDayAddContact(addContactCount);
-    exposureTotalService.save(total);
+//    exposureUtils.incrementExposureOne(ExposureUtils.DOWNLOAD,1);
+//    exposureUtils.incrementExposureOne(ExposureUtils.FORWARD,1);
+//
+//    ExposureTotal total = new ExposureTotal();
+//    Long downloadCount = Long.valueOf(exposureUtils.getExposureCount(ExposureUtils.DOWNLOAD,1));
+//    Long addContactCount = Long.valueOf(exposureUtils.getExposureCount(ExposureUtils.ADD_CONTACT,1));
+//    total.setDayDownloadNum(downloadCount);
+//    total.setDayAddContact(addContactCount);
+//    exposureTotalService.save(total);
 
   }
 
