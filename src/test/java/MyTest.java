@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,5 +36,13 @@ public class MyTest {
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd");
         String format = ft.format(date);
         System.out.println("format = " + format);
+}
+@Test
+    public void test1(){
+    boolean b = StringUtils.hasText("");
+    System.out.println("b = " + b);
+    boolean text = StringUtils.hasText("123123");
+    System.out.println("text = " + text);
+
 }
 }

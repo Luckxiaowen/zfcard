@@ -49,8 +49,8 @@ public class Client implements Serializable {
     /**
      * 客户性别 客户性别
      */
-    @ApiModelProperty(value = "客户性别",dataType = "String")
-    private String sex;
+    @ApiModelProperty(value = "客户性别",dataType = "int")
+    private int sex;
 
     /**
      * 客户地址 客户地址

@@ -6,13 +6,14 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 public class UpLoadUtil {
 
     public static HashMap updateUserWxCode( HttpServletRequest request, MultipartFile file) {
         HashMap map=new HashMap();
-        if(!file.isEmpty()){
+        if(!Objects.isNull(file)){
           String url = System.getProperty("user.dir");
           System.out.println(url);
             UUID id=UUID.randomUUID();//生成文件名
@@ -32,7 +33,7 @@ public class UpLoadUtil {
             map.put("msg",201);
             return map;
         }
-        map.put("url","上传失败");
+        map.put("url","文件为空");
         map.put("msg",201);
         return map;
     }

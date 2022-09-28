@@ -32,7 +32,6 @@ public class Notes implements Serializable {
      */
     private String name;
 
-
     /**
      * 用户id 用户id
      */
@@ -67,6 +66,11 @@ public class Notes implements Serializable {
      * 创建时间 创建时间
      */
     private Date createTime;
+
+    /**
+     * 电话号码
+     */
+    private String tel;
 
     private static final long serialVersionUID = 1L;
 

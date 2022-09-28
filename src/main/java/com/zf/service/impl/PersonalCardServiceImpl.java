@@ -31,8 +31,7 @@ import java.util.Objects;
  * DateTime: 2022/9/17 17:34
  */
 @Service
-public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, PersonalCardVo>
-        implements PersonalCardService {
+public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, PersonalCardVo> implements PersonalCardService {
 
     @Autowired
     private PersonalCardMapper personalCardMapper;
@@ -48,6 +47,8 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
 
     @Autowired
     private SysUserMapper sysUserMapper;
+
+    @Autowired private ClientMapper clientMapper;
 
     @Override
     public PersonalCardVo personalCardById(Integer id) {
@@ -134,6 +135,8 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         ExposureTotal total = exposureTotalMapper.selectOne(queryWrapper);
         total.setDayDownloadNum(total.getDayDownloadNum()+1);
         exposureTotalMapper.updateById(total);
+        //TODO 添加用户
+        this.isExistClient(id,phoneNum,null);
         return ResponseVo.okResult();
     }
 
@@ -156,11 +159,10 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
 
         Long dayForwardNum = total.getDayForwardNum();
         Long forwardNum = dayForwardNum + 1;
-
-        LambdaUpdateWrapper<ExposureTotal> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.set(ExposureTotal::getDayForwardNum, forwardNum);
-        exposureTotalMapper.update(total, updateWrapper);
-
+        total.setDayForwardNum(forwardNum);
+        exposureTotalMapper.updateById(total);
+        //TODO 添加用户
+        this.isExistClient(id,phoneNum,null);
         return ResponseVo.okResult();
     }
 
@@ -185,9 +187,36 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         Long dayAddContact = total.getDayAddContact();
         long addContact = dayAddContact + 1;
 
-        LambdaUpdateWrapper<ExposureTotal> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.set(ExposureTotal::getDayAddContact, addContact);
-        exposureTotalMapper.update(total, updateWrapper);
+       total.setDayAddContact(addContact);
+        exposureTotalMapper.updateById(total);
+        //TODO 添加用户
+        this.isExistClient(id,phoneNum,null);
         return ResponseVo.okResult();
+    }
+
+    public void isExistClient(Integer userId,Long vTel,String name){
+
+        LambdaQueryWrapper<Client> Wrapper = new LambdaQueryWrapper<>();
+        Wrapper.eq(Client::getTel,vTel);
+        Wrapper.eq(Client::getCreatedBy,userId);
+        Client client = clientMapper.selectOne(Wrapper);
+        int insert = 0;
+        if (!Objects.isNull(client)) {
+            System.out.println("已存在手机号为 :" + vTel + "的客户");
+        } else {
+            client = new Client();
+            client.setName(name);
+            client.setTel(String.valueOf(vTel));
+            client.setCreatedBy(Long.valueOf(userId));
+            client.setUpdatedBy(Long.valueOf(userId));
+            client.setUpdatedTime(new Date());
+            client.setCreatedTime(new Date());
+            insert = clientMapper.insert(client);
+            if (insert>0){
+                System.out.println("添加成功");
+            }else{
+                System.out.println("添加失败");
+            }
+        }
     }
 }

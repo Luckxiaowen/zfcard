@@ -12,7 +12,10 @@ import org.apache.ibatis.annotations.Param;
 */
 public interface NotesService extends IService<Notes> {
 
-    ResponseVo getAllNoteInfo(String subject);
-
     ResponseVo getAllNoteById(String token) throws Exception;
+
+    ResponseVo addNotes(String subject,Notes notes);
+
+
+    ResponseVo replyNotes(String subject, String noteid, String rcontent);
 }

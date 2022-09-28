@@ -217,15 +217,28 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     } catch (Exception e) {
       e.printStackTrace();
     }
-
-    HashMap map = UpLoadUtil.updateUserWxCode(request, photo);
-    String url = (String) map.get("url");
-    SysUser sysUser = new SysUser();
-    sysUser.setId(Long.valueOf(id));
-    sysUser.setAvatar(url);
-    sysUser.setInfo(info);
-    sysUserMapper.updateById(sysUser);
-    return ResponseVo.okResult(map);
+    if (Objects.isNull(photo)){
+        SysUser sysUser = new SysUser();
+        sysUser.setId(Long.valueOf(id));
+        sysUser.setInfo(info);
+        sysUser.setAvatar(sysUser.getAvatar());
+        sysUserMapper.updateById(sysUser);
+        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "用户个人简介修改成功");
+    }else{
+        HashMap map = UpLoadUtil.updateUserWxCode(request, photo);
+        String url = (String) map.get("url");
+        Integer msgCode = (Integer) map.get(("msg"));
+        SysUser sysUser = new SysUser();
+        sysUser.setId(Long.valueOf(id));
+        if (msgCode==201){
+            sysUser.setAvatar(sysUser.getAvatar());
+        }else{
+            sysUser.setAvatar(url);
+        }
+        sysUser.setInfo(info);
+        sysUserMapper.updateById(sysUser);
+        return ResponseVo.okResult(map);
+    }
   }
 
 
