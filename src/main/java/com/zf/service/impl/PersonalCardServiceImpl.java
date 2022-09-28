@@ -12,6 +12,7 @@ import com.zf.mapper.*;
 import com.zf.service.CompanyImgService;
 import com.zf.service.PersonalCardService;
 import com.zf.service.SysUserService;
+import com.zf.utils.ExposureUtils;
 import com.zf.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -84,8 +85,8 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
 
                 Date date = new Date();
                 assert id != null;
-                ExposureTotal exposure = new ExposureTotal(null, Long.valueOf(id), date, date, 0L, 0L, 0L,
-                        0L, 0L, 0L, 0L, 0L, 0L, 0L);
+                ExposureTotal exposure = new ExposureTotal(null, Long.valueOf(id), date, date, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0);
 
                 exposureTotalMapper.insert(exposure);
             }
@@ -140,7 +141,7 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         ExposureTotal total = exposureTotalMapper.selectOne(queryWrapper);
         Long exposureTotalId = total.getId();
 
-        Long dayDownloadNum = total.getDayDownloadNum() + 1;
+        Integer dayDownloadNum = total.getDayDownloadNum() + 1;
 
         total.setDayDownloadNum(dayDownloadNum);
         exposureTotalMapper.updateById(total);
@@ -165,8 +166,8 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         queryWrapper.eq(ExposureTotal::getCreateBy, id);
         ExposureTotal total = exposureTotalMapper.selectOne(queryWrapper);
 
-        Long dayForwardNum = total.getDayForwardNum();
-        Long forwardNum = dayForwardNum + 1;
+        Integer dayForwardNum = total.getDayForwardNum();
+        Integer forwardNum = dayForwardNum + 1;
 
         total.setDayForwardNum(forwardNum);
 
@@ -193,8 +194,8 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         queryWrapper.eq(ExposureTotal::getCreateBy, id);
         ExposureTotal total = exposureTotalMapper.selectOne(queryWrapper);
 
-        Long dayAddContact = total.getDayAddContact();
-        long addContact = dayAddContact + 1;
+        Integer dayAddContact = total.getDayAddContact();
+        Integer addContact = dayAddContact + 1;
         total.setDayAddContact(addContact);
 
         exposureTotalMapper.updateById(total);

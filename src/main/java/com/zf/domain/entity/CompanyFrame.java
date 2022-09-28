@@ -22,6 +22,7 @@ public class CompanyFrame {
 
     @TableId
     @ApiModelProperty(value = "部门id名称")
+    @NotNull(message = "ID不能为空")
     private Integer id;
 
     /**
@@ -34,7 +35,6 @@ public class CompanyFrame {
     private String roleName;
 
     @ApiModelProperty(value = "该部门的父ID",required = true)
-    @NotNull(message = "部分父ID不能为空")
     private Integer parentId;
 
     @JsonFormat(pattern = "yyyy-MM-dd")

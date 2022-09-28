@@ -23,4 +23,5 @@
         CREATED_BY,CREATED_TIME,UPDATED_BY,
         UPDATED_TIME
     </sql>
+
 </mapper>

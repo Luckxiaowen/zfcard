@@ -44,61 +44,61 @@ public class ExposureTotal implements Serializable {
      * 访客总量 访客总量
      */
     @ApiModelProperty(value = "访客总量",dataType = "Long")
-    private Long visitorTotal;
+    private Integer visitorTotal;
 
     /**
      * 客户总量
      */
     @ApiModelProperty(value = "客户总量",dataType = "Long")
-    private Long clientTotalNum;
+    private Integer clientTotalNum;
 
     /**
      * 近七日访客量 近七日访客量
      */
     @ApiModelProperty(value = "近七日访客量",dataType = "long")
-    private Long sevenTotal;
+    private Integer sevenTotal;
 
     /**
      * 今日访客量 今日访客量
      */
     @ApiModelProperty(value = "今日访客量",dataType = "long")
-    private Long dayTotal;
+    private Integer dayTotal;
 
     /**
      * 今日名片下载量 今日名片下载量
      */
     @ApiModelProperty(value = "今日名片下载量",dataType = "long")
-    private Long dayDownloadNum;
+    private Integer dayDownloadNum;
 
     /**
      * 今日留言 今日留言
      */
     @ApiModelProperty(value = "今日留言",dataType = "long")
-    private Long dayNotes;
+    private Integer dayNotes;
 
     /**
      * 今日添加通讯录 今日添加通讯录
      */
     @ApiModelProperty(value = "今日添加通讯录",dataType = "long")
-    private Long dayAddContact;
+    private Integer dayAddContact;
 
     /**
      * 每日新增客户 每日新增客户
      */
     @ApiModelProperty(value = "每日新增客户",dataType = "long")
-    private Long dayAddClient;
+    private Integer dayAddClient;
 
     /**
      * 周新增客户 周新增客户
      */
     @ApiModelProperty(value = "周新增客户",dataType = "long")
-    private Long weekAddClient;
+    private Integer weekAddClient;
 
     /**
      * 每日转发名片数量
      */
     @ApiModelProperty(value = "每日转发名片数量",dataType = "long")
-    private Long dayForwardNum;
+    private Integer dayForwardNum;
 
 
 }

@@ -1,18 +1,15 @@
 package com.zf.controller.admin;
 
 import com.zf.domain.dto.RoleDto;
-import com.zf.domain.entity.SysRole;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.service.SysRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * @Author wenqin

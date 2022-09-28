@@ -83,21 +83,23 @@ public class CompanyFrameServiceImpl extends ServiceImpl<CompanyFrameMapper, Com
     @Override
     public ResponseVo<?> updateCompanyRole(CompanyFrame companyFrame) {
         LoginUser loginUser = UserUtils.getLoginUser();
-
-        if (Objects.isNull(getById(companyFrame.getId())))
+        CompanyFrame frame = getById(companyFrame.getId());
+        if (Objects.isNull(frame))
             throw new SystemException(AppHttpCodeEnum.DEPARTMENT_NOT_EXIST);
 
         LambdaQueryWrapper<CompanyFrame> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper
                 .eq(CompanyFrame::getCompanyId,loginUser.getSysUser().getCompanyid())
                 .eq(CompanyFrame::getRoleName,companyFrame.getRoleName())
-                .eq(CompanyFrame::getParentId,companyFrame.getParentId());
+                .eq(CompanyFrame::getParentId,frame.getParentId());
+
         if (!Objects.isNull(getOne(queryWrapper)))
             throw new SystemException(AppHttpCodeEnum.DEPARTMENT_EXIST);
 
-        companyFrame.setUpdateBy(Math.toIntExact(loginUser.getSysUser().getId()));
-        companyFrame.setCompanyId(loginUser.getSysUser().getCompanyid());
-        updateById(companyFrame);
+        frame.setUpdateBy(Math.toIntExact(loginUser.getSysUser().getId()));
+        frame.setCompanyId(loginUser.getSysUser().getCompanyid());
+        frame.setRoleName(companyFrame.getRoleName());
+        updateById(frame);
         return ResponseVo.okResult();
     }
 

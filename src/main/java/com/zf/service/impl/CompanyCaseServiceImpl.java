@@ -135,7 +135,6 @@ public class CompanyCaseServiceImpl extends ServiceImpl<CompanyCaseMapper, Compa
         List<CompanyCase> companyCases = companyCaseMapper.selectList(wrapper);
 //        获取一列数据
 //        companyCases.stream().map(CompanyCase::getCaseName).collect(Collectors.toList());
-
 //        获取两列数据
 
         Map<Long, String> collect = companyCases.stream().collect(Collectors.toMap(CompanyCase::getId, CompanyCase::getCaseName));
