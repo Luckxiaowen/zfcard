@@ -114,8 +114,11 @@ public class CompanyFrameServiceImpl extends ServiceImpl<CompanyFrameMapper, Com
             throw new SystemException(AppHttpCodeEnum.DEPARTMENT_NOT_EXIST);
         if (!Objects.equals(temp.getCompanyId(),loginUser.getSysUser().getCompanyid()))
             throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
-
-        return null;
+        LambdaQueryWrapper<CompanyFrame> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(CompanyFrame::getParentId,id);
+        remove(queryWrapper);
+        removeById(id);
+        return ResponseVo.okResult();
     }
 
 

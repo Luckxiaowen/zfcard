@@ -1,14 +1,17 @@
 package com.zf.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -16,9 +19,9 @@ import java.util.List;
  * @Date 2022/9/24 19:30
  */
 @Data
-@NotBlank
+@NoArgsConstructor
 @AllArgsConstructor
-public class RoleDto {
+public class RoleDto implements Serializable {
 
 //    @ApiModelProperty(value = "角色id,更新和删除时须填写")
 //    @NotNull(message = "角色id不能为空",groups = Save.class)
