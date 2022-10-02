@@ -19,9 +19,13 @@ public interface CaseContentService extends IService<CaseContent> {
 
     ResponseVo updateCaseContent(long parseLong, CaseContent caseContent);
 
+    ResponseVo getCaseContent(String userId);
 
-    ResponseVo getCaseContent(@Param("token") String token);
+    ResponseVo selectAll(String subject);
 
-//    ResponseVo getsaveCard(@PathVariable("caseId") Integer caseId);
+    ResponseVo SelectPage(String subject, Integer pageNUm, Integer pageSize);
 
+    ResponseVo addCaseContentVisitorNumByWu(String cid);
+
+    ResponseVo selectByConditions(String token, String numOrStr, Integer caseType);
 }

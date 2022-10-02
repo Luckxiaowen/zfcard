@@ -5,6 +5,8 @@ import com.zf.domain.vo.ResponseVo;
 import com.zf.service.CompanyInfoService;
 import com.zf.utils.JwtUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -47,4 +49,19 @@ public class ManageComInfoController {
         return companyInfoService.selectAll(JwtUtil.parseJWT(token).getSubject());
     }
 
+    @ApiOperation(value = "分公司简介分页查询")
+    @GetMapping("/page-companyinfo")
+    private ResponseVo selectPageCompanyInfo(@RequestHeader("token")String token,@RequestParam Integer pageNum ,@RequestParam Integer pageSize) throws Exception{
+        return companyInfoService.selectPage(JwtUtil.parseJWT(token).getSubject(),pageNum,pageSize);
+    }
+
+    @ApiOperation(value = "分公司简介移动接口")
+    @GetMapping("/updateSort")
+    @ApiImplicitParams({
+            @ApiImplicitParam(dataType = "string", name = "sortStr", value = "上下移动标识符（up 为上移动; down 为下移动）", required = true),
+            @ApiImplicitParam(dataType = "string", name = "companyInfoId", value = "分公司简介id", required = true)
+    })
+    private ResponseVo companyInfoMove(@RequestHeader("token")String token,@RequestParam(value = "sortStr") String sortStr ,@RequestParam(value ="companyInfoId") Integer companyInfoId) throws Exception{
+        return companyInfoService.companyOrderByOrders(JwtUtil.parseJWT(token).getSubject(),sortStr,companyInfoId);
+    }
 }

@@ -9,6 +9,7 @@ import com.zf.domain.vo.ResponseVo;
 * @description 针对表【company_info(公司简介)】的数据库操作Service
 * @createDate 2022-09-16 08:47:16
 */
+
 public interface CompanyInfoService extends IService<CompanyInfo> {
 
     ResponseVo insert(String token, CompanyInfo companyInfo);
@@ -17,6 +18,20 @@ public interface CompanyInfoService extends IService<CompanyInfo> {
 
     ResponseVo modify(String userId, CompanyInfo companyInfo);
 
-
     ResponseVo selectAll(String userId);
+
+    ResponseVo selectPage(String subject, Integer pageNum, Integer pageSize);
+
+    ResponseVo companyOrderByOrders(String subject, String sortStr, Integer orders);
+
+    /**
+     * 添加记录
+     * @param companyInfo
+     * @return
+     */
+    int insertSelective(CompanyInfo companyInfo);
+
+    public ResponseVo moveUp(Integer companyId);
+
+    public ResponseVo moveDown(Integer companyId);
 }

@@ -18,6 +18,8 @@ import com.zf.utils.JwtUtil;
 import com.zf.utils.PdUtils;
 import io.swagger.annotations.Api;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -48,29 +50,48 @@ public class PersonalCardController {
 
   @ApiOperation(value = "名片接口")
   @GetMapping("/personal-card")
-  public ResponseVo pCard(@RequestHeader("token") String token) throws Exception {
-    return personalCardService.selectPersonalCard(token);
+  @ApiImplicitParams({
+          @ApiImplicitParam(dataType = "string", name = "userId", value = "员工id或者员工token", required = true),
+  })
+  public ResponseVo personalCard(@RequestParam("userId")String userId) throws Exception {
+    return personalCardService.selectPersonalCard(userId);
   }
 
   @ApiOperation("保存名片")
   @PostMapping("/save-card")
-  public ResponseVo saveCard(@RequestHeader("token") String token,@RequestParam("phoneNum") Long phoneNum){
+  @ApiImplicitParams({
+          @ApiImplicitParam(dataType = "string", name = "userId", value = "员工id或者员工token", required = true),
+          @ApiImplicitParam(dataType = "string", name = "phoneNum", value = "游客电话号码", required = true),
+          @ApiImplicitParam(dataType = "string", name = "name", value = "游客称呼", required = true),
 
-   return personalCardService.savePersonalCard(token,phoneNum);
+  })
+  public ResponseVo saveCard(@RequestParam("userId")String userId,@RequestParam("phoneNum")String phoneNum,@RequestParam("name")String name){
+   return personalCardService.savePersonalCard(userId,phoneNum,name);
   }
 
   @ApiOperation("转发名片")
   @PostMapping("/forward-card")
-  public ResponseVo forwardCard(@RequestHeader("token") String token,@RequestParam("phoneNum") Long phoneNum){
+  @ApiImplicitParams({
+          @ApiImplicitParam(dataType = "string", name = "userId", value = "员工id或者员工token", required = true),
+          @ApiImplicitParam(dataType = "string", name = "phoneNum", value = "游客电话号码", required = true),
+          @ApiImplicitParam(dataType = "string", name = "name", value = "游客称呼", required = true),
 
-   return personalCardService.forwardPersonalCard(token,phoneNum);
+  })
+  public ResponseVo forwardCard(@RequestParam("userId")String userId,@RequestParam("phoneNum")String phoneNum,@RequestParam("name")String name){
+
+   return personalCardService.forwardPersonalCard(userId,phoneNum,name);
   }
 
   @ApiOperation("保存电话")
   @PostMapping("/save-num")
-  public ResponseVo saveNum(@RequestHeader("token") String token,@RequestParam("phoneNum") Long phoneNum){
+  @ApiImplicitParams({
+          @ApiImplicitParam(dataType = "string", name = "userId", value = "员工id或者员工token", required = true),
+          @ApiImplicitParam(dataType = "string", name = "phoneNum", value = "游客电话号码", required = true),
+          @ApiImplicitParam(dataType = "string", name = "name", value = "游客称呼", required = true),
+  })
+  public ResponseVo saveNum(@RequestParam("userId")String userId,@RequestParam("phoneNum")String phoneNum,@RequestParam("name")String name){
 
-    return personalCardService.savePhoneNum(token,phoneNum);
+    return personalCardService.savePhoneNum(userId,phoneNum,name);
   }
 
   @ApiOperation("公开留言展示")

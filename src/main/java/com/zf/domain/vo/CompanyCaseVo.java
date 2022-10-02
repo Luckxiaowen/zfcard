@@ -1,7 +1,4 @@
-package com.zf.domain.entity;
-
-import java.io.Serializable;
-import java.util.Date;
+package com.zf.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,14 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 公司案列分类表
- * @TableName company_case
- */
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyCase implements Serializable {
+public class CompanyCaseVo {
     /**
      * id 案列分类id
      */
@@ -64,11 +59,13 @@ public class CompanyCase implements Serializable {
     /**
      * 更新时间 更新时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "更新时间",dataType = "Date")
     private Date updateTime;
 
+    @ApiModelProperty(value = "创建人",dataType = "string")
+    private String createName;
+
     @ApiModelProperty(value = "排序",dataType = "Integer")
     private Integer orders;
-
-
 }

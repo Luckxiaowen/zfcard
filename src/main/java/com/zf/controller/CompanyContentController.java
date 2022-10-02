@@ -12,8 +12,7 @@ import com.zf.service.CompanyCaseService;
 import com.zf.service.CompanyImgService;
 import com.zf.utils.JwtUtil;
 import io.lettuce.core.dynamic.annotation.Param;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,44 +35,43 @@ public class CompanyContentController {
     private CompanyCaseService companyCaseService;
 
     @Autowired
-    private SysUserMapper sysUserMapper;
-    @Autowired
     private CaseContentService caseContentService;
 
     @Autowired
     private CaseContentMapper caseContentMapper;
-
+    //TODO 顶部图片接口已修改
     @ApiOperation(value = "顶部图片接口")
     @GetMapping("/company_pictures")
-    public ResponseVo companyPictures(@RequestHeader("token") String token){
-        return companyImgService.getcompanyPictures(token);
+    @ApiImplicitParams({
+            @ApiImplicitParam(dataType = "string", name = "userId", value = "员工id或者员工token", required = true),
+    })
+    public ResponseVo companyPictures(@RequestParam("userId") String userId){
+        return companyImgService.getcompanyPictures(userId);
 
     }
-
-
+    //TODO 案例分类名称接口已修改
     @ApiOperation(value = "案例分类名称接口")
     @GetMapping("/company_case_name")
-    public ResponseVo caseName(@RequestHeader("token")String token){
-        return companyCaseService.getcaseNames(token);
+    @ApiImplicitParams({
+            @ApiImplicitParam(dataType = "string", name = "userId", value = "员工id或者员工token", required = true),
+    })
+    public ResponseVo caseName(@RequestParam("userId") String userId){
+        return companyCaseService.getcaseNames(userId);
 
     }
     @ApiOperation(value = "案例内容接口")
     @GetMapping("/company_case_content")
-    public ResponseVo caseContent(@RequestHeader("token") String token){
-        return caseContentService.getCaseContent(token);
+    @ApiImplicitParams({
+            @ApiImplicitParam(dataType = "string", name = "userId", value = "员工id或者员工token", required = true),
+    })
+    public ResponseVo caseContent(@RequestParam("userId") String userId){
+        return caseContentService.getCaseContent(userId);
     }
 
     @ApiOperation("案例内容浏览量接口")
-    @PutMapping("/company_case_views/{id}")
-    public ResponseVo saveCard(@RequestHeader("token") String token, @PathVariable("id") Integer id){
-        LambdaQueryWrapper<CaseContent> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(CaseContent::getId,id);
-        CaseContent selectOne = caseContentMapper.selectOne(lambdaQueryWrapper);
-        selectOne.setVisitorNum(selectOne.getVisitorNum()+1);
-        caseContentMapper.updateById(selectOne);
-
-        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg());
+    @PutMapping("/company_case_views/{cid}")
+    public ResponseVo saveCard(@ApiParam(name = "cid",value = "案列内容Id")@PathVariable("cid") String cid){
+        return caseContentService.addCaseContentVisitorNumByWu(cid);
     }
-
 
 }

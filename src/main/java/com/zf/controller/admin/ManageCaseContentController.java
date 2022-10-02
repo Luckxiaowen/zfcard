@@ -6,6 +6,8 @@ import com.zf.domain.vo.ResponseVo;
 import com.zf.service.CaseContentService;
 import com.zf.utils.JwtUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -44,8 +46,28 @@ public class ManageCaseContentController {
 
     @ApiOperation(value = "查询公司案列内容接口")
     @GetMapping("/list-casecontent")
-    public ResponseVo listCaseContent(@RequestHeader String token) throws Exception {
-        return null;
+    public ResponseVo listCaseContent(@RequestHeader("token") String token) throws Exception {
+        return caseContentService.selectAll(JwtUtil.parseJWT(token).getSubject());
+    }
+
+    @ApiOperation(value = "分页查询公司案列内容接口")
+    @GetMapping("/page-casecontent")
+    @ApiImplicitParams({
+            @ApiImplicitParam(dataType = "Integer", name = "pageNum", value = "显示条数", required = true),
+            @ApiImplicitParam(dataType = "Integer", name = "pageSize", value = "页码数", required = true)
+    })
+    public ResponseVo PageCaseContent(@RequestHeader("token") String token,@RequestParam("pageNum")Integer pageNum,@RequestParam("pageSize")Integer pageSize) throws Exception {
+        return caseContentService.SelectPage(JwtUtil.parseJWT(token).getSubject(),pageNum,pageSize);
+    }
+
+    @ApiOperation(value = "条件查询公司案列移动接口")
+    @GetMapping("/casecontent-conditions")
+    @ApiImplicitParams({
+            @ApiImplicitParam(dataType = "string", name = "NumOrStr", value = "文章编号/名称", required = false),
+            @ApiImplicitParam(dataType = "string", name = "caseType", value = "分类", required = false)
+    })
+    private ResponseVo companyCaseConditions(@RequestHeader("token")String token,@RequestParam(value = "NumOrStr") String NumOrStr ,@RequestParam(value ="caseType") Integer caseType) throws Exception{
+        return caseContentService.selectByConditions(token,NumOrStr,caseType);
     }
 
 }

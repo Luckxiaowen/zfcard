@@ -1,6 +1,9 @@
 import com.zf.domain.entity.CompanyImg;
 import com.zf.mapper.CompanyImgMapper;
+import com.zf.service.CaseContentService;
+import com.zf.service.impl.CaseContentServiceImpl;
 import com.zf.utils.JwtUtil;
+import com.zf.utils.Validator;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +17,7 @@ import java.util.List;
 
 @SpringBootTest
 public class MyTest {
+
 
 
 
@@ -37,12 +41,10 @@ public class MyTest {
         String format = ft.format(date);
         System.out.println("format = " + format);
 }
-@Test
-    public void test1(){
-    boolean b = StringUtils.hasText("");
-    System.out.println("b = " + b);
-    boolean text = StringUtils.hasText("123123");
-    System.out.println("text = " + text);
-
-}
+    @Test
+    public void test1() throws Exception {
+        CaseContentServiceImpl caseContentService=new CaseContentServiceImpl();
+        Object sdjgne_ = caseContentService.getParam("11111111");
+        System.out.println("sdjgne_ = " + sdjgne_);
+    }
 }
