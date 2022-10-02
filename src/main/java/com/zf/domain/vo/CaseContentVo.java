@@ -1,7 +1,4 @@
-package com.zf.domain.entity;
-
-import java.io.Serializable;
-import java.util.Date;
+package com.zf.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -10,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 公司案列内容表
@@ -20,7 +20,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "公司案列内容表",description = "封装接口返回给前端的数据")
-public class CaseContent implements Serializable {
+public class CaseContentVo implements Serializable {
     /**
      * id id
      */
@@ -94,6 +94,9 @@ public class CaseContent implements Serializable {
     @ApiModelProperty(value = "基础访问量",dataType = "Integer")
     private Integer baseVisitorNum;
 
-    private static final long serialVersionUID = 1L;
+    @ApiModelProperty(value = "创建人姓名",dataType = "String")
+    private String createName;
 
+    @ApiModelProperty(value = "文章所属分类",dataType = "String")
+    private String caseName;
 }

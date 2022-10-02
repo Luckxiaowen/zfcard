@@ -10,5 +10,5 @@ import org.springframework.stereotype.Service;
 
 public interface CompanyProfileVoService extends IService<CompanyProfileVo> {
 
-    ResponseVo getcompanyProfile(@Param("token")String token);
+    ResponseVo getcompanyProfile(String token);
 }

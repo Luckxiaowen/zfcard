@@ -8,7 +8,6 @@ public enum AppHttpCodeEnum {
     COMPANY_NOF_FIND(405,"该公司不存在"),
     PARAMETER_ERROR(400,"参数异常"),
 
-
     NEED_LOGIN(401, "需要登录后操作"),
     NO_OPERATOR_AUTH(403, "无权限操作"),
     ROLE_EXIST(500,"该角色已存在!"),

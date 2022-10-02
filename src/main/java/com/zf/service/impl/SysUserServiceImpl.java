@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
+import com.zf.exception.SystemException;
 import com.zf.mapper.*;
 import com.zf.service.SysUserService;
 import com.zf.utils.JwtUtil;
@@ -188,7 +189,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
   @Override
   public ResponseVo selectUserInfo(String token) {
-
     Integer id = null;
     try {
       id = Integer.valueOf(JwtUtil.parseJWT(token).getSubject());
@@ -206,8 +206,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     return ResponseVo.okResult(map);
   }
-
-
 
   @Override
   public ResponseVo updateUserPhotonAndInfo(String token, MultipartFile photo, String info,HttpServletRequest request) {
@@ -295,5 +293,55 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         map.put("url","上传失败");
         return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "上传失败",map);
+    }
+
+    //TODO 修改 gou sir 代码 优化个人简介接口
+    @Override
+    public ResponseVo selectUserInfoByWu(String id) {
+        if (id==null||"".equals(id)){
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "获取失败：输入为空");
+        }else{
+            //TODO 游客进入
+            Integer userId = getInteger(id);
+            if (Objects.isNull(sysUserMapper.selectById(userId))){
+                return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "获取失败：不存在此员工");
+            }else{
+                HashMap<String,String>infoMap=new HashMap<>();
+                infoMap.put("info",sysUserMapper.selectById(userId).getInfo());
+                return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询成功",infoMap);
+            }
+        }
+    }
+    //TODO 修改 gou sir 代码 修改个人职业照接口
+    @Override
+    public ResponseVo selectUserProPhotoByWu(String id) {
+        if (id==null||"".equals(id)){
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "获取失败：输入为空");
+        }else {
+            Integer userId = getInteger(id);
+            if (Objects.isNull(sysUserMapper.selectById(userId))){
+                return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "获取失败：不存在此员工");
+            }else{
+                HashMap<String,Object>photoMap=new HashMap<>();
+                photoMap.put("photo",sysUserMapper.selectById(userId).getAvatar());
+                return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询成功",photoMap);
+            }
+        }
+    }
+
+    public Integer getInteger(String userId) {
+        int id;
+        if (Validator.isNumeric(userId)) {
+            id = Integer.parseInt(userId);
+        } else {
+            //TODO 员工token获取
+            try {
+                String subject = JwtUtil.parseJWT(userId).getSubject();
+                id = Integer.parseInt(subject);
+            } catch (Exception e) {
+                throw new SystemException(AppHttpCodeEnum.PARAMETER_ERROR);
+            }
+        }
+        return id;
     }
 }

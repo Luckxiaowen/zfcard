@@ -16,6 +16,8 @@ import com.zf.service.CompanyInfoService;
 import com.zf.service.CompanyProfileVoService;
 import com.zf.utils.JwtUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,17 +40,23 @@ public class CompanyProfileController {
 
     @Autowired
     private CompanyImgService companyImgService;
+
     @ApiOperation(value = "顶部图片接口")
     @GetMapping("/company_pictures")
-    public ResponseVo companyPictures(@RequestHeader("token") String token) {
-
-        return companyImgService.getcompanyPictures(token);
-
+    @ApiImplicitParams({
+            @ApiImplicitParam(dataType = "string", name = "userId", value = "员工id或者员工token", required = true),
+    })
+    public ResponseVo companyPictures(@RequestParam("userId") String userId) {
+        return companyImgService.getcompanyPictures(userId);
     }
+
     @ApiOperation(value = "个性化简介名称及内容接口")
     @GetMapping("/company_profile")
-    public ResponseVo companyProfile(@RequestHeader("token") String token) {
-        return companyProfileVoService.getcompanyProfile(token);
+    @ApiImplicitParams({
+            @ApiImplicitParam(dataType = "string", name = "userId", value = "员工id或者员工token", required = true),
+    })
+    public ResponseVo companyProfile(@RequestParam("userId") String userId) {
+        return companyProfileVoService.getcompanyProfile(userId);
 
     }
 }

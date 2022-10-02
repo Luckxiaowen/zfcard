@@ -3,7 +3,13 @@ package com.zf.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zf.domain.entity.CompanyCase;
+import com.zf.domain.entity.CompanyInfo;
+import com.zf.domain.vo.CompanyCaseVo;
+import com.zf.domain.vo.CompanyInfoVo;
+import io.swagger.models.auth.In;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
 * @author Amireux
@@ -14,5 +20,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CompanyCaseMapper extends BaseMapper<CompanyCase> {
 
+    List<CompanyCaseVo> selectAllByCreateBy(String userId);
 
+    List<CompanyCaseVo>selectMyPage(Long userId, Integer pageNum,Integer pageSize);
+
+    Integer selectMaxOrders();
+
+    CompanyCase moveUp(Integer orders);
+
+    CompanyCase moveDown(Integer orders);
 }

@@ -33,27 +33,28 @@ public interface PersonalCardService extends IService<PersonalCardVo> {
 
   /**
    * 保存名片
-   * @param token
+   * @param userId
    * @param phoneNum
-   * @return
+   * @param name
+   *
+   * @return ResponseVo
    */
-  ResponseVo savePersonalCard(String token,Long phoneNum);
+  ResponseVo savePersonalCard(String userId,String phoneNum,String name);
 
 
   /**
    * 转发名片
-   * @param token
    * @param phoneNum
    * @return
    */
-  ResponseVo forwardPersonalCard(String token,Long phoneNum);
+  ResponseVo forwardPersonalCard(String userId,String phoneNum,String name);
 
   /**
    * 保存电话
-   * @param token
+
    * @param phoneNum
    * @return
    */
-  ResponseVo savePhoneNum(String token,Long phoneNum);
+  ResponseVo savePhoneNum(String userId,String phoneNum,String name);
 
 }

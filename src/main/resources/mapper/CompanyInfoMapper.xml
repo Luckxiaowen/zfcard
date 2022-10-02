@@ -5,19 +5,93 @@
 <mapper namespace="com.zf.mapper.CompanyInfoMapper">
 
     <resultMap id="BaseResultMap" type="com.zf.domain.entity.CompanyInfo">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="infoName" column="info_name" jdbcType="VARCHAR"/>
-            <result property="infoContent" column="info_content" jdbcType="VARCHAR"/>
-            <result property="companyId" column="company_id" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="createBy" column="create_by" jdbcType="BIGINT"/>
-            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="infoName" column="info_name" jdbcType="VARCHAR"/>
+        <result property="infoContent" column="info_content" jdbcType="VARCHAR"/>
+        <result property="companyId" column="company_id" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+        <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="CompanyInfoVoMap" type="com.zf.domain.vo.CompanyInfoVo">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="infoName" column="info_name" jdbcType="VARCHAR"/>
+        <result property="infoContent" column="info_content" jdbcType="VARCHAR"/>
+        <result property="companyId" column="company_id" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+        <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+        <result property="createName" column="username" jdbcType="VARCHAR"/>
+        <result property="orders" column="orders" jdbcType="BIGINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,info_name,info_content,
+        id
+        ,info_name,info_content,
         company_id,create_time,update_time,
         create_by,del_flag
     </sql>
+    <select id="selectAllByCreateBy" resultType="com.zf.domain.vo.CompanyInfoVo" resultMap="CompanyInfoVoMap">
+        SELECT ci.id,
+               ci.info_name,
+               ci.info_content,
+               ci.company_id,
+               ci.create_time,
+               ci.update_time,
+               ci.create_by,
+               ci.del_flag,
+               su.username,
+               ci.orders
+        FROM company_info ci
+                 LEFT JOIN sys_user su ON su.id = ci.create_by
+        WHERE ci.create_by = #{userId}
+          AND ci.del_flag = 0
+        order By ci.orders asc
+    </select>
+
+    <select id="selectMyPage" resultType="com.zf.domain.vo.CompanyInfoVo" resultMap="CompanyInfoVoMap">
+        SELECT ci.id,
+               ci.info_name,
+               ci.info_content,
+               ci.company_id,
+               ci.create_time,
+               ci.update_time,
+               ci.create_by,
+               ci.del_flag,
+               su.username,
+               ci.orders
+        FROM company_info ci
+                 LEFT JOIN sys_user su ON su.id = ci.create_by
+        WHERE ci.create_by = #{userId}
+          AND ci.del_flag = 0
+        order By ci.orders asc
+            LIMIT #{pageNum}
+               , #{pageSize}
+    </select>
+    <!--获得最大值-->
+    <select id="selectMaxOrders" resultType="java.lang.Integer">
+        select IFNULL(max(orders), 0)
+        from company_info ci
+                 LEFT JOIN sys_user su on su.companyid = ci.company_id
+        where ci.del_flag = 0
+    </select>
+    <!--上移-->
+    <select id="moveUp" resultType="com.zf.domain.entity.CompanyInfo">
+        select *
+        from company_info ci
+        WHERE ci.orders &lt; #{orders}
+          AND ci.del_flag = 0
+        order by ci.orders desc limit 0,1
+    </select>
+    <select id="moveDown" resultType="com.zf.domain.entity.CompanyInfo">
+        select *
+        from company_info ci
+        WHERE ci.orders &gt; #{orders}
+          AND ci.del_flag = 0
+        order by ci.orders asc limit 0,1
+    </select>
+
 </mapper>

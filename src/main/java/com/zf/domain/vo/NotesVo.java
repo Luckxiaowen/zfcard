@@ -11,6 +11,7 @@ import java.util.Date;
  * @Date 2022/9/27 17:02
  */
 @Data
+
 public class NotesVo {
     /**
      * id 留言Id

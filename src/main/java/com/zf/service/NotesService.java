@@ -18,4 +18,6 @@ public interface NotesService extends IService<Notes> {
 
 
     ResponseVo replyNotes(String subject, String noteid, String rcontent);
+
+    ResponseVo deleteNoteById(String subject, Long noteid);
 }

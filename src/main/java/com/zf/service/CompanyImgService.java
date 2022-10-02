@@ -13,5 +13,5 @@ import org.apache.ibatis.annotations.Param;
 public interface CompanyImgService extends IService<CompanyImg> {
 
     //    获取顶部图片
-    ResponseVo getcompanyPictures(@Param("token") String token);
+    ResponseVo getcompanyPictures(String userId);
 }

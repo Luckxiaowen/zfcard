@@ -48,4 +48,8 @@ public interface SysUserService extends IService<SysUser> {
 
 
      ResponseVo updateUserWxCode(String token, HttpServletRequest request, MultipartFile file);
+
+    ResponseVo selectUserInfoByWu(String userId);
+
+    ResponseVo selectUserProPhotoByWu(String userId);
 }
