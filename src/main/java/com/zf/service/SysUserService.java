@@ -1,12 +1,11 @@
 package com.zf.service;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zf.domain.dto.StaffDto;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.ResponseVo;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 
 /**
 * @author Amireux
@@ -52,4 +51,10 @@ public interface SysUserService extends IService<SysUser> {
     ResponseVo selectUserInfoByWu(String userId);
 
     ResponseVo selectUserProPhotoByWu(String userId);
+
+    ResponseVo addStaff(StaffDto staff);
+
+    ResponseVo updateStaff(StaffDto staff);
+
+    ResponseVo delStaffById(Integer id);
 }

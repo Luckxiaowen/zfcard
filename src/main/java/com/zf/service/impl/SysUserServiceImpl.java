@@ -3,24 +3,26 @@ package com.zf.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zf.domain.dto.StaffDto;
+import com.zf.domain.entity.CompanyFrame;
 import com.zf.domain.entity.SysUser;
+import com.zf.domain.vo.LoginUser;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.exception.SystemException;
 import com.zf.mapper.*;
+import com.zf.service.CompanyFrameService;
 import com.zf.service.SysUserService;
-import com.zf.utils.JwtUtil;
-import com.zf.utils.UpLoadUtil;
-import com.zf.utils.Validator;
+import com.zf.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
@@ -327,6 +329,66 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询成功",photoMap);
             }
         }
+    }
+
+    /**
+     * 新增员工
+     * @param staff
+     * @return
+     */
+    @Resource
+    private CompanyFrameService companyFrameService;
+
+
+    @Override
+    public ResponseVo addStaff(StaffDto staff) {
+        LoginUser loginUser = UserUtils.getLoginUser();
+        Integer depId = staff.getDepId();
+        CompanyFrame frame = companyFrameService.getById(depId);
+        if (Objects.isNull(frame) || !Objects.equals(loginUser.getSysUser().getCompanyid(),frame.getCompanyId()))
+            throw new SystemException(AppHttpCodeEnum.DEPARTMENT_NOT_EXIST);
+        String password = staff.getPhonenumber().substring(staff.getPhonenumber().length() - 6);
+        String encodePassword = passwordEncoder.encode(password);
+        SysUser user = BeanCopyUtils.copyBean(staff, SysUser.class);
+        user.setCreateBy(loginUser.getSysUser().getId());
+        user.setPassword(encodePassword);
+        user.setSex(2);
+        user.setUserType(1);
+        user.setCompanyid(loginUser.getSysUser().getCompanyid());
+        user.setNickName(staff.getUsername());
+        save(user);
+        return ResponseVo.okResult();
+    }
+
+    @Override
+    public ResponseVo updateStaff(StaffDto staff) {
+        LoginUser loginUser = UserUtils.getLoginUser();
+        SysUser updateUser = getById(staff.getId());
+        if (Objects.isNull(updateUser) || !Objects.equals(updateUser.getCompanyid(),loginUser.getSysUser().getCompanyid()))
+            throw new SystemException(AppHttpCodeEnum.NO_OPERATOR_AUTH);
+        CompanyFrame frame = companyFrameService.getById(staff.getDepId());
+        if (Objects.isNull(frame) || !Objects.equals(loginUser.getSysUser().getCompanyid(),frame.getCompanyId()))
+            throw new SystemException(AppHttpCodeEnum.DEPARTMENT_NOT_EXIST);
+        updateUser.setUsername(staff.getUsername());
+        updateUser.setPhonenumber(staff.getPhonenumber());
+        updateUser.setEmail(staff.getEmail());
+        updateUser.setTelWeixin(staff.getTelWeixin());
+        updateUser.setDepId(staff.getDepId());
+        updateUser.setStation(staff.getStation());
+        updateUser.setWeixinCode(staff.getWeixinCode());
+
+        boolean res = updateById(updateUser);
+        return res ? ResponseVo.okResult() : ResponseVo.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+    }
+
+    @Override
+    public ResponseVo delStaffById(Integer id) {
+        LoginUser loginUser = UserUtils.getLoginUser();
+        SysUser delStaff = getById(id);
+        if (Objects.isNull(delStaff) || !Objects.equals(loginUser.getSysUser().getCompanyid(),delStaff.getCompanyid()))
+            throw new SystemException(AppHttpCodeEnum.NO_OPERATOR_AUTH);
+        boolean res = removeById(id);
+        return res ? ResponseVo.okResult() : ResponseVo.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
     }
 
     public Integer getInteger(String userId) {
