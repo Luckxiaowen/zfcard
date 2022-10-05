@@ -70,7 +70,6 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
                 queryWrapper.eq(Client::getCreatedBy,userId);
                 Integer ClientTotal = clientMapper.selectCount(queryWrapper);
                 map.put("ClientTotal",ClientTotal);
-
                 //TODO 今日新增
                 LambdaQueryWrapper<ExposureTotal>lambdaQueryWrapper=new LambdaQueryWrapper<>();
                 lambdaQueryWrapper.eq(ExposureTotal::getCreateBy,Long.parseLong(userId));

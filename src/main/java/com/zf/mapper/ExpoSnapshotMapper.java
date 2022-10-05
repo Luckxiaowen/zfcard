@@ -19,4 +19,6 @@ public interface ExpoSnapshotMapper extends BaseMapper<ExpoSnapshot> {
 
 
     List<Integer> selectSevenDayByDate(@Param("expoTotalId") Long expoTotalId,@Param("sevenDate") List<String> sevenDate);
+
+    List<ExpoSnapshot> selectSevenDayByTotalId(Long id, List<String> sevenDate);
 }

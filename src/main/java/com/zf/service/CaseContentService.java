@@ -27,5 +27,5 @@ public interface CaseContentService extends IService<CaseContent> {
 
     ResponseVo addCaseContentVisitorNumByWu(String cid);
 
-    ResponseVo selectByConditions(String token, String numOrStr, Integer caseType);
+    ResponseVo selectByConditions(String token, String numOrStr, String caseType);
 }

@@ -10,6 +10,7 @@ import com.zf.domain.entity.CompanyFrame;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.LoginUser;
 import com.zf.domain.vo.ResponseVo;
+import com.zf.domain.vo.SysUserVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.exception.SystemException;
 import com.zf.mapper.*;
@@ -183,10 +184,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public ResponseVo selectAll() {
-        LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysUser::getDelFlag,"0");
-        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(), sysUserMapper.selectList(queryWrapper));
+    public ResponseVo selectAll(String userId) {
+        if ("".equals(userId)||userId==null){
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "查询失败：用户id为空");
+        }else {
+            SysUser sysUser = sysUserMapper.selectById(userId);
+            List<SysUserVo>userVoList=sysUserMapper.selectByCompanyId(sysUser.getCompanyid());
+            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(),userVoList );
+        }
     }
 
   @Override
@@ -389,6 +394,23 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new SystemException(AppHttpCodeEnum.NO_OPERATOR_AUTH);
         boolean res = removeById(id);
         return res ? ResponseVo.okResult() : ResponseVo.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+    }
+
+    @Override
+    public ResponseVo SelectPage(String userId, Integer pageNum, Integer pageSize) {
+        LambdaQueryWrapper<SysUser>queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysUser::getId,userId)
+                .eq(SysUser::getDelFlag,0);
+        SysUser sysUser = sysUserMapper.selectOne(queryWrapper);
+        queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysUser::getCompanyid,sysUser.getCompanyid());
+        long count = sysUserMapper.selectList(queryWrapper).stream().count();
+        pageNum = (pageNum - 1) * pageSize;
+        List<SysUserVo>userVoList=sysUserMapper.selectMyPage(sysUser.getCompanyid(),pageNum,pageSize);
+        PageUtils pageUtils = new PageUtils();
+        pageUtils.setTotal((int) userVoList.stream().count());
+        pageUtils.setData(userVoList);
+        return ResponseVo.okResult(pageUtils);
     }
 
     public Integer getInteger(String userId) {

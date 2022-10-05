@@ -87,7 +87,7 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
                     Date date = new Date();
                     assert userId != null;
                     ExposureTotal exposure = new ExposureTotal(null, Long.valueOf(userId), date, date, 0L, 0L, 0L,
-                            0L, 0L, 0L, 0L, 0L, 0L, 0L);
+                            0L, 0L, 0L, 0L, 0L, 0L, 0L,"",0);
 
                     exposureTotalMapper.insert(exposure);
                 }

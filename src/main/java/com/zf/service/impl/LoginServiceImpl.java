@@ -99,7 +99,6 @@ public class LoginServiceImpl implements LoginService {
     public ResponseVo getCode(String email) {
         if (Validator.isEmail(email)) {
             String code = RandomUtil.randomCode();
-            System.out.println("code = " + code);
             SendMailUtil.send(email, null, code);
 
             return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "验证码发送成功", null);

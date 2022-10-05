@@ -21,7 +21,7 @@ public interface SysUserService extends IService<SysUser> {
 
     ResponseVo modify(SysUser sysUser,String updateId);
 
-    ResponseVo selectAll();
+    ResponseVo selectAll(String userId);
 
   /**
    * 进入个人信息，查询个人简介以及头像
@@ -57,4 +57,8 @@ public interface SysUserService extends IService<SysUser> {
     ResponseVo updateStaff(StaffDto staff);
 
     ResponseVo delStaffById(Integer id);
+
+    ResponseVo SelectPage(String subject, Integer pageNum, Integer pageSize);
+
+
 }

@@ -31,6 +31,9 @@ public class WXUtils {
     private static final String APP_ID = "wxafcffece6679f01a";
     private static final String SECRET = "83b297e0e7412cf259b6e0346ed5d1f6";
 
+
+
+
     private static final String JS_CODE = "023G9A00018tyO1pFT300RY3XL3G9A03";
     private static final String GRANT_TYPE = "authorization_code";
 

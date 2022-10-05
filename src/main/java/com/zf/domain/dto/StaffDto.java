@@ -32,7 +32,6 @@ public class StaffDto {
     private String username;
 
 
-
     /**
      * 邮箱 邮箱
      */
@@ -61,7 +60,6 @@ public class StaffDto {
      * 微信二维码 微信二维码
      */
     @ApiModelProperty(value = "微信二维码地址",dataType = "String",required = true)
-    @NotBlank(message = "微信二维码地址不能为空")
     private String weixinCode;
 
 

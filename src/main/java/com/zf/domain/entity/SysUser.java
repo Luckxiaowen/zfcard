@@ -92,7 +92,7 @@ public class SysUser implements Serializable {
      * 创建时间 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @TableField(value = "update_time", fill = FieldFill.INSERT)
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
     @ApiModelProperty(value = "创建时间",dataType = "Date")
     private Date createTime;
 
@@ -145,6 +145,7 @@ public class SysUser implements Serializable {
      *  微信openedId 微信openedId
      */
     @ApiModelProperty(value = "微信openedId",dataType = "String")
+
     private String openedId;
 
     @ApiModelProperty(value = "岗位名称",dataType = "String")

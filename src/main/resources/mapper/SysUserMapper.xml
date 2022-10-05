@@ -5,28 +5,47 @@
 <mapper namespace="com.zf.mapper.SysUserMapper">
 
     <resultMap id="BaseResultMap" type="com.zf.domain.entity.SysUser">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="username" column="username" jdbcType="VARCHAR"/>
-            <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
-            <result property="password" column="password" jdbcType="VARCHAR"/>
-            <result property="status" column="status" jdbcType="INTEGER"/>
-            <result property="email" column="email" jdbcType="VARCHAR"/>
-            <result property="phonenumber" column="phonenumber" jdbcType="VARCHAR"/>
-            <result property="sex" column="sex" jdbcType="INTEGER"/>
-            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
-            <result property="userType" column="user_type" jdbcType="INTEGER"/>
-            <result property="createBy" column="create_by" jdbcType="BIGINT"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateBy" column="update_by" jdbcType="BIGINT"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
-            <result property="telWeixin" column="tel_weixin" jdbcType="VARCHAR"/>
-            <result property="info" column="info" jdbcType="VARCHAR"/>
-            <result property="weixinCode" column="weixin_code" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="phonenumber" column="phonenumber" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="userType" column="user_type" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="BIGINT"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+        <result property="telWeixin" column="tel_weixin" jdbcType="VARCHAR"/>
+        <result property="info" column="info" jdbcType="VARCHAR"/>
+        <result property="weixinCode" column="weixin_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <resultMap id="SysUserVoMap" type="com.zf.domain.vo.SysUserVo">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="dep_name" column="dep_name" jdbcType="VARCHAR"/>
+        <result property="station" column="station" jdbcType="VARCHAR"/>
+        <result property="visitorNum" column="visitor_num" jdbcType="INTEGER"/>
+        <result property="clientNum" column="client_num" jdbcType="INTEGER"/>
+        <result property="noteNum" column="note_num" jdbcType="INTEGER"/>
+        <result property="saveCardNum" column="save_card_num" jdbcType="INTEGER"/>
+        <result property="saveContactNum" column="save_contact_num" jdbcType="INTEGER"/>
+        <result property="activeNum" column="active_num" jdbcType="INTEGER"/>
+        <result property="stayNum" column="stay_num" jdbcType="INTEGER"/>
+        <result property="averageStayMin" column="average_stay_min" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="DATE"/>
+        <result property="createName" column="create_by" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,username,nick_name,
+        id
+        ,username,nick_name,
         password,status,email,
         phonenumber,sex,avatar,
         user_type,create_by,create_time,
@@ -35,18 +54,67 @@
     </sql>
 
     <select id="selectByConditions" resultType="com.zf.domain.entity.SysUser">
-        select  id,username,nick_name,
-                password,status,email,
-                phonenumber,sex,avatar,
-                user_type,create_by,create_time,
-                update_by,update_time,del_flag,
-                tel_weixin,info,weixin_code
-                      from sys_user
+        select id,username,nick_name,
+        password,status,email,
+        phonenumber,sex,avatar,
+        user_type,create_by,create_time,
+        update_by,update_time,del_flag,
+        tel_weixin,info,weixin_code
+        from sys_user
         <where>
-            <if test="username != null">and  username like  % #{username} %</if>
+            <if test="username != null">and username like % #{username} %</if>
             <if test="sex != null ">and sex like % #{sex} %</if>
             <if test="phoneNumber != null ">and phonenumber like % #{phoneNumber} %</if>
         </where>
+    </select>
+    <select id="selectByCompanyId" resultType="com.zf.domain.vo.SysUserVo" resultMap="SysUserVoMap">
+        SELECT
+            su.id as 'id',
+                su.username as 'username',
+                cof.role_name as 'dep_name',
+                su.station as'station',
+                ext.visitor_total as 'visitor_num',
+                ext.client_total_num as 'client_num',
+                SUM(exs.day_notes_num) as'note_num',
+                SUM(exs.day_download_num) as 'save_card_num',
+                SUM(exs.day_add_contact) as 'save_contact_num',
+                ext.active_num AS'active_num' ,
+                ext.stay_num as'stay_num' ,
+                ext.average_stay_min as 'average_stay_min',
+                su.create_time as 'create_time',
+                su.create_by as'create_by'
+        FROM sys_user su
+                 LEFT JOIN exposure_total ext on ext.create_by = su.id
+                 LEFT JOIN expo_snapshot exs on exs.expo_total_id = ext.id
+                 LEFT JOIN company_frame cof on cof.id=su.dep_id
+        WHERE su.companyid = #{companyid}
+          AND su.del_flag = 0
+    </select>
+    <select id="selectMyPage" resultType="com.zf.domain.vo.SysUserVo" resultMap="SysUserVoMap">
+        SELECT
+            su.id as 'id',
+                su.username as 'username',
+                cof.role_name as 'dep_name',
+                su.station as'station',
+                ext.visitor_total as 'visitor_num',
+                ext.client_total_num as 'client_num',
+                SUM(exs.day_notes_num) as'note_num',
+                SUM(exs.day_download_num) as 'save_card_num',
+                SUM(exs.day_add_contact) as 'save_contact_num',
+                ext.active_num AS'active_num' ,
+                ext.stay_num as'stay_num' ,
+                ext.average_stay_min as 'average_stay_min',
+                su.create_time as 'create_time',
+                su.create_by as'create_by'
+        FROM sys_user su
+                 LEFT JOIN exposure_total ext on ext.create_by = su.id
+                 LEFT JOIN expo_snapshot exs on exs.expo_total_id = ext.id
+                 LEFT JOIN company_frame cof on cof.id=su.dep_id
+        WHERE su.companyid = #{companyid}
+          AND su.del_flag = 0
+         GROUP BY su.id
+            LIMIT #{pageNum}
+            , #{pageSize}
     </select>
 
 </mapper>

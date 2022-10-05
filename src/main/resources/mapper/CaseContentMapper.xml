@@ -77,7 +77,7 @@
                cac.update_by,
                cac.update_time,
                cac.del_flag,
-               cac.visitor_num ,
+               cac.visitor_num,
                cac.base_visitor_num,
                su.username,
                cc.case_name
@@ -100,7 +100,7 @@
                cac.update_by,
                cac.update_time,
                cac.del_flag,
-               cac.visitor_num ,
+               cac.visitor_num,
                cac.base_visitor_num,
                su.username,
                cc.case_name
@@ -109,5 +109,55 @@
                  LEFT JOIN company_case cc ON cc.id = cac.case_id
         WHERE cac.del_flag = 0
           AND cac.create_by = #{userId}
+    </select>
+    <select id="selectByConditionsWithCid" resultType="com.zf.domain.vo.CaseContentVo" resultMap="CaseContentVoMap">
+        SELECT cac.id,
+        cac.case_id,
+        cac.title,
+        cac.img_path,
+        cac.content,
+        cac.create_by,
+        cac.create_time,
+        cac.update_by,
+        cac.update_time,
+        cac.del_flag,
+        cac.visitor_num ,
+        cac.base_visitor_num,
+        su.username,
+        cc.case_name
+        FROM case_content cac
+        LEFT JOIN sys_user su ON cac.create_by = su.id
+        LEFT JOIN company_case cc ON cc.id = cac.case_id
+        <where>
+            <if test="param !=null">cac.id like concat('%', #{param}, '%') </if>
+            <if test="caseType !=null">AND cac.case_id =#{caseType}</if>
+            <if test="1>0" > and cac.del_flag = 0 AND cac.create_by =#{userId}</if>
+        </where>
+
+    </select>
+
+    <select id="selectByConditionsWithCName" resultType="com.zf.domain.vo.CaseContentVo">
+        SELECT cac.id,
+        cac.case_id,
+        cac.title,
+        cac.img_path,
+        cac.content,
+        cac.create_by,
+        cac.create_time,
+        cac.update_by,
+        cac.update_time,
+        cac.del_flag,
+        cac.visitor_num ,
+        cac.base_visitor_num,
+        su.username,
+        cc.case_name
+        FROM case_content cac
+        LEFT JOIN sys_user su ON cac.create_by = su.id
+        LEFT JOIN company_case cc ON cc.id = cac.case_id
+        <where>
+            <if test="param !=null">cac.title like concat('%', #{param}, '%') </if>
+            <if test="caseType!=null">AND cac.case_id =#{caseType}</if>
+            <if test="1>0" > and cac.del_flag = 0 AND cac.create_by =#{userId}</if>
+        </where>
     </select>
 </mapper>

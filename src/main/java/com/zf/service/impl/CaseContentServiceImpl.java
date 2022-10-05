@@ -21,14 +21,12 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 import com.zf.mapper.SysUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Amireux
@@ -182,8 +180,8 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
             if (Objects.isNull(sysUserMapper.selectById(userId))) {
                 return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "查询案列失败：不存在此员工");
             } else {
-                  List<CaseContentVo>contentVoList= caseContentMapper.selectByCreateBy(userId);
-                return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询案列成功",contentVoList );
+                List<CaseContentVo> contentVoList = caseContentMapper.selectByCreateBy(userId);
+                return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询案列成功", contentVoList);
             }
         }
     }
@@ -201,34 +199,62 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
         pageUtils.setData(caseContentList);
         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询成功", pageUtils);
     }
+
     //TODO 已修改
     @Override
     public ResponseVo addCaseContentVisitorNumByWu(String cid) {
-        if (cid==null||"".equals(cid)){
+        if (cid == null || "".equals(cid)) {
             return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "更新案列浏览量失败：用户id或者案列类容Id输入为空");
-        }else{
-           if (!Validator.isNumeric(cid)){
-               return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "更新案列浏览量失败：参数异常输入的不是纯数字");
-           }else{
-               if (Objects.isNull(caseContentMapper.selectById(cid))){
-                   return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "更新案列浏览量失败：当前案列不存在");
-               }else {
-                   CaseContent caseContent = caseContentMapper.selectById(cid);
-                   caseContent.setVisitorNum(caseContent.getVisitorNum()+1);
-                   int i = caseContentMapper.updateById(caseContent);
-                   if (i>0){
-                       return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "更新案列浏览量成功");
-                   }else{
-                       return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "更新案列浏览量失败：未知错误");
-                   }
-               }
-           }
+        } else {
+            if (!Validator.isNumeric(cid)) {
+                return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "更新案列浏览量失败：参数异常输入的不是纯数字");
+            } else {
+                if (Objects.isNull(caseContentMapper.selectById(cid))) {
+                    return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "更新案列浏览量失败：当前案列不存在");
+                } else {
+                    CaseContent caseContent = caseContentMapper.selectById(cid);
+                    caseContent.setVisitorNum(caseContent.getVisitorNum() + 1);
+                    int i = caseContentMapper.updateById(caseContent);
+                    if (i > 0) {
+                        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "更新案列浏览量成功");
+                    } else {
+                        return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "更新案列浏览量失败：未知错误");
+                    }
+                }
+            }
         }
     }
 
     @Override
-    public ResponseVo selectByConditions(String token, String numOrStr, Integer caseType) {
-        return null;
+    public ResponseVo selectByConditions(String userId, String numOrStr, String caseType) {
+
+        List<CaseContentVo> contentVoList = new ArrayList<>();
+        if (userId == null || "".equals(userId)) {
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "条件查询失败：用户ID输入为空");
+        } else {
+            if ("".equals(numOrStr)) {
+                numOrStr = null;
+            }
+            if ("".equals(caseType)) {
+                caseType = null;
+            }
+            if (numOrStr==null){
+                contentVoList = caseContentMapper.selectByConditionsWithCid(userId, numOrStr, caseType);
+            }else{
+                if (Validator.isNumeric(numOrStr)) {
+                    contentVoList = caseContentMapper.selectByConditionsWithCid(userId, numOrStr, caseType);
+                } else {
+                    contentVoList = caseContentMapper.selectByConditionsWithCName(userId, numOrStr, caseType);
+                }
+            }
+
+
+
+          /*
+            contentVoList = caseContentMapper.selectByConditionsWithCid(userId, param, caseType);
+            contentVoList = caseContentMapper.selectByConditionsWithCName(userId, param, caseType);*/
+        }
+        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "条件查询成功", contentVoList);
     }
 
     public Integer getInteger(String userId) {
@@ -247,14 +273,17 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
         return id;
     }
 
-
-    public Object getParam(String param){
-        int id;
-        if (Validator.isNumeric(param)){
-            id=Integer.parseInt(param);
-            return id;
-        }else {
-            return param;
+    public Object getParam(String param) {
+        if ("".equals(param)) {
+            return null;
+        } else {
+            int id;
+            if (Validator.isNumeric(param)) {
+                id = Integer.parseInt(param);
+                return id;
+            } else {
+                return param;
+            }
         }
     }
 }

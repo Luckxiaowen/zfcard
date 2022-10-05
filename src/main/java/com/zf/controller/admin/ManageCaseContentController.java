@@ -63,11 +63,10 @@ public class ManageCaseContentController {
     @ApiOperation(value = "条件查询公司案列移动接口")
     @GetMapping("/casecontent-conditions")
     @ApiImplicitParams({
-            @ApiImplicitParam(dataType = "string", name = "NumOrStr", value = "文章编号/名称", required = false),
-            @ApiImplicitParam(dataType = "string", name = "caseType", value = "分类", required = false)
+            @ApiImplicitParam(dataType = "string", name = "NumOrStr", value = "文章编号/名称(如果不使用什么也不要传)", required = false),
+            @ApiImplicitParam(dataType = "String", name = "caseType", value = "案列分类id(如果不使用什么也不要传)", required = false)
     })
-    private ResponseVo companyCaseConditions(@RequestHeader("token")String token,@RequestParam(value = "NumOrStr") String NumOrStr ,@RequestParam(value ="caseType") Integer caseType) throws Exception{
-        return caseContentService.selectByConditions(token,NumOrStr,caseType);
+    private ResponseVo companyCaseConditions(@RequestHeader("token")String token,@RequestParam("NumOrStr") String NumOrStr ,@RequestParam("caseType") String caseType) throws Exception{
+        return caseContentService.selectByConditions(JwtUtil.parseJWT(token).getSubject(),NumOrStr,caseType);
     }
-
 }

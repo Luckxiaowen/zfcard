@@ -25,4 +25,7 @@ public interface CaseContentMapper extends BaseMapper<CaseContent> {
 
     List<CaseContentVo> selectByCreateBy(String userId);
 
+    List<CaseContentVo> selectByConditionsWithCid(String userId, Object param, String caseType);
+
+    List<CaseContentVo> selectByConditionsWithCName(String userId, Object param, String caseType);
 }

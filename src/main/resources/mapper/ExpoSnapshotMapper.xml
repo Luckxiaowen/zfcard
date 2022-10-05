@@ -24,6 +24,7 @@
         create_time
     </sql>
     <select id="selectSevenDayByDate" resultType="java.lang.Integer">
+
         select expo_snapshot.day_add_client as 'dayAddClient',
                 DATE_FORMAT(create_time,'%Y-%m-%d') AS create_time
         FROM expo_snapshot
@@ -39,5 +40,21 @@
             Order By
         DATE_FORMAT(create_time,'%Y-%m-%d') desc;
 
+    </select>
+    <select id="selectSevenDayByTotalId" resultType="com.zf.domain.entity.ExpoSnapshot">
+        select SUM(exs.day_total) as 'week_visitor_num', SUM(exs.day_add_client) AS'week_client_num',
+                DATE_FORMAT(create_time,'%Y-%m-%d') AS create_time
+        FROM expo_snapshot exs
+        where
+            expo_total_id =#{id}
+        AND
+        DATE_FORMAT(create_time,'%Y-%m-%d')IN
+        <foreach collection="sevenDate" item="sevenDate" separator="," open="(" close=")">
+            #{sevenDate}
+        </foreach>
+        Group BY
+        DATE_FORMAT(create_time,'%Y-%m-%d')
+        Order By
+        DATE_FORMAT(create_time,'%Y-%m-%d') desc;
     </select>
 </mapper>
