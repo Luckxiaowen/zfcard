@@ -1,6 +1,7 @@
 package com.zf.controller.admin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.zf.domain.dto.AccountDto;
 import com.zf.domain.dto.RoleDto;
 import com.zf.domain.dto.StaffDto;
 import com.zf.domain.entity.SysUser;
@@ -56,6 +57,15 @@ public class ManageUserController {
         return sysUserService.selectAll(JwtUtil.parseJWT(token).getSubject());
     }
 */
+    @ApiOperation(value = "根据员工id获取员工信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "token", required = true),
+    })
+    @GetMapping("/staff/{id}")
+    public ResponseVo getStaffById(@PathVariable("id") Integer id){
+        return sysUserService.getStaffById(id);
+    }
+
 
     @ApiOperation(value = "新增公司员工")
     @PostMapping("/staff")
@@ -102,6 +112,44 @@ public class ManageUserController {
     @PostMapping("/upload/file")
     public ResponseVo uploadUserWxCode(@RequestHeader("token")String token,HttpServletRequest request,@RequestParam("file")MultipartFile file){
         return sysUserService.updateUserWxCode(token,request,file);
-}
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "token", required = true),
+    })
+    @ApiOperation(value = "获取公司管理员账号")
+    @GetMapping("/account")
+    public ResponseVo getAllAccount(){
+        return sysUserService.getAllAccount();
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "token", required = true),
+    })
+    @ApiOperation(value = "删除公司管理员账号")
+    @GetMapping("/account/{id}")
+    public ResponseVo delAccount(@PathVariable("id") Integer id){
+        return sysUserService.delAccountById(id);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "token", required = true),
+    })
+    @ApiOperation(value = "重置公司管理员账号密码(重置密码为手机号后6位)")
+    @PostMapping("/account/reset/{id}")
+    public ResponseVo resetAccountPassword(@PathVariable("id") Integer id){
+        return sysUserService.resetAccountPassword(id);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "token", required = true),
+    })
+    @ApiOperation(value = "更新公司管理员信息")
+    @PutMapping("/account")
+    public ResponseVo updateAccount(@RequestBody @Validated AccountDto accountDto){
+        return sysUserService.updateAccount(accountDto);
+    }
+
+
 
 }
