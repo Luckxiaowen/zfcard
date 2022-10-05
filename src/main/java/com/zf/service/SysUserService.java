@@ -1,5 +1,6 @@
 package com.zf.service;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zf.domain.dto.AccountDto;
 import com.zf.domain.dto.StaffDto;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.ResponseVo;
@@ -61,4 +62,13 @@ public interface SysUserService extends IService<SysUser> {
     ResponseVo SelectPage(String subject, Integer pageNum, Integer pageSize);
 
 
+    ResponseVo getStaffById(Integer id);
+
+    ResponseVo getAllAccount();
+
+    ResponseVo delAccountById(Integer id);
+
+    ResponseVo resetAccountPassword(Integer id);
+
+    ResponseVo updateAccount(AccountDto accountDto);
 }

@@ -5,9 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zf.domain.dto.AccountDto;
 import com.zf.domain.dto.StaffDto;
 import com.zf.domain.entity.CompanyFrame;
+import com.zf.domain.entity.SysRole;
 import com.zf.domain.entity.SysUser;
+import com.zf.domain.entity.SysUserRole;
 import com.zf.domain.vo.LoginUser;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.domain.vo.SysUserVo;
@@ -20,6 +23,7 @@ import com.zf.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -411,6 +415,77 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         pageUtils.setTotal((int) userVoList.stream().count());
         pageUtils.setData(userVoList);
         return ResponseVo.okResult(pageUtils);
+    }
+
+    @Override
+    public ResponseVo getStaffById(Integer id) {
+        if (id == null)
+            throw new SystemException(AppHttpCodeEnum.PARAMETER_ERROR);
+        LoginUser loginUser = UserUtils.getLoginUser();
+        SysUser staff = getById(id);
+        if (Objects.isNull(staff) || !Objects.equals(loginUser.getSysUser().getCompanyid(),staff.getCompanyid()))
+            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
+        StaffDto staffDto = BeanCopyUtils.copyBean(staff, StaffDto.class);
+        staffDto.setId(Math.toIntExact(staff.getId()));
+        return ResponseVo.okResult(staffDto);
+    }
+
+    @Override
+    public ResponseVo getAllAccount() {
+        Long companyid = UserUtils.getLoginUser().getSysUser().getCompanyid();
+        List<SysUser> list = sysUserMapper.selectAllAccount(companyid);
+        return ResponseVo.okResult(list);
+    }
+
+    @Override
+    public ResponseVo delAccountById(Integer id) {
+        if (id == null)
+            throw new SystemException(AppHttpCodeEnum.PARAMETER_ERROR);
+        LoginUser loginUser = UserUtils.getLoginUser();
+        SysUser user = getById(id);
+        if (Objects.isNull(user) || !Objects.equals(user.getCompanyid(),loginUser.getSysUser().getCompanyid()))
+            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
+        removeById(id);
+        return ResponseVo.okResult();
+    }
+
+    @Override
+    public ResponseVo resetAccountPassword(Integer id) {
+        if (id == null)
+            throw new SystemException(AppHttpCodeEnum.PARAMETER_ERROR);
+        LoginUser loginUser = UserUtils.getLoginUser();
+        SysUser user = getById(id);
+        if (Objects.isNull(user) || !Objects.equals(user.getCompanyid(),loginUser.getSysUser().getCompanyid()))
+            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
+        String phonenumber = user.getPhonenumber();
+        String password = phonenumber.substring(phonenumber.length() - 6);
+        String encodePassword = passwordEncoder.encode(password);
+        user.setPassword(encodePassword);
+        updateById(user);
+        return ResponseVo.okResult();
+    }
+
+    @Resource
+    private SysUserRoleServiceImpl userRoleService;
+    @Resource
+    private SysRoleServiceImpl roleService;
+
+    @Override
+    @Transactional
+    public ResponseVo updateAccount(AccountDto accountDto) {
+        LoginUser loginUser = UserUtils.getLoginUser();
+        SysUser user = getById(accountDto.getId());
+        if (Objects.isNull(user) || !Objects.equals(user.getCompanyid(),loginUser.getSysUser().getCompanyid()))
+            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
+        user.setPhonenumber(accountDto.getTelNumber());
+        updateById(user);
+        SysRole role = roleService.getById(accountDto.getRoleId());
+        if (Objects.isNull(role) || !Objects.equals(role.getCompanyId(),loginUser.getSysUser().getCompanyid()))
+            throw new SystemException(AppHttpCodeEnum.ROLE_NOT_EXIST);
+        SysUserRole userRole = userRoleService.getById(user.getId());
+        userRole.setRoleId(Long.valueOf(accountDto.getRoleId()));
+        userRoleService.updateById(userRole);
+        return ResponseVo.okResult();
     }
 
     public Integer getInteger(String userId) {

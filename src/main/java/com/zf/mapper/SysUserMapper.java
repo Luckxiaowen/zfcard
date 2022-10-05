@@ -24,4 +24,6 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
     List<SysUserVo> selectByCompanyId(Long companyid);
 
     List<SysUserVo> selectMyPage(Long companyid, Integer pageNum, Integer pageSize);
+
+    List<SysUser> selectAllAccount(Long companyid);
 }

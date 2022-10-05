@@ -154,5 +154,11 @@ public class SysUser implements Serializable {
     @ApiModelProperty(value = "所属部门Id",dataType = "Integer")
     private Integer depId;
 
+    @TableField(exist = false)
+    private String createUser;
+
+    @TableField(exist = false)
+    private String roleName;
+
 
 }

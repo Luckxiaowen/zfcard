@@ -20,7 +20,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class StaffDto {
 
-    @ApiModelProperty(value = "客服id,更新,删除时需要传入客服id",dataType = "int")
+    @ApiModelProperty(value = "员工id,更新,删除时需要传入客服id",dataType = "int")
     @NotNull(message = "id不能为空",groups = Update.class)
     private Integer id;
 
