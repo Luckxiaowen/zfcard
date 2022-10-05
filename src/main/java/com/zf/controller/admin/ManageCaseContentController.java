@@ -22,9 +22,9 @@ public class ManageCaseContentController {
 
     /**
      * 1.Get是查询请求,用来获取资源
-     * 2.Post是用来新建资源的,也可以用来更新
-     * 3.Put用来更新
-     * 4.Delete用来删除*/
+     * 2.Post新建资源,更新
+     * 3.Put 更新
+     * 4.Delete 删除*/
 
     @ApiOperation(value = "添加公司案列内容接口")
     @PostMapping("/add-casecontent")
