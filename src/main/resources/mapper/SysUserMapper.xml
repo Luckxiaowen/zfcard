@@ -132,6 +132,7 @@
         WHERE
             su.companyid = #{companyid}
           AND su.user_type = 0
+        And su.del_flag = 0
     </select>
 
 </mapper>
