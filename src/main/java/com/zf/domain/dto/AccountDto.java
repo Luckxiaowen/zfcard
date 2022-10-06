@@ -16,8 +16,9 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountDto {
-    @NotNull(message = "更新人id不能为空")
     private Integer id;
+    @NotBlank(message = "姓名不能为空")
+    private String username;
     @NotBlank(message = "电话不能为空")
     @Length(max = 11,min = 11,message = "电话格式不正确")
     private String telNumber;

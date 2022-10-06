@@ -3,6 +3,7 @@ package com.zf.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.dto.AccountDto;
@@ -478,13 +479,36 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (Objects.isNull(user) || !Objects.equals(user.getCompanyid(),loginUser.getSysUser().getCompanyid()))
             throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
         user.setPhonenumber(accountDto.getTelNumber());
+        user.setUsername(accountDto.getUsername());
         updateById(user);
+
         SysRole role = roleService.getById(accountDto.getRoleId());
         if (Objects.isNull(role) || !Objects.equals(role.getCompanyId(),loginUser.getSysUser().getCompanyid()))
             throw new SystemException(AppHttpCodeEnum.ROLE_NOT_EXIST);
-        SysUserRole userRole = userRoleService.getById(user.getId());
+        SysUserRole userRole = userRoleService.getOne(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getRoleId,accountDto.getRoleId()));
         userRole.setRoleId(Long.valueOf(accountDto.getRoleId()));
-        userRoleService.updateById(userRole);
+        userRoleService.update(userRole, new LambdaUpdateWrapper<SysUserRole>().eq(SysUserRole::getUserId,user.getId()));
+        return ResponseVo.okResult();
+    }
+
+    @Override
+    @Transactional
+    public ResponseVo addAccount(AccountDto accountDto) {
+        LoginUser loginUser = UserUtils.getLoginUser();
+        String phonenumber = accountDto.getTelNumber();
+        String password = phonenumber.substring(phonenumber.length() - 6);
+        String encodePassword = passwordEncoder.encode(password);
+        SysUser user = new SysUser();
+        user.setUserType(0);
+        user.setCompanyid(loginUser.getSysUser().getCompanyid());
+        user.setCreateBy(loginUser.getSysUser().getId());
+        user.setPhonenumber(accountDto.getTelNumber());
+        user.setUsername(accountDto.getUsername());
+        user.setNickName(accountDto.getUsername());
+        user.setPassword(encodePassword);
+        save(user);
+        SysUserRole userRole = new SysUserRole(user.getId(), Long.valueOf(accountDto.getRoleId()));
+        userRoleService.save(userRole);
         return ResponseVo.okResult();
     }
 
