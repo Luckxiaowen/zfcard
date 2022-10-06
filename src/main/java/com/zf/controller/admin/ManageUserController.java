@@ -151,5 +151,16 @@ public class ManageUserController {
     }
 
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "token", required = true),
+    })
+    @ApiOperation(value = "新增公司管理员信息")
+    @PostMapping("/account")
+    public ResponseVo addAccount(@RequestBody @Validated AccountDto accountDto){
+        return sysUserService.addAccount(accountDto);
+    }
+
+
+
 
 }
