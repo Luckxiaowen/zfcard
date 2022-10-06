@@ -73,4 +73,6 @@ public interface SysUserService extends IService<SysUser> {
     ResponseVo updateAccount(AccountDto accountDto);
 
     ResponseVo addAccount(AccountDto accountDto);
+
+    ResponseVo getAccountById(Integer id);
 }
