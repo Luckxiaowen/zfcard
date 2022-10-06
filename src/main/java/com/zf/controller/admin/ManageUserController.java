@@ -160,6 +160,15 @@ public class ManageUserController {
         return sysUserService.addAccount(accountDto);
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "token", required = true),
+    })
+    @ApiOperation(value = "根据id获取公司管理员信息")
+    @GetMapping("/account/{id}")
+    public ResponseVo getAccountById(@PathVariable("id") Integer id){
+        return sysUserService.getAccountById(id);
+    }
+
 
 
 

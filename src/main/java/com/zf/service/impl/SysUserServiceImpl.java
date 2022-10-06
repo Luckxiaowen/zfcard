@@ -513,6 +513,23 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return ResponseVo.okResult();
     }
 
+    @Override
+    public ResponseVo getAccountById(Integer id) {
+        if (id == null)
+            throw new SystemException(AppHttpCodeEnum.PARAMETER_ERROR);
+        LoginUser loginUser = UserUtils.getLoginUser();
+        SysUser user = getById(id);
+        if (Objects.isNull(user) || !Objects.equals(user.getCompanyid(),loginUser.getSysUser().getCompanyid()))
+            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
+        Integer roleId = Math.toIntExact(userRoleService.getOne(new LambdaUpdateWrapper<SysUserRole>().eq(SysUserRole::getUserId, id)).getRoleId());
+        AccountDto account = new AccountDto();
+        account.setId(Math.toIntExact(user.getId()));
+        account.setUsername(user.getUsername());
+        account.setTelNumber(user.getPhonenumber());
+        account.setRoleId(roleId);
+        return ResponseVo.okResult(account);
+    }
+
     public Integer getInteger(String userId) {
         int id;
         if (Validator.isNumeric(userId)) {
