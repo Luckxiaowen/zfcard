@@ -127,7 +127,7 @@ public class ManageUserController {
             @ApiImplicitParam(paramType = "header", name = "token", required = true),
     })
     @ApiOperation(value = "删除公司管理员账号")
-    @GetMapping("/account/{id}")
+    @DeleteMapping("/account/{id}")
     public ResponseVo delAccount(@PathVariable("id") Integer id){
         return sysUserService.delAccountById(id);
     }

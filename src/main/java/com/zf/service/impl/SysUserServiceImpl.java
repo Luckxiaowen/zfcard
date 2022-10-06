@@ -447,6 +447,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (Objects.isNull(user) || !Objects.equals(user.getCompanyid(),loginUser.getSysUser().getCompanyid()))
             throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
         removeById(id);
+        userRoleService.remove(new LambdaUpdateWrapper<SysUserRole>().eq(SysUserRole::getUserId,id));
         return ResponseVo.okResult();
     }
 
@@ -485,7 +486,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysRole role = roleService.getById(accountDto.getRoleId());
         if (Objects.isNull(role) || !Objects.equals(role.getCompanyId(),loginUser.getSysUser().getCompanyid()))
             throw new SystemException(AppHttpCodeEnum.ROLE_NOT_EXIST);
-        SysUserRole userRole = userRoleService.getOne(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getRoleId,accountDto.getRoleId()));
+        SysUserRole userRole = userRoleService.getOne(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId,accountDto.getId()));
         userRole.setRoleId(Long.valueOf(accountDto.getRoleId()));
         userRoleService.update(userRole, new LambdaUpdateWrapper<SysUserRole>().eq(SysUserRole::getUserId,user.getId()));
         return ResponseVo.okResult();
