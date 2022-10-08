@@ -83,21 +83,22 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
                 query.eq(ExposureTotal::getCreateBy, userId);
                 ExposureTotal total = exposureTotalMapper.selectOne(query);
                 if (total == null) {
-
                     Date date = new Date();
                     assert userId != null;
                     ExposureTotal exposure = new ExposureTotal(null, Long.valueOf(userId), date, date, 0L, 0L, 0L,
                             0L, 0L, 0L, 0L, 0L, 0L, 0L,"",0);
-
                     exposureTotalMapper.insert(exposure);
                 }
+                String roleName="";
+                LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(SysUser::getId, userId);
+                SysUser sysRole = sysUserMapper.selectOne(queryWrapper);
 
-                LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
-                queryWrapper.eq(SysRole::getId, roleId);
-                SysRole sysRole = sysRoleMapper.selectOne(queryWrapper);
-
-                String roleName = sysRole.getName();
-
+                if (Objects.isNull(sysRole)){
+                    roleName="职位为空";
+                }else {
+                    roleName = sysRole.getStation();
+                }
                 LambdaQueryWrapper<Company> companyQueryWrapper = new LambdaQueryWrapper<>();
                 companyQueryWrapper.eq(Company::getId, companyId);
                 Company company = companyMapper.selectOne(companyQueryWrapper);

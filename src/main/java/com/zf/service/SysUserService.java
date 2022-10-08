@@ -7,6 +7,7 @@ import com.zf.domain.vo.ResponseVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
 * @author Amireux
@@ -75,4 +76,7 @@ public interface SysUserService extends IService<SysUser> {
     ResponseVo addAccount(AccountDto accountDto);
 
     ResponseVo getAccountById(Integer id);
+
+    ResponseVo addUserList(String token, List<StaffDto> userList);
+
 }

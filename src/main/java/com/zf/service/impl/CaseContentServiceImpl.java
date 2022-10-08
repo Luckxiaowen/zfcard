@@ -115,24 +115,22 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
     @Override
     public ResponseVo updateCaseContent(long userId, CaseContent caseContent) {
         if ("".equals(caseContent.getTitle()) || caseContent.getTitle() == null) {
-            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "标题不能为空");
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "标题不能为空");
         } else {
             if (caseContent.getTitle().length() < 2) {
-                return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "标题不能长度不能小于两个字符");
+                return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "标题不能长度不能小于两个字符");
             } else {
                 LambdaQueryWrapper<CaseContent> queryWrapper = new LambdaQueryWrapper<>();
                 queryWrapper.eq(CaseContent::getCreateBy, userId);
                 queryWrapper.and(wrapper -> {
-                    wrapper.eq(CaseContent::getCreateBy, caseContent.getTitle());
+                    wrapper.eq(CaseContent::getTitle, caseContent.getTitle());
                 });
                 if (caseContentMapper.selectById(caseContent.getId()).getTitle().equals(caseContent.getTitle())) {
-                    return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "当前公司已有相同文章标题的文章，请修改标题");
-                } else {
                     if ("".equals(caseContent.getContent()) || caseContent.getContent() == null) {
-                        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "文章内容不能为空");
+                        return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "文章内容不能为空");
                     } else {
                         if ("".equals(caseContent.getCaseId()) || caseContent.getCaseId() == null) {
-                            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "文章分类不能为空");
+                            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "文章分类不能为空");
                         } else {
                             //TODO 数据库操作
                             caseContent.setUpdateBy(userId);
@@ -142,9 +140,36 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
                             if (insert > 0) {
                                 return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "更新成功");
                             } else {
-                                return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "更新失败");
+                                return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "更新失败");
                             }
                         }
+                    }
+                } else {
+                    queryWrapper = new LambdaQueryWrapper<>();
+                    queryWrapper.eq(CaseContent::getCreateBy, userId)
+                            .eq(CaseContent::getTitle, caseContent.getTitle());
+                    CaseContent caseContent1 = caseContentMapper.selectOne(queryWrapper);
+                    if (Objects.isNull(caseContent1)) {
+                        if ("".equals(caseContent.getContent()) || caseContent.getContent() == null) {
+                            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "文章内容不能为空");
+                        } else {
+                            if ("".equals(caseContent.getCaseId()) || caseContent.getCaseId() == null) {
+                                return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "文章分类不能为空");
+                            } else {
+                                //TODO 数据库操作
+                                caseContent.setUpdateBy(userId);
+                                caseContent.setUpdateTime(new Date());
+                                caseContent.setDelFlag(0);
+                                int insert = caseContentMapper.updateById(caseContent);
+                                if (insert > 0) {
+                                    return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "更新成功");
+                                } else {
+                                    return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "更新失败");
+                                }
+                            }
+                        }
+                    } else {
+                        return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "当前公司已有相同文章标题的文章，请修改标题");
                     }
                 }
             }
@@ -238,9 +263,9 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
             if ("".equals(caseType)) {
                 caseType = null;
             }
-            if (numOrStr==null){
+            if (numOrStr == null) {
                 contentVoList = caseContentMapper.selectByConditionsWithCid(userId, numOrStr, caseType);
-            }else{
+            } else {
                 if (Validator.isNumeric(numOrStr)) {
                     contentVoList = caseContentMapper.selectByConditionsWithCid(userId, numOrStr, caseType);
                 } else {

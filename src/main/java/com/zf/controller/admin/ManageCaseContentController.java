@@ -39,7 +39,7 @@ public class ManageCaseContentController {
     }
 
     @ApiOperation(value = "修改公司案列内容接口")
-    @PutMapping("/delete-casecontent/")
+    @PutMapping("/update-casecontent/")
     public ResponseVo updateCaseContent(@RequestHeader("token")String token,@RequestBody CaseContent caseContent) throws Exception {
         return caseContentService.updateCaseContent(Long.parseLong(JwtUtil.parseJWT(token).getSubject()),caseContent);
     }

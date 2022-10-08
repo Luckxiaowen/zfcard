@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @Api(value = "提供超级管理员以及管理员对公司员工信息的增删改查", tags = "PC员工信息管理接口")
@@ -135,6 +136,7 @@ public class ManageUserController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", required = true),
     })
+
     @ApiOperation(value = "重置公司管理员账号密码(重置密码为手机号后6位)")
     @PostMapping("/account/reset/{id}")
     public ResponseVo resetAccountPassword(@PathVariable("id") Integer id){
@@ -169,6 +171,11 @@ public class ManageUserController {
         return sysUserService.getAccountById(id);
     }
 
+    @PostMapping("add-listUser")
+    @ApiOperation(value = "批量添加员工信息")
+    public ResponseVo addUserList(@RequestHeader("token")String token,@RequestBody List<StaffDto>userList) throws Exception {
+        return sysUserService.addUserList(JwtUtil.parseJWT(token).getSubject(),userList);
+    }
 
 
 

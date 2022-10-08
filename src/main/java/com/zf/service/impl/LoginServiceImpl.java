@@ -149,7 +149,6 @@ public class LoginServiceImpl implements LoginService {
         Map<String, Object> resultMap = WXUtils.getOpenId(code);
         String openId = (String) resultMap.get("openId");
         System.out.println("openId = " + openId);
-
         if (StringUtils.isEmpty(openId)){
             return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "未获取到用户openID");
         }else{

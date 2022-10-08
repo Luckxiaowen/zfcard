@@ -255,7 +255,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public ResponseVo updateUserOpenId(String userId, String openId) {
 
-
         long uId = Long.parseLong(userId);
         SysUser selectUser = sysUserMapper.selectById(uId);
         Map<String,Object>map=new HashMap<>();
@@ -413,7 +412,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         pageNum = (pageNum - 1) * pageSize;
         List<SysUserVo>userVoList=sysUserMapper.selectMyPage(sysUser.getCompanyid(),pageNum,pageSize);
         PageUtils pageUtils = new PageUtils();
-        pageUtils.setTotal((int) userVoList.stream().count());
+        pageUtils.setTotal((int) count);
         pageUtils.setData(userVoList);
         return ResponseVo.okResult(pageUtils);
     }
@@ -528,6 +527,28 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         account.setTelNumber(user.getPhonenumber());
         account.setRoleId(roleId);
         return ResponseVo.okResult(account);
+    }
+
+    @Override
+    public ResponseVo addUserList(String token, List<StaffDto> userList) {
+        System.out.println("userList = " + userList);
+        if (userList.size()==0){
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "excel中没有数据");
+        }else {
+            for (StaffDto staffDto : userList) {
+                SysUser sysUser = new SysUser();
+                sysUser.setDepId(staffDto.getDepId());
+                sysUser.setEmail(staffDto.getEmail());
+                sysUser.setPhonenumber(staffDto.getPhonenumber());
+                sysUser.setStation(staffDto.getStation());
+                sysUser.setTelWeixin(staffDto.getTelWeixin());
+                sysUser.setWeixinCode(staffDto.getWeixinCode());
+                sysUser.setUsername(staffDto.getUsername());
+                sysUserMapper.insert(sysUser);
+            }
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "批量添加成功");
+
+        }
     }
 
     public Integer getInteger(String userId) {
