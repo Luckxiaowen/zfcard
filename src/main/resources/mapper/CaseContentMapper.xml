@@ -45,26 +45,25 @@
     </sql>
 
     <select id="getCaseContent" resultType="com.zf.domain.entity.CaseContent">
-        select DISTINCT cac.case_id,
-                        coc.case_name,
-                        cac.title,
-                        cac.img_path,
-                        cac.content,
-                        cac.create_by,
-                        cac.create_time,
-                        cac.update_by,
-                        cac.update_time,
-                        cac.del_flag,
-                        cac.visitor_num,
-                        cac.id,
-                        coc.company_id
-        FROM company_case coc
-                 LEFT JOIN sys_user su
-                           ON su.companyid = coc.company_id
-                 LEFT JOIN case_content cac
-                           ON cac.case_id = coc.id
-        where su.id = #{id}
-
+        SELECT cac.id,
+               cac.case_id,
+               cac.title,
+               cac.img_path,
+               cac.content,
+               cac.create_by,
+               cac.create_time,
+               cac.update_by,
+               cac.update_time,
+               cac.del_flag,
+               cac.visitor_num,
+               cac.base_visitor_num,
+               su.username,
+               cc.case_name
+        FROM case_content cac
+                 LEFT JOIN sys_user su ON cac.create_by = su.id
+                 LEFT JOIN company_case cc ON cac.case_id = cc.id
+        WHERE cac.create_by = #{id}
+          and cac.del_flag = 0
     </select>
     <select id="selectMyPage" resultType="com.zf.domain.vo.CaseContentVo" resultMap="CaseContentVoMap">
         SELECT cac.id,
@@ -83,7 +82,7 @@
                cc.case_name
         FROM case_content cac
                  LEFT JOIN sys_user su ON cac.create_by = su.id
-                 LEFT JOIN company_case cc ON cc.id = cac.case_id
+                 LEFT JOIN company_case cc ON cac.case_id = cc.id
         WHERE cac.create_by = #{userId}
           and cac.del_flag = 0
             LIMIT #{pageNum}

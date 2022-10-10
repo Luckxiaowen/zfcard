@@ -146,6 +146,7 @@ public class CompanyCaseServiceImpl extends ServiceImpl<CompanyCaseMapper, Compa
                 }else{
                     LambdaQueryWrapper<CompanyCase> wrapper = new LambdaQueryWrapper<>();
                     wrapper.eq(CompanyCase::getCompanyId,companyid);
+                    wrapper.eq(CompanyCase::getDelFlag,0);
                     List<CompanyCase> companyCases = companyCaseMapper.selectList(wrapper);
 //        获取一列数据
 //        companyCases.stream().map(CompanyCase::getCaseName).collect(Collectors.toList());
@@ -209,7 +210,8 @@ public class CompanyCaseServiceImpl extends ServiceImpl<CompanyCaseMapper, Compa
                     if (sysUserMapper.selectById(userId).getDelFlag()==1){
                         return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司案列分类查询失败：该员工已被删不能查询");
                     }else{
-                      List<CompanyCaseVo>caseVoList= companyCaseMapper.selectAllByCreateBy(userId);
+                        Long companyid = sysUserMapper.selectById(userId).getCompanyid();
+                        List<CompanyCaseVo>caseVoList= companyCaseMapper.selectAllByCreateBy(userId,companyid);
                       return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询成功",caseVoList);
                     }
                 }
@@ -220,9 +222,10 @@ public class CompanyCaseServiceImpl extends ServiceImpl<CompanyCaseMapper, Compa
     @Override
     public ResponseVo selectPage(String userId, Integer pageNum, Integer pageSize) {
 
-        long count = companyCaseMapper.selectAllByCreateBy(userId).stream().count();
+        long count = companyCaseMapper.selectAllByCreateBy(userId,sysUserMapper.selectById(userId).getCompanyid()).stream().count();
         pageNum = (pageNum - 1) * pageSize;
-        List<CompanyCaseVo> caseVoList = companyCaseMapper.selectMyPage(Long.valueOf(userId), pageNum, pageSize);
+        Long companyid = sysUserMapper.selectById(userId).getCompanyid();
+        List<CompanyCaseVo> caseVoList = companyCaseMapper.selectMyPage(Long.valueOf(userId), pageNum, pageSize,companyid);
         PageUtils pageUtils=new PageUtils();
         pageUtils.setTotal((int) count);
         pageUtils.setData(caseVoList);

@@ -20,9 +20,9 @@ import java.util.List;
 @Repository
 public interface CompanyCaseMapper extends BaseMapper<CompanyCase> {
 
-    List<CompanyCaseVo> selectAllByCreateBy(String userId);
+    List<CompanyCaseVo> selectAllByCreateBy(String userId,Long companyId);
 
-    List<CompanyCaseVo>selectMyPage(Long userId, Integer pageNum,Integer pageSize);
+    List<CompanyCaseVo>selectMyPage(Long userId, Integer pageNum,Integer pageSize,Long companyId);
 
     Integer selectMaxOrders();
 

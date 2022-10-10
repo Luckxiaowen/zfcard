@@ -28,8 +28,8 @@ public class WXUtils {
      */
 
 
-    private static final String APP_ID = "wxafcffece6679f01a";
-    private static final String SECRET = "83b297e0e7412cf259b6e0346ed5d1f6";
+    private static final String APP_ID = "wx93417b250d7a3888";
+    private static final String SECRET = "5b4ed68d0c7d6cb225f4729c5cfa3e5c";
 
 
 

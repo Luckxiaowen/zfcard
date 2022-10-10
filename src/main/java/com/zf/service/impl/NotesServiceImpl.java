@@ -90,7 +90,6 @@ public class NotesServiceImpl extends ServiceImpl<NotesMapper, Notes> implements
                                         int insert1 = 0;
                                         if (!Objects.isNull(client1)) {
                                             System.out.println("已存在手机号为 :" + notes.getTel() + "的客户");
-
                                         } else {
                                             Client client = new Client();
                                             client.setName(notes.getName());

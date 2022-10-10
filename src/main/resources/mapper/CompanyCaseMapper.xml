@@ -51,6 +51,7 @@
         FROM company_case cc
                  LEFT JOIN sys_user su ON su.id = cc.create_by
         WHERE cc.create_by = #{userId}
+          and cc.company_id=#{companyId}
           AND cc.del_flag = 0
         order By cc.orders asc
     </select>
@@ -68,6 +69,7 @@
         FROM company_case cc
                  LEFT JOIN sys_user su ON su.id = cc.create_by
         WHERE cc.create_by = #{userId}
+          and cc.company_id=#{companyId}
           AND cc.del_flag = 0
         order By cc.orders asc
             LIMIT #{pageNum}

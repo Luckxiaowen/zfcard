@@ -59,6 +59,7 @@ public class CompanyContentController {
         return caseContentService.getCaseContent(userId);
     }
 
+
     @ApiOperation("案例内容浏览量接口")
     @PutMapping("/company_case_views/{cid}")
     public ResponseVo saveCard(@ApiParam(name = "cid",value = "案列内容Id")@PathVariable("cid") String cid){

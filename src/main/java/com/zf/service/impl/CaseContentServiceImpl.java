@@ -190,7 +190,7 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
                 if (companyid == null || "".equals(companyid)) {
                     return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "获取案例内容失败：当前员工不属于任何公司");
                 } else {
-                    List<CaseContent> caseContent = caseContentMapper.getCaseContent(Math.toIntExact(companyid));
+                    List<CaseContent> caseContent = caseContentMapper.getCaseContent(Math.toIntExact(userId));
                     return ResponseVo.okResult(caseContent);
                 }
             }

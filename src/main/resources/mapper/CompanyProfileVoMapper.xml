@@ -15,6 +15,7 @@
         select id,info_name,info_content,company_id
         from company_info
         where company_id = #{companyId}
+        and del_flag=0
     </select>
 
 
