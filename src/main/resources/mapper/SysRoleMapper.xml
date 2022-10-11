@@ -34,7 +34,9 @@
             sys_role sr
                 LEFT JOIN sys_user su ON sr.create_by = su.id
         WHERE
-            sr.company_id = #{companyId}
+            sr.company_id = #{companyId} and
+            sr.del_flag = 0
     </select>
+
 
 </mapper>

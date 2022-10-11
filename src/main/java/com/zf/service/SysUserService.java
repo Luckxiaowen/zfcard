@@ -1,12 +1,13 @@
 package com.zf.service;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zf.domain.dto.AccountDto;
+import com.zf.domain.dto.StaffDto;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.ResponseVo;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
+import java.util.List;
 
 /**
 * @author Amireux
@@ -22,7 +23,7 @@ public interface SysUserService extends IService<SysUser> {
 
     ResponseVo modify(SysUser sysUser,String updateId);
 
-    ResponseVo selectAll();
+    ResponseVo selectAll(String userId);
 
   /**
    * 进入个人信息，查询个人简介以及头像
@@ -48,4 +49,34 @@ public interface SysUserService extends IService<SysUser> {
 
 
      ResponseVo updateUserWxCode(String token, HttpServletRequest request, MultipartFile file);
+
+    ResponseVo selectUserInfoByWu(String userId);
+
+    ResponseVo selectUserProPhotoByWu(String userId);
+
+    ResponseVo addStaff(StaffDto staff);
+
+    ResponseVo updateStaff(StaffDto staff);
+
+    ResponseVo delStaffById(Integer id);
+
+    ResponseVo SelectPage(String subject, Integer pageNum, Integer pageSize);
+
+
+    ResponseVo getStaffById(Integer id);
+
+    ResponseVo getAllAccount();
+
+    ResponseVo delAccountById(Integer id);
+
+    ResponseVo resetAccountPassword(Integer id);
+
+    ResponseVo updateAccount(AccountDto accountDto);
+
+    ResponseVo addAccount(AccountDto accountDto);
+
+    ResponseVo getAccountById(Integer id);
+
+    ResponseVo addUserList(String token, List<StaffDto> userList);
+
 }

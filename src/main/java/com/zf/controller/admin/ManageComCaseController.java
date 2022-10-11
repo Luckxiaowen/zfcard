@@ -30,7 +30,10 @@ public class ManageComCaseController {
 
     @ApiOperation(value = "添加分公司案列分类接口")
     @PostMapping("/add-companycase")
-    public ResponseVo addCompanyCase(@RequestHeader("token")String token, @RequestParam String caseName) throws Exception {
+    @ApiImplicitParams({
+            @ApiImplicitParam(dataType = "string", name = "caseName", value = "案列分类名名称", required = true)
+    })
+    public ResponseVo addCompanyCase(@RequestHeader("token")String token, @RequestParam("caseName") String caseName) throws Exception {
         return companyCaseService.addCompanyCase(JwtUtil.parseJWT(token).getSubject(),caseName);
     }
 
@@ -42,9 +45,6 @@ public class ManageComCaseController {
 
     @ApiOperation(value = "修改分公司案列分类接口")
     @PutMapping("/update-companycase")
-    @ApiImplicitParams({
-            @ApiImplicitParam(dataType = "string", name = "casename", value = "公司案列名称", required = true),
-    })
     public ResponseVo updateCompanyCase(@RequestHeader("token")String token,@RequestBody CompanyCase companyCase) throws Exception {
         return companyCaseService.updateCompanyCase(JwtUtil.parseJWT(token).getSubject(),companyCase);
     }
@@ -56,5 +56,24 @@ public class ManageComCaseController {
         return companyCaseService.selectAll(JwtUtil.parseJWT(token).getSubject());
     }
 
+    @ApiOperation(value = "公司案列分类分页查询")
+    @GetMapping("/page-companycase")
+    @ApiImplicitParams({
+            @ApiImplicitParam(dataType = "string", name = "pageNum", value = "显示条数", required = true),
+            @ApiImplicitParam(dataType = "string", name = "pageSize", value = "页码数", required = true)
+    })
+    public ResponseVo selectPageCompanyCase(@RequestHeader("token")String token,@RequestParam("pageNum") Integer pageNum ,@RequestParam("pageSize") Integer pageSize) throws Exception {
+        return companyCaseService.selectPage(JwtUtil.parseJWT(token).getSubject(),pageNum,pageSize);
+    }
+
+    @ApiOperation(value = "公司案列移动接口")
+    @GetMapping("/companycase-updateSort")
+    @ApiImplicitParams({
+            @ApiImplicitParam(dataType = "string", name = "sortStr", value = "上下移动标识符（up 为上移动; down 为下移动）", required = true),
+            @ApiImplicitParam(dataType = "string", name = "companyCaseId", value = "分公司简介id", required = true)
+    })
+    private ResponseVo companyCaseMove(@RequestHeader("token")String token,@RequestParam(value = "sortStr") String sortStr ,@RequestParam(value ="companyCaseId") Integer companyCaseId) throws Exception{
+        return companyCaseService.companyCaseOrderByOrders(JwtUtil.parseJWT(token).getSubject(),sortStr,companyCaseId);
+    }
 
 }

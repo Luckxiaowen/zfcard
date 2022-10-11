@@ -13,4 +13,10 @@ import com.zf.domain.vo.ResponseVo;
 public interface ClientService extends IService<Client> {
 
     ResponseVo addClient(Client client);
+
+    ResponseVo clientSummary(String token);
+
+    ResponseVo sevenClientTrend(String token);
+
+    ResponseVo searchAll(String userId);
 }

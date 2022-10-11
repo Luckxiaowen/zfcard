@@ -62,10 +62,11 @@ implements SysRoleService {
                 .setCreateBy(loginUser.getSysUser().getId())
                 .setUpdateBy(loginUser.getSysUser().getId());
         save(role);
-        roleDto.getMenuId().forEach(item -> {
-            SysRoleMenu roleMenu = new SysRoleMenu(role.getId(), item);
+        List<Long> menuId = roleDto.getMenuId();
+        for (Long id : menuId) {
+            SysRoleMenu roleMenu = new SysRoleMenu(role.getId(), id);
             roleMenuService.save(roleMenu);
-        });
+        }
 
         return ResponseVo.okResult(AppHttpCodeEnum.SUCCESS.getCode(),"添加成功!");
     }
@@ -119,6 +120,17 @@ implements SysRoleService {
         roleMenuService.remove(queryWrapper);
 
         return ResponseVo.okResult();
+    }
+
+    @Override
+    public ResponseVo<?> getRoleMenuById(Long id) {
+        LambdaQueryWrapper<SysRoleMenu> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysRoleMenu::getRoleId,id);
+        List<Long> menuId = roleMenuService.list(queryWrapper)
+                .stream()
+                .map(SysRoleMenu::getMenuId)
+                .collect(Collectors.toList());
+        return ResponseVo.okResult(menuId);
     }
 
     /**

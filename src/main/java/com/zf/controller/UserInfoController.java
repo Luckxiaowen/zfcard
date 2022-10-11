@@ -6,15 +6,15 @@ import com.zf.domain.vo.LoginUser;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.mapper.SysUserMapper;
+import com.zf.service.SysUserService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
@@ -26,43 +26,27 @@ public class UserInfoController {
     @Autowired
     private SysUserMapper sysUserMapper;
 
+    @Autowired
+    private SysUserService sysUserService;
+
 
     @ApiOperation(value = "个人简介接口")
     @GetMapping("/userinfo")
-    public ResponseVo info(@RequestHeader("token")String token){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        Integer id = Math.toIntExact(loginUser.getSysUser().getId());
-        //        将查询条件放入LambdaQueryWrapper中
-        LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(SysUser::getId,id);
-
-        SysUser sysUser = sysUserMapper.selectOne(lambdaQueryWrapper);
-
-        String info = sysUser.getInfo();
-
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("info",info);
-        ResponseVo<HashMap<String, String>> vo = new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(), hashMap);
-        return vo;
+    @ApiImplicitParams({
+            @ApiImplicitParam(dataType = "string", name = "userId", value = "员工id或者员工token", required = true),
+    })
+    public ResponseVo getUserInfo(@RequestParam("userId")String userId) {
+        return sysUserService.selectUserInfoByWu(userId);
     }
 
     @ApiOperation(value = "个人职业照接口")
     @GetMapping("/professional-photo")
-    public ResponseVo ProPhoto(@RequestHeader("token")String token){
-//        获取token
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        Integer id = Math.toIntExact(loginUser.getSysUser().getId());
-//        将查询条件放入LambdaQueryWrapper中
-        LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(SysUser::getId,id);
-        SysUser sysUser = sysUserMapper.selectOne(lambdaQueryWrapper);
-        String avatar = sysUser.getAvatar();
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("photo",avatar);
-        new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(),hashMap);
-        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(), hashMap);
+    @ApiImplicitParams({
+            @ApiImplicitParam(dataType = "string", name = "userId", value = "员工id或者员工token", required = true),
+    })
+    public ResponseVo ProPhoto(@RequestParam("userId")String userId) {
+        return sysUserService.selectUserProPhotoByWu(userId);
     }
+
 
 }

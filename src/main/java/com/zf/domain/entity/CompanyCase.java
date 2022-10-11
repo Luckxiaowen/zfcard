@@ -3,6 +3,7 @@ package com.zf.domain.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -49,12 +50,14 @@ public class CompanyCase implements Serializable {
     /**
      * 创建时间 创建时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "创建时间",dataType = "Date")
     private Date createTime;
 
     /**
      * 更新人 更新人
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "更新人",dataType = "long")
     private Long updateBy;
 
@@ -63,6 +66,9 @@ public class CompanyCase implements Serializable {
      */
     @ApiModelProperty(value = "更新时间",dataType = "Date")
     private Date updateTime;
+
+    @ApiModelProperty(value = "排序",dataType = "Integer")
+    private Integer orders;
 
 
 }

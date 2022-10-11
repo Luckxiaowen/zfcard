@@ -1,18 +1,18 @@
 package com.zf.controller.admin;
 
 import com.zf.domain.dto.RoleDto;
-import com.zf.domain.entity.SysRole;
 import com.zf.domain.vo.ResponseVo;
+import com.zf.enums.AppHttpCodeEnum;
+import com.zf.exception.SystemException;
 import com.zf.service.SysRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * @Author wenqin
@@ -30,6 +30,14 @@ public class RoleController {
     @PostMapping("/role")
     public ResponseVo<?> addRole(@RequestHeader("token") String token,@Valid @RequestBody RoleDto roleDto){
         return roleService.addRole(roleDto);
+    }
+
+    @ApiOperation(value = "根据角色id获取角色")
+    @GetMapping("/role/{id}")
+    public ResponseVo<?> getRoleMenuById(@PathVariable Long id){
+        if (Objects.isNull(id))
+            throw new SystemException(AppHttpCodeEnum.PARAMETER_ERROR);
+        return roleService.getRoleMenuById(id);
     }
 
     @ApiOperation(value = "根据token获取公司所有角色")

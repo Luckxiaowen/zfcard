@@ -1,5 +1,6 @@
 package com.zf.utils;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -144,4 +145,12 @@ public class Validator {
         return Pattern.matches(REGEX_IP_ADDR, ipAddr);
     }
 
+    public static boolean isNumeric(String str){
+        Pattern pattern = Pattern.compile("[0-9]*");
+        Matcher isNum = pattern.matcher(str);
+        if( !isNum.matches() ){
+            return false;
+        }
+        return true;
+    }
 }

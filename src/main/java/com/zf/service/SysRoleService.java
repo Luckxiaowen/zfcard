@@ -21,4 +21,6 @@ public interface SysRoleService extends IService<SysRole> {
     ResponseVo<?> updateRole(RoleDto roleDto);
 
     ResponseVo<?> delRole(Long id);
+
+    ResponseVo<?> getRoleMenuById(Long id);
 }

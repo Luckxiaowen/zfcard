@@ -4,6 +4,7 @@ package com.zf.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.SearchUserVo;
+import com.zf.domain.vo.SysUserVo;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,4 +20,10 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
 
     List<SysUser> selectByConditions(SearchUserVo searchUserVo);
+
+    List<SysUserVo> selectByCompanyId(Long companyid);
+
+    List<SysUserVo> selectMyPage(Long companyid, Integer pageNum, Integer pageSize);
+
+    List<SysUser> selectAllAccount(Long companyid);
 }

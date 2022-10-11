@@ -3,6 +3,11 @@ package com.zf.domain.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +25,7 @@ public class SysUser implements Serializable {
      * 主键 主键
      */
     @ApiModelProperty(value = "主键",dataType = "long")
+    @TableId
     private Long id;
 
     /**
@@ -85,6 +91,8 @@ public class SysUser implements Serializable {
     /**
      * 创建时间 创建时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
     @ApiModelProperty(value = "创建时间",dataType = "Date")
     private Date createTime;
 
@@ -97,6 +105,8 @@ public class SysUser implements Serializable {
     /**
      * 更新时间 更新时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(value = "更新时间",dataType = "Date")
     private Date updateTime;
 
@@ -104,6 +114,7 @@ public class SysUser implements Serializable {
      * 删除标志（0代表未删除，1代表已删除） 删除标志（0代表未删除，1代表已删除）
      */
     @ApiModelProperty(value = "删除标志（0代表未删除，1代表已删除）",dataType = "Integer")
+    @TableLogic
     private Integer delFlag;
 
     /**
@@ -134,7 +145,20 @@ public class SysUser implements Serializable {
      *  微信openedId 微信openedId
      */
     @ApiModelProperty(value = "微信openedId",dataType = "String")
+
     private String openedId;
+
+    @ApiModelProperty(value = "岗位名称",dataType = "String")
+    private String station;
+
+    @ApiModelProperty(value = "所属部门Id",dataType = "Integer")
+    private Integer depId;
+
+    @TableField(exist = false)
+    private String createUser;
+
+    @TableField(exist = false)
+    private String roleName;
 
 
 }

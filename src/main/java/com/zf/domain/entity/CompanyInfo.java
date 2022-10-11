@@ -3,6 +3,9 @@ package com.zf.domain.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +23,7 @@ public class CompanyInfo implements Serializable {
      * id 公司简介ID
      */
     @ApiModelProperty(value = "公司简介ID",dataType = "Long")
+    @TableId(value = "id",type = IdType.AUTO)
     private Long id;
 
     /**
@@ -43,12 +47,14 @@ public class CompanyInfo implements Serializable {
     /**
      * 创建时间 创建时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "创建时间",dataType = "Date")
     private Date createTime;
 
     /**
      * 更新时间 更新时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "更新时间",dataType = "Date")
     private Date updateTime;
 
@@ -70,6 +76,10 @@ public class CompanyInfo implements Serializable {
     @ApiModelProperty(value = "更新人",dataType = "Long")
     private Long updateBy;
 
+    @ApiModelProperty(value = "排序",dataType = "Integer")
+    private Integer orders;
+
     private static final long serialVersionUID = 1L;
+
 
 }
