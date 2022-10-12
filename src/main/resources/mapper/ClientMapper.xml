@@ -18,11 +18,22 @@
             <result property="updatedTime" column="UPDATED_TIME" jdbcType="TIMESTAMP"/>
     </resultMap>
 
+    <resultMap id="clientVo" type="com.zf.domain.vo.ClientVo">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="clientName" column="name" jdbcType="VARCHAR"/>
+        <result property="tel" column="tel" jdbcType="VARCHAR"/>
+        <result property="interactNum" column="interact_num" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="DATE"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
         id,avatar,name,tel,
         sex,address,del_flag,
         CREATED_BY,CREATED_TIME,UPDATED_BY,
         UPDATED_TIME
     </sql>
+    <select id="selectListByMe" resultType="com.zf.domain.vo.ClientVo">
+
+    </select>
 
 </mapper>

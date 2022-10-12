@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.entity.Client;
 import com.zf.domain.entity.ExpoSnapshot;
 import com.zf.domain.entity.ExposureTotal;
+import com.zf.domain.vo.ClientVo;
 import com.zf.domain.vo.LoginUser;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
@@ -118,6 +119,7 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
                     wrapper.like(ExpoSnapshot::getCreateTime,date);
                     wrapper.eq(ExpoSnapshot::getExpoTotalId,exposureTotal.getId());
                     ExpoSnapshot expoSnapshot = expoSnapshotMapper.selectOne(wrapper);
+
                     if (Objects.isNull(expoSnapshot)||expoSnapshot.getDayAddClient()==null||"".equals(expoSnapshot.getDayAddClient())){
                         hashMap.put(date,0);
                     }else{
@@ -139,8 +141,8 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
             LambdaQueryWrapper<Client>queryWrapper=new LambdaQueryWrapper<>();
             queryWrapper.eq(Client::getCreatedBy,Long.parseLong(userId))
                     .eq(Client::getDelFlag,0);
-            clientMapper.selectList(queryWrapper);
-            return ResponseVo.okResult(clientMapper.selectList(queryWrapper));
+          List<ClientVo> clientVoLists= clientMapper.selectListByMe(userId);
+            return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询成功",clientVoLists);
         }
 
     }
