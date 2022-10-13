@@ -3,6 +3,7 @@ package com.zf.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zf.domain.entity.Client;
+import com.zf.domain.vo.ResponseVo;
 import org.springframework.stereotype.Repository;
 
 /**
