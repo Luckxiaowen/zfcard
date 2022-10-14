@@ -4,9 +4,8 @@ package com.zf.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zf.domain.entity.Client;
 import com.zf.domain.vo.ClientVo;
+import com.zf.domain.vo.ResponseVo;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
 * @author Amireux
@@ -18,5 +17,4 @@ import java.util.List;
 public interface ClientMapper extends BaseMapper<Client> {
 
 
-    List<ClientVo> selectListByMe(String userId);
 }
