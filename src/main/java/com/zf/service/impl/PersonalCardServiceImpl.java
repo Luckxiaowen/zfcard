@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.entity.*;
+import com.zf.domain.vo.CompanyClientVo;
 import com.zf.domain.vo.PersonalCardVo;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,7 +43,10 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
     private ExposureTotalMapper exposureTotalMapper;
 
     @Autowired
-    private SysRoleMapper sysRoleMapper;
+    private CompanyClientVoMapper companyClientVoMapper;
+
+    @Autowired
+    private CompanyClientMapper companyClientMapper;
 
     @Autowired
     private CompanyMapper companyMapper;
@@ -133,6 +138,7 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         } else {
             //TODO 游客进入
             id = getInteger(userId);
+            Long companyUserId = Long.valueOf(id);
             if (Objects.isNull(sysUserMapper.selectById(id))) {
                 return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "保存失败：不存在此员工");
             } else {
@@ -149,6 +155,21 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
                         exposureTotalMapper.updateById(total);
                         //TODO 添加用户
                         this.isExistClient(id, Long.valueOf(phoneNum), name);
+
+
+
+                        CompanyClient client = getClient(phoneNum, name,companyUserId);
+
+                        String saveCaseNum = client.getSaveCaseNum();
+                        BigDecimal saveCaseNumDecimal = new BigDecimal(saveCaseNum);
+                        String addSaveCase = String.valueOf(saveCaseNumDecimal.add(BigDecimal.valueOf(1)));
+
+                        LambdaUpdateWrapper<CompanyClient> updateWrapper = new LambdaUpdateWrapper<>();
+
+                        updateWrapper.set(CompanyClient::getSaveCaseNum,addSaveCase).eq(CompanyClient::getClientTel,phoneNum);
+
+                        companyClientMapper.update(null,updateWrapper);
+
                         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "保存成功");
                     }
                 }
@@ -157,10 +178,33 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
 
     }
 
+    public CompanyClient getClient(String phoneNum,String name,Long companyUserId) {
+
+        LambdaQueryWrapper<CompanyClient> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CompanyClient::getClientTel,phoneNum).eq(CompanyClient::getDelFlag,0);
+
+        CompanyClient client = companyClientMapper.selectOne(wrapper);
+
+        if (client == null || client.getDelFlag() == 1){
+            Date date = new Date();
+            CompanyClient companyC = new CompanyClient(null, name, phoneNum, "0", "0", "0", "0", "0", 0, companyUserId, date, date);
+            companyClientMapper.insert(companyC);
+        }
+
+        LambdaQueryWrapper<CompanyClient> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(CompanyClient::getClientTel,phoneNum).eq(CompanyClient::getDelFlag,0);
+
+
+
+        return companyClientMapper.selectOne(queryWrapper);
+
+    }
+
     public Integer getInteger(String userId) {
         Integer id;
         if (Validator.isNumeric(userId)) {
             id = Integer.valueOf(userId);
+
         } else {
             //TODO 员工token获取
             try {
@@ -180,6 +224,7 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
             return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "转发失败：输入为空");
         } else {
             id = getInteger(userId);
+            Long companyUserId = Long.valueOf(id);
             if (Objects.isNull(sysUserMapper.selectById(id))) {
                 return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "转发失败：不存在此员工");
             } else {
@@ -200,6 +245,21 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
                         exposureTotalMapper.updateById(total);
                         //TODO 添加用户
                         this.isExistClient(id, Long.valueOf(phoneNum), name);
+
+
+
+                        CompanyClient client = getClient(phoneNum, name,companyUserId);
+
+                        String clientForwardNum = client.getForwardNum();
+                        BigDecimal clientForwardNumDecimal = new BigDecimal(clientForwardNum);
+                        String clientForward = String.valueOf(clientForwardNumDecimal.add(BigDecimal.valueOf(1)));
+
+                        LambdaUpdateWrapper<CompanyClient> updateWrapper = new LambdaUpdateWrapper<>();
+
+                        updateWrapper.set(CompanyClient::getForwardNum,clientForward).eq(CompanyClient::getClientTel,phoneNum);
+
+                        companyClientMapper.update(null,updateWrapper);
+
                         return ResponseVo.okResult();
                     }
                 }
@@ -214,6 +274,7 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
             return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "保存电话失败：输入为空或者不存在此员工");
         } else {
             id = getInteger(userId);
+            Long companyUserId = Long.valueOf(id);
             if (Objects.isNull(sysUserMapper.selectById(userId))) {
                 return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "保存电话失败：不存在此员工");
             } else {
@@ -234,6 +295,20 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
                         exposureTotalMapper.updateById(total);
                         //TODO 添加用户
                         this.isExistClient(id, Long.valueOf(phoneNum), name);
+
+
+                        CompanyClient client = getClient(phoneNum, name,companyUserId);
+
+                        String saveMailListNum = client.getSaveMailListNum();
+                        BigDecimal saveMailListNumDecimal = new BigDecimal(saveMailListNum);
+                        String saveMailList = String.valueOf(saveMailListNumDecimal.add(BigDecimal.valueOf(1)));
+
+                        LambdaUpdateWrapper<CompanyClient> updateWrapper = new LambdaUpdateWrapper<>();
+
+                        updateWrapper.set(CompanyClient::getSaveMailListNum,saveMailList).eq(CompanyClient::getClientTel,phoneNum);
+
+                        companyClientMapper.update(null,updateWrapper);
+
                         return ResponseVo.okResult();
                     }
                 }
