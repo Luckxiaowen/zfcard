@@ -28,7 +28,6 @@ public class InsertSnapshotJob {
     private ExposureTotalMapper exposureTotalMapper;
     //todo 每天凌晨清空清空曝光统计表 将数据添加至快照表
     @Scheduled(cron = "0 0 0 * * ?")
- /*   @Scheduled(cron = "0/3 * * * * ?")*/
     public void CheckAndInsertSnapshotJob() {
         //TODO。查询那些账户需要执行定时任务
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();

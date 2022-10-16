@@ -9,7 +9,7 @@
             <result property="userId" column="user_id" jdbcType="BIGINT"/>
             <result property="replyId" column="reply_id" jdbcType="BIGINT"/>
             <result property="notesContent" column="notes_content" jdbcType="VARCHAR"/>
-            <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
             <result property="isPublic" column="is_public" jdbcType="INTEGER"/>
             <result property="createBy" column="create_by" jdbcType="BIGINT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>

@@ -124,6 +124,7 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
                 map.put("phoneNumber", phoneNumber);
                 map.put("weixinCode", sysUser.getWeixinCode());
                 map.put("telWeixin", sysUser.getTelWeixin());
+
                 return ResponseVo.okResult(map);
             }
         }
@@ -155,8 +156,6 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
                         exposureTotalMapper.updateById(total);
                         //TODO 添加用户
                         this.isExistClient(id, Long.valueOf(phoneNum), name);
-
-
 
                         CompanyClient client = getClient(phoneNum, name,companyUserId);
 
@@ -193,7 +192,6 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
 
         LambdaQueryWrapper<CompanyClient> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(CompanyClient::getClientTel,phoneNum).eq(CompanyClient::getDelFlag,0);
-
 
 
         return companyClientMapper.selectOne(queryWrapper);
@@ -295,7 +293,6 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
                         exposureTotalMapper.updateById(total);
                         //TODO 添加用户
                         this.isExistClient(id, Long.valueOf(phoneNum), name);
-
 
                         CompanyClient client = getClient(phoneNum, name,companyUserId);
 

@@ -3,6 +3,7 @@ package com.zf.domain.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -61,6 +62,7 @@ public class Notes implements Serializable {
      * 是否删除 删除标志（0代表未删除，1代表已删除）
      */
     @ApiModelProperty(value = "是否删除 删除标志（0代表未删除，1代表已删除）",dataType = "int")
+    @TableLogic
     private int delFlag;
 
     /**

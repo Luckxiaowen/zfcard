@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.xml.crypto.Data;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -99,9 +100,14 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
     }
 
     @Override
-    public ResponseVo sevenClientTrend(String userId) {
-        List<HashMap>list=new ArrayList<>();
-        HashMap<String,Object>hashMap=new HashMap<>();
+    public ResponseVo sevenClientTrend(String userId) throws ParseException {
+        Map<String,Object>hashMap=new TreeMap<>(new Comparator<String>() {
+            @Override
+            public int compare(String s, String t1) {
+                return t1.compareTo(s);
+            }
+        });
+
         if (Objects.isNull(sysUserMapper.selectById(Long.parseLong(userId)))) {
             return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "未查询用户!");
         } else {
@@ -109,25 +115,29 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
                 return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "当前用户不属于任何公司!");
             } else {
                 //TODO 近七日新增折线图
+                /*拿到七天的日期*/
                 List<String> sevenDate = DateUtil.getSevenDate();
                 LambdaQueryWrapper<ExposureTotal>lambdaQueryWrapper=new LambdaQueryWrapper<>();
                 lambdaQueryWrapper.eq(ExposureTotal::getCreateBy,Long.parseLong(userId));
                 ExposureTotal exposureTotal = exposureTotalMapper.selectOne(lambdaQueryWrapper);
+                System.out.println("exposureTotal = " + exposureTotal);
                 LambdaQueryWrapper<ExpoSnapshot> wrapper=new LambdaQueryWrapper<>();
-
                 for (String date : sevenDate) {
                     wrapper.like(ExpoSnapshot::getCreateTime,date);
                     wrapper.eq(ExpoSnapshot::getExpoTotalId,exposureTotal.getId());
                     ExpoSnapshot expoSnapshot = expoSnapshotMapper.selectOne(wrapper);
-
+                    wrapper=new LambdaQueryWrapper<>();
                     if (Objects.isNull(expoSnapshot)||expoSnapshot.getDayAddClient()==null||"".equals(expoSnapshot.getDayAddClient())){
+
                         hashMap.put(date,0);
                     }else{
+
                         hashMap.put(date,expoSnapshot.getDayAddClient());
                     }
-                    wrapper=new LambdaQueryWrapper<>();
+
                 }
             }
+
             return ResponseVo.okResult(hashMap);
         }
     }

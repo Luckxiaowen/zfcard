@@ -32,8 +32,17 @@
         CREATED_BY,CREATED_TIME,UPDATED_BY,
         UPDATED_TIME
     </sql>
-    <select id="selectListByMe" resultType="com.zf.domain.vo.ClientVo">
-
+    <select id="selectListByMe" resultType="com.zf.domain.vo.ClientVo" resultMap="clientVo">
+        SELECT
+               cc.id as 'id',
+               cc.create_time as 'create_time',
+               cc.client_name as 'name',
+               cc.client_tel as 'tel',
+               SUM(cc.visitor_num+save_case_num+cc.save_mail_list_num+cc.forward_num+cc.leave_num) as 'interact_num'
+        FROM company_client cc
+        WHERE cc.create_by =#{userId}
+          AND cc.del_flag=0
+        GROUP BY cc.id
     </select>
 
 

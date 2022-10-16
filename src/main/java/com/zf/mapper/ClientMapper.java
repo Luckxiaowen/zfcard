@@ -7,6 +7,8 @@ import com.zf.domain.vo.ClientVo;
 import com.zf.domain.vo.ResponseVo;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
 * @author Amireux
 * @description 针对表【client(客户表)】的数据库操作Mapper
@@ -17,4 +19,5 @@ import org.springframework.stereotype.Repository;
 public interface ClientMapper extends BaseMapper<Client> {
 
 
+    List<ClientVo> selectListByMe(String userId);
 }
