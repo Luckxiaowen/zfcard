@@ -365,14 +365,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new SystemException(AppHttpCodeEnum.DEPARTMENT_NOT_EXIST);
         String password = staff.getPhonenumber().substring(staff.getPhonenumber().length() - 6);
         String encodePassword = passwordEncoder.encode(password);
-        SysUser user = BeanCopyUtils.copyBean(staff, SysUser.class);
-        user.setCreateBy(loginUser.getSysUser().getId());
-        user.setPassword(encodePassword);
-        user.setSex(2);
-        user.setUserType(1);
-        user.setCompanyid(loginUser.getSysUser().getCompanyid());
-        user.setNickName(staff.getUsername());
-        save(user);
+        LambdaQueryWrapper<SysUser>queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysUser::getPhonenumber,staff.getPhonenumber());
+        if (Objects.isNull(sysUserMapper.selectOne(queryWrapper))){
+            SysUser user = BeanCopyUtils.copyBean(staff, SysUser.class);
+            user.setCreateBy(loginUser.getSysUser().getId());
+            user.setPassword(encodePassword);
+            user.setSex(2);
+            user.setUserType(1);
+            user.setCompanyid(loginUser.getSysUser().getCompanyid());
+            user.setNickName(staff.getUsername());
+            save(user);
+        }else {
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "添加失败：当前员工手机号已存在请修改手机号");
+        }
         return ResponseVo.okResult();
 
     }
