@@ -128,20 +128,26 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
                     wrapper.eq(ExpoSnapshot::getExpoTotalId,exposureTotal.getId());
                     ExpoSnapshot expoSnapshot = expoSnapshotMapper.selectOne(wrapper);
                     wrapper=new LambdaQueryWrapper<>();
-                    if (Objects.isNull(expoSnapshot)||expoSnapshot.getDayAddClient()==null||"".equals(expoSnapshot.getDayAddClient())){
+                    String nowDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
 
+                    if (Objects.isNull(expoSnapshot)||expoSnapshot.getDayAddClient()==null||"".equals(expoSnapshot.getDayAddClient())){
                         hashMap.put(date,0);
                     }else{
-
                         hashMap.put(date,expoSnapshot.getDayAddClient());
                     }
-
+                    if (date.equals(nowDate)){
+                        System.out.println("nowDate = " + nowDate);
+                        hashMap.put(nowDate,exposureTotal.getDayAddClient());
+                    }
                 }
+
             }
 
             return ResponseVo.okResult(hashMap);
         }
     }
+
+
 
     @Override
     public ResponseVo searchAll(String userId) {
@@ -159,14 +165,20 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
     }
 
     @Override
-    public ResponseVo<?> clientVisitor(Integer staffId,Integer time) {
+    public ResponseVo clientVisitor(Integer staffId,Integer time) {
         ExposureTotal exposureTotal = exposureTotalMapper.selectOne(new LambdaQueryWrapper<ExposureTotal>().eq(ExposureTotal::getCreateBy, staffId));
         if (Objects.isNull(exposureTotal)){
             throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
         }
         Integer totalTime = exposureTotal.getAverageStayMin() + time;
         exposureTotal.setAverageStayMin(totalTime);
+        int stayNum = exposureTotal.getStayNum();
+        int newStayNum=stayNum+1;
+        exposureTotal.setStayNum(newStayNum);
+        Long visitorTotal = exposureTotal.getVisitorTotal();
+        Long newVisitorTotal=visitorTotal+1;
+        exposureTotal.setVisitorTotal(newVisitorTotal);
         exposureTotalMapper.updateById(exposureTotal);
-        return ResponseVo.okResult();
+        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"操作成功：访客数+1，时常"+time+"用户访问次数+1");
     }
 }

@@ -41,7 +41,7 @@ public class ManageClientController {
     }
 
     @GetMapping("/client-visitor")
-    @ApiOperation(value = "客服访问次数")
+    @ApiOperation(value = "次均时长增加")
     public ResponseVo<?> clientVisitor(@RequestParam(value = "staffId") Integer staffId,
                                        @RequestParam(value = "time") Integer time){
         return clientService.clientVisitor(staffId,time);
