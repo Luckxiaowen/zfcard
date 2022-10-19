@@ -4,6 +4,7 @@ package com.zf.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.entity.Client;
+import com.zf.domain.entity.CompanyClient;
 import com.zf.domain.entity.Notes;
 
 import com.zf.domain.entity.SysUser;
@@ -13,6 +14,7 @@ import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.exception.SystemException;
 import com.zf.mapper.ClientMapper;
+import com.zf.mapper.CompanyClientMapper;
 import com.zf.mapper.NotesMapper;
 import com.zf.mapper.SysUserMapper;
 import com.zf.service.NotesService;
@@ -45,6 +47,8 @@ public class NotesServiceImpl extends ServiceImpl<NotesMapper, Notes> implements
     @Autowired
     private ClientMapper clientMapper;
 
+    @Autowired
+    private CompanyClientMapper companyClientMapper;
 
     @Override
     public ResponseVo getAllNoteById(String id) throws Exception {
@@ -62,6 +66,28 @@ public class NotesServiceImpl extends ServiceImpl<NotesMapper, Notes> implements
         }
 
     }
+
+  public CompanyClient getClient(String phoneNum, String name, Long companyUserId) {
+
+    LambdaQueryWrapper<CompanyClient> wrapper = new LambdaQueryWrapper<>();
+    wrapper.eq(CompanyClient::getClientTel,phoneNum).eq(CompanyClient::getDelFlag,0);
+
+    CompanyClient client = companyClientMapper.selectOne(wrapper);
+
+    if (client == null || client.getDelFlag() == 1){
+      Date date = new Date();
+      CompanyClient companyC = new CompanyClient(null, name, phoneNum, "0", "0", "0", "0", "0", 0, companyUserId, date, date);
+      companyClientMapper.insert(companyC);
+    }
+
+    LambdaQueryWrapper<CompanyClient> queryWrapper = new LambdaQueryWrapper<>();
+    queryWrapper.eq(CompanyClient::getClientTel,phoneNum).eq(CompanyClient::getDelFlag,0);
+
+
+
+    return companyClientMapper.selectOne(queryWrapper);
+
+  }
 
     @Override
     public ResponseVo addNotes(String userId, Notes notes) {
@@ -99,6 +125,7 @@ public class NotesServiceImpl extends ServiceImpl<NotesMapper, Notes> implements
                                             client.setUpdatedTime(new Date());
                                             client.setCreatedTime(new Date());
                                             insert1 = clientMapper.insert(client);
+
                                         }
                                         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "留言成功:" + insert1);
                                     } else {
@@ -236,8 +263,9 @@ public class NotesServiceImpl extends ServiceImpl<NotesMapper, Notes> implements
 
     public NotesVo getChildrenNote(NotesVo noteVo, List<NotesVo> allList) {
         for (NotesVo item : allList) {
-            if (Objects.equals(item.getReplyId(), noteVo.getId()))
-                return item;
+            if (Objects.equals(item.getReplyId(), noteVo.getId())) {
+              return item;
+            }
         }
         return null;
     }

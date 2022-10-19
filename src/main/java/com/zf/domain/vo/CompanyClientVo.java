@@ -90,6 +90,7 @@ public class CompanyClientVo {
     /**
      * 更新时间 更新时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "更新时间",dataType = "Date")
     private Date updateTime;
 

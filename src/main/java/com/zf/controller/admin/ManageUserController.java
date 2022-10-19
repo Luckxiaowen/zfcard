@@ -50,7 +50,7 @@ public class ManageUserController {
     @PutMapping("/modify-user")
     public ResponseVo update(@RequestHeader("token")String token,@RequestBody SysUser sysUser) throws Exception {
         return sysUserService.modify(sysUser,JwtUtil.parseJWT(token).getSubject());
-    }
+·    }
 
     @ApiOperation(value = "查询员工信息接口")
     @GetMapping("/list-user")
