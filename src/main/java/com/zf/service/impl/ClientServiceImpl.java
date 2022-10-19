@@ -11,6 +11,7 @@ import com.zf.domain.vo.ClientVo;
 import com.zf.domain.vo.LoginUser;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
+import com.zf.exception.SystemException;
 import com.zf.mapper.ClientMapper;
 import com.zf.mapper.ExpoSnapshotMapper;
 import com.zf.mapper.ExposureTotalMapper;
@@ -155,5 +156,17 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
             return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询成功",clientVoLists);
         }
 
+    }
+
+    @Override
+    public ResponseVo<?> clientVisitor(Integer staffId,Integer time) {
+        ExposureTotal exposureTotal = exposureTotalMapper.selectOne(new LambdaQueryWrapper<ExposureTotal>().eq(ExposureTotal::getCreateBy, staffId));
+        if (Objects.isNull(exposureTotal)){
+            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+        Integer totalTime = exposureTotal.getAverageStayMin() + time;
+        exposureTotal.setAverageStayMin(totalTime);
+        exposureTotalMapper.updateById(exposureTotal);
+        return ResponseVo.okResult();
     }
 }

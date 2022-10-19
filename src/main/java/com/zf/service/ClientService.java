@@ -21,4 +21,6 @@ public interface ClientService extends IService<Client> {
     ResponseVo sevenClientTrend(String token) throws ParseException;
 
     ResponseVo searchAll(String userId);
+
+    ResponseVo<?> clientVisitor(Integer staffId,Integer time);
 }
