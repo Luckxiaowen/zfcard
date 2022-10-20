@@ -65,20 +65,22 @@ public class ExposureTotalServiceImpl extends ServiceImpl<ExposureTotalMapper, E
                         visitorMap.put("sevenVisitorTotal", 0);
                     } else {
                         Integer sevenVisitorTotal = 0;
-                        for (Integer integer : sevenDayVisitorList) {
-                            sevenVisitorTotal = sevenVisitorTotal + integer;
-
-
-                        }
                         ResponseVo sevenVisitorTrend = this.getSevenVisitorTrend(String.valueOf(userId));
-                        System.out.println("sevenVisitorTrend = " + sevenVisitorTrend.getData());
+                        TreeMap data = (TreeMap) sevenVisitorTrend.getData();
+                        Set<Map.Entry<String, Long>> entrySet = data.entrySet();
+                        if (entrySet.size() == 0) {
+                            visitorMap.put("sevenVisitorTotal", 0);
+                        } else {
+                            for (Map.Entry<String, Long> entry : entrySet) {
+                                Long value = entry.getValue();
+                                sevenVisitorTotal = Math.toIntExact(sevenVisitorTotal + value);
+                            }
+                        }
                         visitorMap.put("sevenVisitorTotal", sevenVisitorTotal);
                     }
-
                 } else {
                     visitorMap.put("visitorTotal", 0);
                     visitorMap.put("dayVisitorNum", 0);
-
                 }
                 return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "获取访客成功", visitorMap);
             }
@@ -89,7 +91,7 @@ public class ExposureTotalServiceImpl extends ServiceImpl<ExposureTotalMapper, E
 
     @Override
     public ResponseVo getSevenVisitorTrend(String userId) {
-        Map<String,Object>treeMap=new TreeMap<>(new Comparator<String>() {
+        Map<String, Object> treeMap = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String s, String t1) {
                 return t1.compareTo(s);
@@ -104,23 +106,23 @@ public class ExposureTotalServiceImpl extends ServiceImpl<ExposureTotalMapper, E
                 //TODO 近七日新增折线图
                 /*拿到七天的日期*/
                 List<String> sevenDate = DateUtil.getSevenDate();
-                LambdaQueryWrapper<ExposureTotal>lambdaQueryWrapper=new LambdaQueryWrapper<>();
-                lambdaQueryWrapper.eq(ExposureTotal::getCreateBy,Long.parseLong(userId));
+                LambdaQueryWrapper<ExposureTotal> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+                lambdaQueryWrapper.eq(ExposureTotal::getCreateBy, Long.parseLong(userId));
                 ExposureTotal exposureTotal = exposureTotalMapper.selectOne(lambdaQueryWrapper);
-                LambdaQueryWrapper<ExpoSnapshot> wrapper=new LambdaQueryWrapper<>();
+                LambdaQueryWrapper<ExpoSnapshot> wrapper = new LambdaQueryWrapper<>();
                 for (String date : sevenDate) {
-                    wrapper.like(ExpoSnapshot::getCreateTime,date);
-                    wrapper.eq(ExpoSnapshot::getExpoTotalId,exposureTotal.getId());
+                    wrapper.like(ExpoSnapshot::getCreateTime, date);
+                    wrapper.eq(ExpoSnapshot::getExpoTotalId, exposureTotal.getId());
                     ExpoSnapshot expoSnapshot = expoSnapshotMapper.selectOne(wrapper);
-                    wrapper=new LambdaQueryWrapper<>();
-                    if (Objects.isNull(expoSnapshot)||expoSnapshot.getDayTotal()==null||"".equals(expoSnapshot.getDayTotal())){
-                        treeMap.put(date,0);
-                    }else{
-                        treeMap.put(date,expoSnapshot.getDayTotal());
+                    wrapper = new LambdaQueryWrapper<>();
+                    if (Objects.isNull(expoSnapshot) || expoSnapshot.getDayTotal() == null || "".equals(expoSnapshot.getDayTotal())) {
+                        treeMap.put(date, 0L);
+                    } else {
+                        treeMap.put(date, expoSnapshot.getDayTotal());
                     }
                     String nowDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
-                    if (date.equals(nowDate)){
-                        treeMap.put(nowDate,exposureTotal.getDayTotal());
+                    if (date.equals(nowDate)) {
+                        treeMap.put(nowDate, exposureTotal.getDayTotal());
                     }
                 }
             }
@@ -131,117 +133,117 @@ public class ExposureTotalServiceImpl extends ServiceImpl<ExposureTotalMapper, E
 
     @Override
     public ResponseVo getExposureHistory(String id) {
-        HashMap<String,Object>historyMap=new HashMap<>();
+        HashMap<String, Object> historyMap = new HashMap<>();
         ExposureVo totalData = new ExposureVo();
-        ExposureVo averageData =new ExposureVo();
-        List<ExposureVo>exposureVoList=new ArrayList<>();
+        ExposureVo averageData = new ExposureVo();
+        List<ExposureVo> exposureVoList = new ArrayList<>();
         if ("".equals(id) || id == null) {
             return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "获取访客概况失败:用户Id为空");
-        }else {
+        } else {
             Integer userId = getInteger(id);
             if (Objects.isNull(sysUserMapper.selectById(userId))) {
                 return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "获取访客概况失败:未查询到用户");
-            }else {
-                LambdaQueryWrapper<ExposureTotal>queryWrapper=new LambdaQueryWrapper<>();
-                queryWrapper.eq(ExposureTotal::getCreateBy,userId);
+            } else {
+                LambdaQueryWrapper<ExposureTotal> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(ExposureTotal::getCreateBy, userId);
                 ExposureTotal exposureTotal = exposureTotalMapper.selectOne(queryWrapper);
-                if (!Objects.isNull(exposureTotal)){
+                if (!Objects.isNull(exposureTotal)) {
                     //TODO 访客总量
                     totalData.setVisitor(Math.toIntExact(exposureTotal.getVisitorTotal()));
-                    LambdaQueryWrapper<ExpoSnapshot>wrapper=new LambdaQueryWrapper<>();
-                    wrapper.eq(ExpoSnapshot::getExpoTotalId,exposureTotal.getId());
+                    LambdaQueryWrapper<ExpoSnapshot> wrapper = new LambdaQueryWrapper<>();
+                    wrapper.eq(ExpoSnapshot::getExpoTotalId, exposureTotal.getId());
                     Integer count = expoSnapshotMapper.selectCount(wrapper);
-                    if (count==0){
+                    if (count == 0) {
                         //TODO 日均访问量
                         averageData.setVisitor(0);
                         //TODO 日均访问时常
                         averageData.setStay(0);
                         //TODO 日均保存名片数
                         averageData.setDownload(0);
-                    }else {
+                    } else {
                         averageData.setVisitor(Math.toIntExact(exposureTotal.getVisitorTotal() / count));
                         Integer averageStayMin = exposureTotal.getAverageStayMin();
-                        if (averageStayMin==null){
+                        if (averageStayMin == null) {
                             totalData.setStay(0);
-                        }else {
+                        } else {
                             totalData.setStay(averageStayMin);
-                            averageData.setStay(averageStayMin/count);
+                            averageData.setStay(averageStayMin / count);
 
                             //TODO 名片下载总量以及日均名片下载 通讯录 留言
-                            Integer saveCard=0;
-                            Integer saveContact=0;
-                            Integer addNotesTotal=0;
+                            Integer saveCard = 0;
+                            Integer saveContact = 0;
+                            Integer addNotesTotal = 0;
                             List<ExpoSnapshot> expoSnapshotList = expoSnapshotMapper.selectList(wrapper);
-                            if (expoSnapshotList.size()==0){
+                            if (expoSnapshotList.size() == 0) {
                                 totalData.setDownload(saveCard);
                                 averageData.setDownload(saveCard);
                                 averageData.setContact(saveContact);
                                 averageData.setComment(addNotesTotal);
-                            }else {
+                            } else {
                                 for (ExpoSnapshot expoSnapshot : expoSnapshotList) {
-                                    saveCard= saveCard+Math.toIntExact(expoSnapshot.getDayDownloadNum());
-                                    saveContact= Math.toIntExact(saveContact + expoSnapshot.getDayAddClient());
-                                    addNotesTotal= Math.toIntExact(addNotesTotal + expoSnapshot.getDayNotesNum());
+                                    saveCard = saveCard + Math.toIntExact(expoSnapshot.getDayDownloadNum());
+                                    saveContact = Math.toIntExact(saveContact + expoSnapshot.getDayAddClient());
+                                    addNotesTotal = Math.toIntExact(addNotesTotal + expoSnapshot.getDayNotesNum());
                                 }
                                 totalData.setDownload(saveCard);
                                 totalData.setContact(saveContact);
                                 totalData.setComment(addNotesTotal);
-                                averageData.setDownload(saveCard/expoSnapshotList.size());
-                                averageData.setContact(saveContact/expoSnapshotList.size());
-                                averageData.setComment(addNotesTotal/expoSnapshotList.size());
+                                averageData.setDownload(saveCard / expoSnapshotList.size());
+                                averageData.setContact(saveContact / expoSnapshotList.size());
+                                averageData.setComment(addNotesTotal / expoSnapshotList.size());
 
                             }
                         }
                     }
-                    historyMap.put("totalData",totalData);
-                    historyMap.put("averageData",averageData);
+                    historyMap.put("totalData", totalData);
+                    historyMap.put("averageData", averageData);
                     ExposureVo exposureVo = new ExposureVo();
                     exposureVo.setDate(exposureTotal.getUpdateTime());
                     exposureVo.setComment(Math.toIntExact(exposureTotal.getDayNotes()));
-                    exposureVo.setStay(exposureTotal.getAverageStayMin()/exposureTotal.getStayNum());
+                    exposureVo.setStay(exposureTotal.getAverageStayMin() / exposureTotal.getStayNum());
                     exposureVo.setDownload(Math.toIntExact(exposureTotal.getDayDownloadNum()));
                     exposureVo.setContact(Math.toIntExact(exposureTotal.getDayAddContact()));
                     exposureVo.setVisitor(Math.toIntExact(exposureTotal.getDayTotal()));
                     exposureVoList.add(exposureVo);
                     List<ExpoSnapshot> expoSnapshotList = expoSnapshotMapper.selectList(wrapper);
                     for (ExpoSnapshot expoSnapshot : expoSnapshotList) {
-                        exposureVo=new ExposureVo();
+                        exposureVo = new ExposureVo();
                         exposureVo.setDate(expoSnapshot.getCreateTime());
                         exposureVo.setComment(Math.toIntExact(expoSnapshot.getDayNotesNum()));
-                        if (expoSnapshot.getStayNum()==0){
+                        if (expoSnapshot.getStayNum() == 0) {
                             exposureVo.setStay(0);
-                        }else {
-                            exposureVo.setStay(expoSnapshot.getAverageStayMin()/expoSnapshot.getStayNum());
+                        } else {
+                            exposureVo.setStay(expoSnapshot.getAverageStayMin() / expoSnapshot.getStayNum());
                         }
                         exposureVo.setDownload(Math.toIntExact(expoSnapshot.getDayDownloadNum()));
                         exposureVo.setContact(Math.toIntExact(expoSnapshot.getDayAddContact()));
                         exposureVo.setVisitor(Math.toIntExact(expoSnapshot.getDayTotal()));
                         exposureVoList.add(exposureVo);
                     }
-                    historyMap.put("dataList",exposureVoList);
+                    historyMap.put("dataList", exposureVoList);
                 }
             }
         }
-        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询成功:",historyMap);
+        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询成功:", historyMap);
     }
 
     @Override
     public ResponseVo updateVisitor(String userId) {
-        if ("".equals(userId)||userId==null){
+        if ("".equals(userId) || userId == null) {
             return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "更新访客量失败：用户Id为空");
-        }else {
-            if (Objects.isNull(sysUserMapper.selectById(userId))){
+        } else {
+            if (Objects.isNull(sysUserMapper.selectById(userId))) {
                 return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "更新访客量失败：不存在当前用户");
-            }else{
-                LambdaQueryWrapper<ExposureTotal>queryWrapper=new LambdaQueryWrapper<>();
-                queryWrapper.eq(ExposureTotal::getCreateBy,userId);
+            } else {
+                LambdaQueryWrapper<ExposureTotal> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(ExposureTotal::getCreateBy, userId);
                 ExposureTotal exposureTotal = exposureTotalMapper.selectOne(queryWrapper);
-                if (!Objects.isNull(exposureTotal)){
+                if (!Objects.isNull(exposureTotal)) {
                     Long dayTotal = exposureTotal.getDayTotal();
-                    exposureTotal.setDayTotal(dayTotal+1);
+                    exposureTotal.setDayTotal(dayTotal + 1);
                     exposureTotalMapper.updateById(exposureTotal);
                     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "访客量更新成功");
-                }else{
+                } else {
                     return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "更新访客量失败：未知错误");
                 }
             }
