@@ -67,7 +67,11 @@ public class ExposureTotalServiceImpl extends ServiceImpl<ExposureTotalMapper, E
                         Integer sevenVisitorTotal = 0;
                         for (Integer integer : sevenDayVisitorList) {
                             sevenVisitorTotal = sevenVisitorTotal + integer;
+
+
                         }
+                        ResponseVo sevenVisitorTrend = this.getSevenVisitorTrend(String.valueOf(userId));
+                        System.out.println("sevenVisitorTrend = " + sevenVisitorTrend.getData());
                         visitorMap.put("sevenVisitorTotal", sevenVisitorTotal);
                     }
 

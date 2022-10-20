@@ -30,7 +30,7 @@
     <select id="selectSevenDayByExposureTotal" resultType="java.lang.Integer">
 
         select expo_snapshot.day_total as 'dayVisitorNum',
-        DATE_FORMAT(create_time,'%Y-%m-%d') AS create_time
+        DATE_FORMAT(create_time,'%Y-%m-%d') AS 'create_time'
         FROM expo_snapshot
         where
         expo_total_id =#{expoTotalId}
