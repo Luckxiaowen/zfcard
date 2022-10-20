@@ -7,6 +7,7 @@ import com.zf.domain.entity.ExpoSnapshot;
 import com.zf.domain.entity.ExposureTotal;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.ExposureVo;
+import com.zf.domain.vo.PersonVisitorVo;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.exception.SystemException;
@@ -249,6 +250,33 @@ public class ExposureTotalServiceImpl extends ServiceImpl<ExposureTotalMapper, E
             }
         }
 
+    }
+
+    @Override
+    public ResponseVo getDayData(String userId) {
+        HashMap<String,Object>returnMap=new HashMap<>();
+        if ("".equals(userId)||userId==null){
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "获取个人中心数据失败：用户Id的为空");
+        }else {
+            if (Objects.isNull(sysUserMapper.selectById(userId))){
+                return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "获取个人中心数据失败：不存在此用户");
+            }else {
+                LambdaQueryWrapper<ExposureTotal>queryWrapper=new LambdaQueryWrapper<>();
+                queryWrapper.eq(ExposureTotal::getCreateBy,userId);
+                ExposureTotal exposureTotal = exposureTotalMapper.selectOne(queryWrapper);
+                if (Objects.isNull(exposureTotal)){
+                    return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "获取个人中心数据失败：不存在此用户的数据");
+                }else {
+                    PersonVisitorVo personVisitorVo = new PersonVisitorVo();
+                    personVisitorVo.setDayVisitor(Math.toIntExact(exposureTotal.getDayTotal()));
+                    personVisitorVo.setDayNotes(Math.toIntExact(exposureTotal.getDayNotes()));
+                    personVisitorVo.setDayContact(Math.toIntExact(exposureTotal.getDayAddContact()));
+                    personVisitorVo.setDayDownloadCard(Math.toIntExact(exposureTotal.getDayDownloadNum()));
+                    returnMap.put("centerData",personVisitorVo);
+                }
+            }
+        }
+        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询成功",returnMap);
     }
 
     public Integer getInteger(String userId) {

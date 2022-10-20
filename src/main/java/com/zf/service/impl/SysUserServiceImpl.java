@@ -13,7 +13,7 @@ import com.zf.domain.entity.SysRole;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.entity.SysUserRole;
 import com.zf.domain.vo.LoginUser;
-import com.zf.domain.vo.Psw;
+import com.zf.domain.vo.PswVo;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.domain.vo.SysUserVo;
 import com.zf.enums.AppHttpCodeEnum;
@@ -554,7 +554,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
   @Override
-  public ResponseVo changePassword(String token, Psw psw) throws Exception {
+  public ResponseVo changePassword(String token, PswVo psw) throws Exception {
 
       if(token == null){
         return ResponseVo.errorResult(AppHttpCodeEnum.LOGIN_INVALID);

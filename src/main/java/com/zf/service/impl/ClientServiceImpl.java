@@ -59,7 +59,7 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
     }
 
     @Override
-    public ResponseVo clientSummary(String userId) {
+    public ResponseVo clientSummary(String userId) throws ParseException {
 
         if (Objects.isNull(sysUserMapper.selectById(Long.parseLong(userId)))){
             return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"未查询用户!");
@@ -83,14 +83,22 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
                     List<String> sevenDate = DateUtil.getSevenDate();
                     List<Integer> sevenDayByDate=expoSnapshotMapper.selectSevenDayByDate(exposureTotal.getId(),sevenDate);
                     if (sevenDayByDate.size()==0){
-                        map.put("sevenTotal",0);
+                        map.put("sevenTotal",0L);
                     }else{
                         Integer sevenTotal=0;
-                        for (Integer integer : sevenDayByDate) {
-                            sevenTotal=sevenTotal+integer;
+                        ResponseVo responseVo = this.sevenClientTrend(userId);
+                        TreeMap data = (TreeMap) responseVo.getData();
+                        Set<Map.Entry<String, Long>> entrySet = data.entrySet();
+                        if (entrySet.size() == 0) {
+                            map.put("sevenVisitorTotal", 0L);
+                        }else {
+                            for (Map.Entry<String, Long> entry : entrySet) {
+                                Long value = entry.getValue();
+                                sevenTotal = Math.toIntExact(sevenTotal + value);
+                            }
                         }
                         map.put("sevenTotal",sevenTotal);
-                        System.out.println("sevenTotal = " + sevenTotal);
+
                     }
                 }else{
                     map.put("ClientDay",0);

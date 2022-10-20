@@ -19,4 +19,5 @@ public interface ExposureTotalService extends IService<ExposureTotal> {
 
     ResponseVo updateVisitor(String userId);
 
+    ResponseVo getDayData(String userId);
 }
