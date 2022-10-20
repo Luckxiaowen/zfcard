@@ -13,6 +13,7 @@ import com.zf.domain.entity.SysRole;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.entity.SysUserRole;
 import com.zf.domain.vo.LoginUser;
+import com.zf.domain.vo.Psw;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.domain.vo.SysUserVo;
 import com.zf.enums.AppHttpCodeEnum;
@@ -53,6 +54,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private SysUserRoleServiceImpl userRoleService;
     @Resource
     private SysRoleServiceImpl roleService;
+
 
     @Override
     public ResponseVo add(SysUser sysUser, String updateId) {
@@ -551,7 +553,56 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
     }
 
-    public Integer getInteger(String userId) {
+  @Override
+  public ResponseVo changePassword(String token, Psw psw) throws Exception {
+
+      if(token == null){
+        return ResponseVo.errorResult(AppHttpCodeEnum.LOGIN_INVALID);
+      }
+
+      if("".equals(psw.getNewPsw()) || "".equals(psw.getConfirmPsw()) || "".equals(psw.getOriginalPsw())){
+        return ResponseVo.errorResult(AppHttpCodeEnum.FAIL,"有输入为空请重新输入");
+      }
+
+    String originalPsw = psw.getOriginalPsw();
+    String confirmPs = psw.getConfirmPsw();
+
+
+
+    Long id = Long.valueOf(JwtUtil.parseJWT(token).getSubject());
+
+    SysUser sysUser = sysUserMapper.selectById(id);
+    String password = sysUser.getPassword();
+
+    boolean matches = passwordEncoder.matches(originalPsw, password);
+
+    if (matches) {
+
+      String newPsw = psw.getNewPsw();
+      String confirmPsw = psw.getConfirmPsw();
+
+      if (newPsw.equals(confirmPsw)){
+
+        String encode = passwordEncoder.encode(confirmPs);
+
+        sysUser.setId(id);
+        sysUser.setPassword(encode);
+
+
+        sysUserMapper.updateById(sysUser);
+
+        return ResponseVo.okResult(AppHttpCodeEnum.SUCCESS);
+      }
+
+      return ResponseVo.errorResult(AppHttpCodeEnum.SUCCESS,"两次密码输入不一致");
+
+    }
+
+    return ResponseVo.errorResult(AppHttpCodeEnum.SUCCESS,"原密码错误");
+
+  }
+
+  public Integer getInteger(String userId) {
         int id;
         if (Validator.isNumeric(userId)) {
             id = Integer.parseInt(userId);
