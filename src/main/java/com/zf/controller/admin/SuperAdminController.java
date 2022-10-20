@@ -4,6 +4,7 @@ import com.zf.domain.entity.Company;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.service.CompanyService;
+import com.zf.service.CompanyVoService;
 import com.zf.utils.JwtUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +29,9 @@ public class SuperAdminController {
     @Autowired
     private CompanyService companyService;
 
+    @Autowired
+    private CompanyVoService companyVoService;
+
     @ApiOperation(value = "增加公司接口")
     @PostMapping("/add-company")
     public ResponseVo add(@RequestHeader("token") String token, @RequestBody Company company ) throws Exception {
@@ -49,8 +53,8 @@ public class SuperAdminController {
 
     @ApiOperation(value = "公司列表查询接口")
     @GetMapping("/list-company")
-    public ResponseVo list(@RequestHeader("token")String token){
-       return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(),companyService.list());
+    public ResponseVo list(@RequestParam("pageNum")Integer pageNum,@RequestParam("pageSize")Integer pageSize){
+       return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(),companyVoService.selectByCreatBy(pageNum,pageSize));
     }
 
     @ApiOperation(value = "单个公司查询接口")
