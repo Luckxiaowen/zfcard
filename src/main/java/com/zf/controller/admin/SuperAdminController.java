@@ -51,7 +51,7 @@ public class SuperAdminController {
         return companyService.modify(company,JwtUtil.parseJWT(token).getSubject());
     }
 
-    @ApiOperation(value = "公司列表查询接口")
+    @ApiOperation(value = "平台公司列表查询接口")
     @GetMapping("/list-company")
     public ResponseVo list(@RequestParam("pageNum")Integer pageNum,@RequestParam("pageSize")Integer pageSize){
        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(),companyVoService.selectByCreatBy(pageNum,pageSize));
