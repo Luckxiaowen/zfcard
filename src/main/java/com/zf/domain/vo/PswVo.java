@@ -13,7 +13,7 @@ import java.math.BigInteger;
  * DateTime: 2022/10/19 20:34
  */
 @Data
-public class Psw {
+public class PswVo {
 
   @ApiModelProperty(value = "原密码",dataType = "String")
   private String originalPsw ;

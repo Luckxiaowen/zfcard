@@ -135,4 +135,101 @@
         And su.del_flag = 0
     </select>
 
+  <select id="selectUserByQuery" resultType="com.zf.domain.vo.SysUserVo">
+
+    SELECT
+      *
+    FROM
+      sys_user
+    WHERE
+
+            <if test="create_time == null">
+
+              <if test="id != null">
+                id = #{userId}
+              </if>
+
+              <if test="id == null">
+                station = #{userJob}
+              </if>
+
+            </if>
+
+
+
+            <if test="id == null">
+
+              <if test="create_time != null">
+                create_time BETWEEN #{startTime}
+                AND #{endTime}
+              </if>
+
+              <if test="create_time == null">
+                station = #{userJob}
+              </if>
+
+              <if test="create_time and station != null">
+                create_time BETWEEN #{startTime}
+                AND #{endTime}
+                AND station = #{userJob}
+              </if>
+
+            </if>
+
+
+            <if test="station == null">
+
+              <if test="id != null">
+                id = #{userId}
+
+              </if>
+
+              <if test="id == null">
+                create_time BETWEEN #{startTime}
+                AND #{endTime}
+              </if>
+
+            </if>
+
+
+
+            <if test="create_time and station == null">
+              id = #{userId}
+            </if>
+
+
+            <if test="id != null">
+              id = #{userId}
+            </if>
+
+
+  </select>
+
+
+  <select id="testSelectUserByQuery" resultType="com.zf.domain.vo.SysUserVo">
+
+    SELECT
+    *
+    FROM
+    sys_user
+    <where>
+
+      <if test="startTime != null">
+        create_time BETWEEN #{startTime}
+        AND #{endTime}
+      </if>
+
+      <if test="userJob != null">
+        AND station = #{userJob}
+      </if>
+
+      <if test="userId != null">
+        id = #{userId}
+      </if>
+
+    </where>
+
+  </select>
+
+
 </mapper>

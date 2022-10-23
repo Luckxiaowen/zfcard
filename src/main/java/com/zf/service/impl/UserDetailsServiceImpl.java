@@ -40,6 +40,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // TODO 查询对应的权限信息
         List<String> list = SysMenuMapper.selectPermsByUserId(sysUser.getId());
 
+
         //TODO 封装数据返回
         return new LoginUser(sysUser,list);
     }

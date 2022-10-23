@@ -3,8 +3,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zf.domain.dto.AccountDto;
 import com.zf.domain.dto.StaffDto;
 import com.zf.domain.entity.SysUser;
-import com.zf.domain.vo.Psw;
+import com.zf.domain.vo.PswVo;
 import com.zf.domain.vo.ResponseVo;
+import com.zf.domain.vo.UserQueryVo;
+import org.aspectj.weaver.patterns.IToken;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -80,6 +82,8 @@ public interface SysUserService extends IService<SysUser> {
 
     ResponseVo addUserList(String token, List<StaffDto> userList);
 
-    ResponseVo changePassword(String token, Psw psw) throws Exception;
+    ResponseVo changePassword(String token, PswVo psw) throws Exception;
+
+    ResponseVo selectUserByQuery(String token, UserQueryVo userQueryVo);
 
 }

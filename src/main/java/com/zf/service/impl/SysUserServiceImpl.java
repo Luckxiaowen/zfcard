@@ -12,10 +12,7 @@ import com.zf.domain.entity.CompanyFrame;
 import com.zf.domain.entity.SysRole;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.entity.SysUserRole;
-import com.zf.domain.vo.LoginUser;
-import com.zf.domain.vo.Psw;
-import com.zf.domain.vo.ResponseVo;
-import com.zf.domain.vo.SysUserVo;
+import com.zf.domain.vo.*;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.exception.SystemException;
 import com.zf.mapper.*;
@@ -548,7 +545,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
   @Override
-  public ResponseVo changePassword(String token, Psw psw) throws Exception {
+  public ResponseVo changePassword(String token, PswVo psw) throws Exception {
 
       if(token == null){
         return ResponseVo.errorResult(AppHttpCodeEnum.LOGIN_INVALID);
@@ -594,6 +591,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     return ResponseVo.errorResult(AppHttpCodeEnum.SUCCESS,"原密码错误");
 
+  }
+
+  @Override
+  public ResponseVo selectUserByQuery(String token, UserQueryVo userQueryVo) {
+    Integer id = getInteger(token);
+
+
+
+    return null;
   }
 
   public Integer getInteger(String userId) {
