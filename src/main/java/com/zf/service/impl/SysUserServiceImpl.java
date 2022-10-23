@@ -614,12 +614,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
       }
 
 
+
     String userId = userQueryVo.getUserId();
     String userJob = userQueryVo.getUserJob();
     String startTime = userQueryVo.getStartTime();
     String endTime = userQueryVo.getEndTime();
     Integer pageNum = userQueryVo.getPageNum();
     Integer pageSize = userQueryVo.getPageSize();
+
 
     if (pageNum.equals("") || pageSize.equals("")){
       return ResponseVo.errorResult(AppHttpCodeEnum.PARAMETER_ERROR,"无当前页或每页数据条数");

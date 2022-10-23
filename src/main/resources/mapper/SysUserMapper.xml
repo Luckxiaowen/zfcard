@@ -137,6 +137,9 @@
 
   <select id="selectUserByQuery" resultType="com.zf.domain.vo.SysUserVo">
 
+    <bind name="querySql" value="'%' +userId+ '%'"/>
+
+
     SELECT
     *
     FROM
@@ -153,7 +156,7 @@
       </if>
 
       <if test="userId != null">
-        id = #{userId}
+        AND id like #{querySql}
       </if>
 
     </where>
