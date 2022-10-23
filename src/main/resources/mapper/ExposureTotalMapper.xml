@@ -27,4 +27,21 @@
         day_notes,day_add_contact,day_add_client,
         week_add_client
     </sql>
+    <select id="selectSevenDayByExposureTotal" resultType="java.lang.Integer">
+
+        select expo_snapshot.day_total as 'dayVisitorNum',
+        DATE_FORMAT(create_time,'%Y-%m-%d') AS 'create_time'
+        FROM expo_snapshot
+        where
+        expo_total_id =#{expoTotalId}
+        AND
+        DATE_FORMAT(create_time,'%Y-%m-%d')IN
+        <foreach collection="sevenDate" item="sevenDate" separator="," open="(" close=")">
+            #{sevenDate}
+        </foreach>
+        Group BY
+        DATE_FORMAT(create_time,'%Y-%m-%d')
+        Order By
+        DATE_FORMAT(create_time,'%Y-%m-%d') desc;
+    </select>
 </mapper>

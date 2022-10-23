@@ -3,8 +3,6 @@ package com.zf.domain.vo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.math.BigInteger;
-
 /**
  * Created with IntelliJ IDEA.
  * Description:
@@ -13,7 +11,7 @@ import java.math.BigInteger;
  * DateTime: 2022/10/19 20:34
  */
 @Data
-public class Psw {
+public class PswVo {
 
   @ApiModelProperty(value = "原密码",dataType = "String")
   private String originalPsw ;

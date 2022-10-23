@@ -99,10 +99,10 @@ public class ExposureTotal implements Serializable {
     @ApiModelProperty(value = "每日转发名片数量",dataType = "long")
     private Long dayForwardNum;
 
-    @ApiModelProperty(value = "总停留时常",dataType = "string")
-    private String average_stay_min;
+    @ApiModelProperty(value = "总停留时常",dataType = "int")
+    private Integer averageStayMin;
 
     @ApiModelProperty(value = "总停留次数",dataType = "string")
-    private int stay_num;
+    private int stayNum;
 
 }

@@ -11,6 +11,7 @@ import com.zf.domain.vo.ClientVo;
 import com.zf.domain.vo.LoginUser;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
+import com.zf.exception.SystemException;
 import com.zf.mapper.ClientMapper;
 import com.zf.mapper.ExpoSnapshotMapper;
 import com.zf.mapper.ExposureTotalMapper;
@@ -58,7 +59,7 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
     }
 
     @Override
-    public ResponseVo clientSummary(String userId) {
+    public ResponseVo clientSummary(String userId) throws ParseException {
 
         if (Objects.isNull(sysUserMapper.selectById(Long.parseLong(userId)))){
             return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"未查询用户!");
@@ -82,14 +83,22 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
                     List<String> sevenDate = DateUtil.getSevenDate();
                     List<Integer> sevenDayByDate=expoSnapshotMapper.selectSevenDayByDate(exposureTotal.getId(),sevenDate);
                     if (sevenDayByDate.size()==0){
-                        map.put("sevenTotal",0);
+                        map.put("sevenTotal",0L);
                     }else{
                         Integer sevenTotal=0;
-                        for (Integer integer : sevenDayByDate) {
-                            sevenTotal=sevenTotal+integer;
+                        ResponseVo responseVo = this.sevenClientTrend(userId);
+                        TreeMap data = (TreeMap) responseVo.getData();
+                        Set<Map.Entry<String, Long>> entrySet = data.entrySet();
+                        if (entrySet.size() == 0) {
+                            map.put("sevenVisitorTotal", 0L);
+                        }else {
+                            for (Map.Entry<String, Long> entry : entrySet) {
+                                Long value = entry.getValue();
+                                sevenTotal = Math.toIntExact(sevenTotal + value);
+                            }
                         }
                         map.put("sevenTotal",sevenTotal);
-                        System.out.println("sevenTotal = " + sevenTotal);
+
                     }
                 }else{
                     map.put("ClientDay",0);
@@ -127,20 +136,26 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
                     wrapper.eq(ExpoSnapshot::getExpoTotalId,exposureTotal.getId());
                     ExpoSnapshot expoSnapshot = expoSnapshotMapper.selectOne(wrapper);
                     wrapper=new LambdaQueryWrapper<>();
-                    if (Objects.isNull(expoSnapshot)||expoSnapshot.getDayAddClient()==null||"".equals(expoSnapshot.getDayAddClient())){
+                    String nowDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
 
+                    if (Objects.isNull(expoSnapshot)||expoSnapshot.getDayAddClient()==null||"".equals(expoSnapshot.getDayAddClient())){
                         hashMap.put(date,0);
                     }else{
-
                         hashMap.put(date,expoSnapshot.getDayAddClient());
                     }
-
+                    if (date.equals(nowDate)){
+                        System.out.println("nowDate = " + nowDate);
+                        hashMap.put(nowDate,exposureTotal.getDayAddClient());
+                    }
                 }
+
             }
 
             return ResponseVo.okResult(hashMap);
         }
     }
+
+
 
     @Override
     public ResponseVo searchAll(String userId) {
@@ -155,5 +170,23 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
             return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询成功",clientVoLists);
         }
 
+    }
+
+    @Override
+    public ResponseVo clientVisitor(Integer staffId,Integer time) {
+        ExposureTotal exposureTotal = exposureTotalMapper.selectOne(new LambdaQueryWrapper<ExposureTotal>().eq(ExposureTotal::getCreateBy, staffId));
+        if (Objects.isNull(exposureTotal)){
+            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+        Integer totalTime = exposureTotal.getAverageStayMin() + time;
+        exposureTotal.setAverageStayMin(totalTime);
+        int stayNum = exposureTotal.getStayNum();
+        int newStayNum=stayNum+1;
+        exposureTotal.setStayNum(newStayNum);
+        Long visitorTotal = exposureTotal.getVisitorTotal();
+        Long newVisitorTotal=visitorTotal+1;
+        exposureTotal.setVisitorTotal(newVisitorTotal);
+        exposureTotalMapper.updateById(exposureTotal);
+        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"操作成功：访客数+1，时常"+time+"用户访问次数+1");
     }
 }
