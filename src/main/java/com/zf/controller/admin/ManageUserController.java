@@ -111,9 +111,9 @@ public class ManageUserController {
     }
 
   @ApiOperation(value = "按条件搜索员工接口")
-  @GetMapping("/user-query")
+  @PostMapping("/user-query")
   public ResponseVo selectUserByQuery(@RequestHeader("token") String token, @RequestBody UserQueryVo userQueryVo) throws Exception {
-    return null;
+    return sysUserService.selectUserByQuery(token, userQueryVo);
   }
 
     @ApiOperation(value = "添加员工微信二维码")

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.dto.AccountDto;
 import com.zf.domain.dto.StaffDto;
@@ -30,6 +31,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -595,11 +597,53 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
   @Override
   public ResponseVo selectUserByQuery(String token, UserQueryVo userQueryVo) {
-    Integer id = getInteger(token);
+
+      if (token == null){
+        return ResponseVo.errorResult(AppHttpCodeEnum.LOGIN_INVALID);
+      }
+
+    String id = String.valueOf(getInteger(token));
 
 
+    if (userQueryVo == null){
 
-    return null;
+        SysUser sysUser = sysUserMapper.selectById(id);
+        List<SysUserVo> userVoList = sysUserMapper.selectByCompanyId(sysUser.getCompanyid());
+
+        return ResponseVo.okResult(userVoList);
+      }
+
+
+    String userId = userQueryVo.getUserId();
+    String userJob = userQueryVo.getUserJob();
+    String startTime = userQueryVo.getStartTime();
+    String endTime = userQueryVo.getEndTime();
+    Integer pageNum = userQueryVo.getPageNum();
+    Integer pageSize = userQueryVo.getPageSize();
+
+    if (pageNum.equals("") || pageSize.equals("")){
+      return ResponseVo.errorResult(AppHttpCodeEnum.PARAMETER_ERROR,"无当前页或每页数据条数");
+    }
+
+    if(userJob.equals("")){
+      userJob = null;
+    }
+    if(startTime.equals("")){
+      startTime = null;
+    }
+    if(endTime.equals("")){
+      endTime = null;
+    }
+    if(userId.equals("")){
+      userId = null;
+    }
+
+    Page<SysUserVo> page = new Page<>(pageNum,pageSize);
+    Page<SysUserVo> selectUserByQuery = sysUserMapper.selectUserByQuery(page, userId, userJob, startTime, endTime);
+
+
+    return ResponseVo.okResult(selectUserByQuery);
+
   }
 
   public Integer getInteger(String userId) {
