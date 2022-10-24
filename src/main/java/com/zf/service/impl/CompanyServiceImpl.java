@@ -3,6 +3,7 @@ package com.zf.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zf.domain.dto.CompanyDto;
 import com.zf.domain.entity.Company;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
@@ -26,45 +27,15 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     @Autowired
     private CompanyMapper companyMapper;
 
+    /**
+     *
+     * @param companyDto
+     * @return
+     */
     @Override
-    public ResponseVo insert(Company company,String userId) {
-        if ("".equals(company.getCompany()) || company.getCompany() == null) {
-            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司名称不能为空");
-        } else {
-            if (company.getCompany().length() < 3) {
-                return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司名称长度不能小于三个字符");
-            } else {
-                if (companyMapper.selectList(null).stream().anyMatch(company1 -> company1.getCompany().equals(company.getCompany()))) {
-                    return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "当前公司名字重复请核实公司");
-                } else {
-                    if ("".equals(company.getAddress()) || company.getAddress() == null) {
-                        return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司地址不能为空");
-                    } else {
-                        if (company.getAddress().length() < 6) {
-                            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司地址小于6个字符");
-                        } else {
-                            if (company.getTel().length() < 11) {
-                                return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "手机号码长度有误");
-                            } else {
-                                if (Validator.isMobile(company.getTel())) {
-                                    company.setCreateTime(new Date());
-                                    company.setUpdateTime(new Date());
-                                    company.setCreateBy(Long.parseLong(userId));
-                                    //TODO 插入数据库
-                                    if (companyMapper.insert(company) > 0) {
-                                        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(), null);
-                                    } else {
-                                        return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司添加失败");
-                                    }
-                                } else {
-                                    return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "手机号错误请重新输入");
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    public ResponseVo insert(CompanyDto companyDto) {
+
+        return null;
     }
 
     @Override
