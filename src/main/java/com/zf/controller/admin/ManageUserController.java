@@ -6,6 +6,7 @@ import com.zf.domain.dto.RoleDto;
 import com.zf.domain.dto.StaffDto;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.ResponseVo;
+import com.zf.domain.vo.UserQueryVo;
 import com.zf.service.SysUserService;
 import com.zf.utils.JwtUtil;
 import io.swagger.annotations.*;
@@ -108,6 +109,12 @@ public class ManageUserController {
     public ResponseVo PageCaseContent(@RequestHeader("token") String token,@RequestParam("pageNum")Integer pageNum,@RequestParam("pageSize")Integer pageSize) throws Exception {
         return sysUserService.SelectPage(JwtUtil.parseJWT(token).getSubject(),pageNum,pageSize);
     }
+
+  @ApiOperation(value = "按条件搜索员工接口")
+  @PostMapping("/user-query")
+  public ResponseVo selectUserByQuery(@RequestHeader("token") String token, @RequestBody UserQueryVo userQueryVo) throws Exception {
+    return sysUserService.selectUserByQuery(token, userQueryVo);
+  }
 
     @ApiOperation(value = "添加员工微信二维码")
     @PostMapping("/upload/file")

@@ -11,7 +11,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SysUserVo {
+public class  SysUserVo {
     @ApiModelProperty(value = "用户编号",dataType = "int")
     private int id;
 
