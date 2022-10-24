@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zf.mapper.CompanyVoMapper">
+
+
+    <select id="selectByCreatBy" resultType="com.zf.domain.vo.CompanyVo">
+        SELECT
+            c.id,
+            c.company,
+            su.username As manger,
+            s.phonenumber,
+            c.create_time,
+            c.update_time,
+            c.del_flag,
+            s.username AS  createname
+        FROM
+            company c
+                LEFT JOIN sys_user s ON c.create_by = s.id
+                LEFT JOIN sys_user su ON c.id = su.companyid
+        where su.user_type = 0
+
+    </select>
+</mapper>

@@ -2,6 +2,7 @@ package com.zf.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zf.domain.entity.ExposureTotal;
+import com.zf.domain.vo.ResponseVo;
 
 /**
 * @author Amireux
@@ -10,4 +11,13 @@ import com.zf.domain.entity.ExposureTotal;
 */
 public interface ExposureTotalService extends IService<ExposureTotal> {
 
+    ResponseVo getVisitorNum(String token);
+
+    ResponseVo getSevenVisitorTrend(String userId);
+
+    ResponseVo getExposureHistory(String userId);
+
+    ResponseVo updateVisitor(String userId);
+
+    ResponseVo getDayData(String userId);
 }

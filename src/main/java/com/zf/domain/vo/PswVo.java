@@ -3,8 +3,6 @@ package com.zf.domain.vo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.math.BigInteger;
-
 /**
  * Created with IntelliJ IDEA.
  * Description:

@@ -37,7 +37,7 @@ public class InsertSnapshotJob {
             System.out.println("执行定时任务失败");
         } else {
             for (SysUser sysUser : sysUserList) {
-                System.out.println("sysUser = " + sysUser);
+
                 LambdaQueryWrapper<ExposureTotal> queryWrapper1 = new LambdaQueryWrapper<>();
                 queryWrapper1.eq(ExposureTotal::getCreateBy, sysUser.getId());
                 ExposureTotal exposureTotal = exposureTotalMapper.selectOne(queryWrapper1);
@@ -49,7 +49,7 @@ public class InsertSnapshotJob {
                     exposureTotal1.setCreateTime(new Date());
                     exposureTotalMapper.insert(exposureTotal1);
                 } else {
-                    System.out.println("exposureTotal = " + exposureTotal);
+
                     ExpoSnapshot expoSnapshot = new ExpoSnapshot();
                     expoSnapshot.setExpoTotalId(exposureTotal.getId());
                     expoSnapshot.setDayTotal(exposureTotal.getDayTotal());
@@ -59,9 +59,11 @@ public class InsertSnapshotJob {
                     expoSnapshot.setDayAddContact(exposureTotal.getDayAddContact());
                     expoSnapshot.setWeekClientNum(exposureTotal.getWeekAddClient());
                     expoSnapshot.setWeekVisitorNum(exposureTotal.getVisitorTotal());
+                    expoSnapshot.setAverageStayMin(exposureTotal.getAverageStayMin());
+                    expoSnapshot.setStayNum(exposureTotal.getStayNum());
                     expoSnapshot.setCreateTime(new Date());
                     expoSnapshotMapper.insert(expoSnapshot);
-                    System.out.println("执行定时任务成功条数为" + exposureTotal.getId());
+
                     List<ExposureTotal> exposureTotals = exposureTotalMapper.selectList(null);
                     for (ExposureTotal total : exposureTotals) {
                         total.setUpdateTime(new Date());
@@ -75,7 +77,7 @@ public class InsertSnapshotJob {
                         total.setSevenTotal(0L);
                         List<String> sevenDate = DateUtil.getSevenDate();
                         List<ExpoSnapshot> expoSnapshotList = expoSnapshotMapper.selectSevenDayByTotalId(total.getId(), sevenDate);
-                        System.out.println("expoSnapshotList = " + expoSnapshotList);
+
                         for (ExpoSnapshot snapshot : expoSnapshotList) {
                             total.setSevenTotal(snapshot.getWeekVisitorNum());
                             total.setWeekAddClient(snapshot.getWeekClientNum());
