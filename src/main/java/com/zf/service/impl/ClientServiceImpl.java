@@ -52,6 +52,15 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
     public ResponseVo addClient(Client client) {
         int insert = clientMapper.insert(client);
         if (insert>0){
+            LambdaQueryWrapper<ExposureTotal>queryWrapper=new LambdaQueryWrapper<>();
+            queryWrapper.eq(ExposureTotal::getCreateBy,client.getCreatedBy());
+            ExposureTotal exposureTotal = exposureTotalMapper.selectOne(queryWrapper);
+            if (Objects.isNull(exposureTotal)){
+                return ResponseVo.okResult(AppHttpCodeEnum.SUCCESS.getCode(),"添加用户失败：曝光统计不存在当前用户记录信息");
+            }else {
+                exposureTotal.setDayAddClient(exposureTotal.getDayAddClient()+1);
+                exposureTotalMapper.updateById(exposureTotal);
+            }
             return ResponseVo.okResult(AppHttpCodeEnum.SUCCESS.getCode(),"添加成功");
         }else{
             return ResponseVo.okResult(AppHttpCodeEnum.SUCCESS.getCode(),"添加失败");
@@ -77,20 +86,21 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
                 LambdaQueryWrapper<ExposureTotal>lambdaQueryWrapper=new LambdaQueryWrapper<>();
                 lambdaQueryWrapper.eq(ExposureTotal::getCreateBy,Long.parseLong(userId));
                 ExposureTotal exposureTotal = exposureTotalMapper.selectOne(lambdaQueryWrapper);
+
                 if (!Objects.isNull(exposureTotal)){
                     map.put("ClientDay",exposureTotal.getDayAddClient());
-                    //TODO 近七日新增
+                    //TODO 近七日新增客户
                     List<String> sevenDate = DateUtil.getSevenDate();
-                    List<Integer> sevenDayByDate=expoSnapshotMapper.selectSevenDayByDate(exposureTotal.getId(),sevenDate);
-                    if (sevenDayByDate.size()==0){
-                        map.put("sevenTotal",0L);
-                    }else{
+                    List<Integer> sevenDayVisitorList = exposureTotalMapper.selectSevenDayByExposureTotal(exposureTotal.getId(), sevenDate);
+                    if (sevenDayVisitorList.size()==0){
+                        map.put("sevenTotal",0);
+                    }else {
                         Integer sevenTotal=0;
-                        ResponseVo responseVo = this.sevenClientTrend(userId);
-                        TreeMap data = (TreeMap) responseVo.getData();
+                        ResponseVo sevenClientTrend = this.sevenClientTrend(userId);
+                        TreeMap data= (TreeMap) sevenClientTrend.getData();
                         Set<Map.Entry<String, Long>> entrySet = data.entrySet();
-                        if (entrySet.size() == 0) {
-                            map.put("sevenVisitorTotal", 0L);
+                        if (entrySet.size()==0){
+                            map.put("sevenTotal",0);
                         }else {
                             for (Map.Entry<String, Long> entry : entrySet) {
                                 Long value = entry.getValue();
@@ -98,7 +108,6 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
                             }
                         }
                         map.put("sevenTotal",sevenTotal);
-
                     }
                 }else{
                     map.put("ClientDay",0);
@@ -139,13 +148,14 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
                     String nowDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
 
                     if (Objects.isNull(expoSnapshot)||expoSnapshot.getDayAddClient()==null||"".equals(expoSnapshot.getDayAddClient())){
-                        hashMap.put(date,0);
+                        hashMap.put(date,0L);
                     }else{
                         hashMap.put(date,expoSnapshot.getDayAddClient());
-                    }
-                    if (date.equals(nowDate)){
-                        System.out.println("nowDate = " + nowDate);
-                        hashMap.put(nowDate,exposureTotal.getDayAddClient());
+                        if (date.equals(nowDate)){
+                            System.out.println("nowDate = " + nowDate);
+                            hashMap.put(nowDate,exposureTotal.getDayAddClient());
+                            System.out.println("exposureTotal = " + exposureTotal.getDayAddClient());
+                        }
                     }
                 }
 
