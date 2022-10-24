@@ -22,7 +22,7 @@ import java.util.Map;
 @Component
 public class DingTalkUtils {
 
-    private static String ACCESS_TOKEN="13be62f5643b3c95a97e84a9dc0cfb50";
+    private static String ACCESS_TOKEN="34cb5b62320e3b64a6e45234dc785095";
 
     public OapiV2DepartmentListsubResponse getDepartment(){
         OapiV2DepartmentListsubResponse response=new OapiV2DepartmentListsubResponse();
@@ -45,8 +45,7 @@ public class DingTalkUtils {
         return new Client(config);
     }
 
-    public ResponseVo<?> getAssessToken(DingTalkDto dingTalkDto) throws Exception {
-
+    public Map<String,Object>getAssessToken(DingTalkDto dingTalkDto) throws Exception {
         GetAccessTokenResponse accessToken = new GetAccessTokenResponse();
         HashMap<String, Object> resMap = new HashMap<>();
         List<String> args = new ArrayList<>();
@@ -55,7 +54,6 @@ public class DingTalkUtils {
         getAccessTokenRequest.setAppKey(dingTalkDto.getAppKey()).setAppSecret(dingTalkDto.getAppSecret());
         accessToken = client.getAccessToken(getAccessTokenRequest);
         resMap.put("assessToken",accessToken.getBody().accessToken);
-        return new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(), "123", resMap);
+        return resMap;
     }
-
 }

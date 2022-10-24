@@ -9,4 +9,5 @@ public interface DingTalkService {
     ResponseVo<?>getAssessToken(DingTalkDto dingTalkDto) throws Exception;
 
 
+    ResponseVo<?> bindDingDing(String subject, DingTalkDto dingTalkDto) throws Exception;
 }

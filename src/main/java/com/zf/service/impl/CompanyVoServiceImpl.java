@@ -34,7 +34,6 @@ public class CompanyVoServiceImpl extends ServiceImpl<CompanyVoMapper, CompanyVo
             return ResponseVo.okResult("暂无任何平台信息！");
         }
 
-
         return ResponseVo.okResult(companyVoPage);
     }
 }

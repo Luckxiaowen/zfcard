@@ -49,8 +49,7 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
 //                return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "未添加此公司或者此公司已删除，请刷新页面");
             } else {
                 company.setDelFlag(1);
-                company.setUpdateBy(Long.parseLong(updateId));
-                company.setUpdateTime(new Date());
+
                 if (companyMapper.updateById(company)>0) {
                     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "删除成功");
                 } else {
@@ -63,28 +62,23 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     @Override
     public ResponseVo modify(Company company,String updateId) {
 
-        if ("".equals(company.getCompany()) || company.getCompany() == null) {
+        if ("".equals(company.getCompanyName()) || company.getCompanyName() == null) {
             return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司名称不能为空");
         } else {
-            if (company.getCompany().length() < 3) {
+            if (company.getCompanyName().length() < 3) {
                 return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司名称长度不能小于三个字符");
             } else {
 
-                if (companyMapper.selectList(null).stream().filter(company1 -> company1.getCompany().equals(company.getCompany())).count() > 0) {
+                if (companyMapper.selectList(null).stream().filter(company1 -> company1.getCompanyName().equals(company.getCompanyName())).count() > 0) {
                     return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "当前公司名字重复请核实公司");
                 } else {
-                    if ("".equals(company.getAddress()) || company.getAddress() == null) {
-                        return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司地址不能为空");
+                    if ("".equals(company.getCompanyLogo()) || company.getCompanyLogo() == null) {
+                        return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司LOGO不能为空");
                     } else {
-                        if (company.getAddress().length() < 6) {
-                            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司地址小于6个字符");
-                        } else {
-                            if (company.getTel().length() < 11) {
+                            if (company.getAdminTel().length() < 11) {
                                 return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "手机号码长度有误");
                             } else {
-                                if (Validator.isMobile(company.getTel())) {
-                                    company.setUpdateTime(new Date());
-                                    company.setUpdateBy(Long.parseLong(updateId));
+                                if (Validator.isMobile(company.getAdminTel())) {
                                     //TODO 插入数据库
                                     if (companyMapper.updateById(company) > 0) {
                                         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg());
@@ -95,7 +89,7 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
                                     return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "手机号错误请重新输入");
                                 }
                             }
-                        }
+
                     }
                 }
             }
