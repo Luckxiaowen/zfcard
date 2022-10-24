@@ -38,7 +38,7 @@ public class CompanyVo {
      * 管理员用户名 用户名
      */
     @ApiModelProperty(value = "管理员用户名",dataType = "String")
-    private String username;
+    private String manger;
 
     /**
      * 管理员手机号 手机号
@@ -73,5 +73,5 @@ public class CompanyVo {
      */
 
     @ApiModelProperty(value = "创始人",dataType = "String")
-    private String name;
+    private String createName;
 }

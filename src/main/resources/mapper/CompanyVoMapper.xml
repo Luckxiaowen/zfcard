@@ -9,16 +9,17 @@
         SELECT
             c.id,
             c.company,
-            s.username,
+            su.username As manger,
             s.phonenumber,
             c.create_time,
             c.update_time,
             c.del_flag,
-            sr.`name`
+            s.username AS  createname
         FROM
             company c
-                LEFT JOIN sys_role sr ON c.create_by = sr.id
-                LEFT JOIN sys_user s ON s.id = c.create_by
+                LEFT JOIN sys_user s ON c.create_by = s.id
+                LEFT JOIN sys_user su ON c.id = su.companyid
+        where su.user_type = 0
 
     </select>
 </mapper>
