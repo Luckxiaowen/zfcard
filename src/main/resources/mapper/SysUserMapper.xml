@@ -25,7 +25,6 @@
         <result property="weixinCode" column="weixin_code" jdbcType="VARCHAR"/>
     </resultMap>
 
-
     <resultMap id="SysUserVoMap" type="com.zf.domain.vo.SysUserVo">
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="username" column="username" jdbcType="VARCHAR"/>
@@ -40,7 +39,7 @@
         <result property="stayNum" column="stay_num" jdbcType="INTEGER"/>
         <result property="averageStayMin" column="average_stay_min" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="DATE"/>
-        <result property="createName" column="create_by" jdbcType="VARCHAR"/>
+        <collection property="createName" column="create_by" select="com.zf.mapper.SysUserMapper.selectUserNameById"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -133,6 +132,9 @@
             su.companyid = #{companyid}
           AND su.user_type = 0
         And su.del_flag = 0
+    </select>
+    <select id="selectUserNameById" resultType="string">
+        SELECT username FROM sys_user WHERE id=#{id}
     </select>
 
   <select id="selectUserByQuery" resultType="com.zf.domain.vo.SysUserVo">

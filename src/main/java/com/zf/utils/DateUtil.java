@@ -4,6 +4,7 @@ package com.zf.utils;
 
 import org.apache.commons.lang3.time.DateUtils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +22,15 @@ public class DateUtil {
             dateList.add(formatDate);
         }
         return dateList;
+    }
+    public static String dateToStamp(String s) throws ParseException {
+        String res;
+        //设置时间模版
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = simpleDateFormat.parse(s);
+        long ts = date.getTime();
+        res = String.valueOf(ts);
+        return res;
     }
 
 }

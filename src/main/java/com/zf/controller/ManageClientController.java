@@ -40,4 +40,11 @@ public class ManageClientController {
         return clientService.searchAll(JwtUtil.parseJWT(token).getSubject());
     }
 
+    @GetMapping("/client-visitor")
+    @ApiOperation(value = "客服访问次数")
+    public ResponseVo<?> clientVisitor(@RequestParam(value = "staffId") Integer staffId,
+                                       @RequestParam(value = "time") Integer time){
+        return clientService.clientVisitor(staffId,time);
+    }
+
 }

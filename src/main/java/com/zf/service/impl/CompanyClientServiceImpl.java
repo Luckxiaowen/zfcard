@@ -22,6 +22,7 @@ import java.util.Map;
 @Service
 public class CompanyClientServiceImpl extends ServiceImpl<CompanyClientMapper, CompanyClient> implements CompanyClientService {
 
+
     @Autowired
     private CompanyClientVoMapper companyClientVoMapper;
 

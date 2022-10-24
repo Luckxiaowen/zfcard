@@ -31,8 +31,7 @@ public class InsertSnapshotJob {
     public void CheckAndInsertSnapshotJob() {
         //TODO。查询那些账户需要执行定时任务
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysUser::getStatus, 0)
-                .eq(SysUser::getDelFlag, 0);
+        queryWrapper.eq(SysUser::getStatus, 0).eq(SysUser::getDelFlag, 0);
         List<SysUser> sysUserList = sysUserMapper.selectList(queryWrapper);
         if (sysUserList.size() == 0) {
             System.out.println("执行定时任务失败");
