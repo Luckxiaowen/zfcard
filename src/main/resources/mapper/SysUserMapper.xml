@@ -39,6 +39,7 @@
         <result property="stayNum" column="stay_num" jdbcType="INTEGER"/>
         <result property="averageStayMin" column="average_stay_min" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="DATE"/>
+        <result property="updateTime" column="update_time" jdbcType="DATE"/>
         <collection property="createName" column="create_by" select="com.zf.mapper.SysUserMapper.selectUserNameById"/>
     </resultMap>
 
@@ -81,6 +82,7 @@
                 ext.stay_num as'stay_num' ,
                 ext.average_stay_min as 'average_stay_min',
                 su.create_time as 'create_time',
+                su.update_time as 'update_time',
                 su.create_by as'create_by'
         FROM sys_user su
                  LEFT JOIN exposure_total ext on ext.create_by = su.id
@@ -104,6 +106,7 @@
                 ext.stay_num as'stay_num' ,
                 ext.average_stay_min as 'average_stay_min',
                 su.create_time as 'create_time',
+                su.update_time as 'update_time',
                 su.create_by as'create_by'
         FROM sys_user su
                  LEFT JOIN exposure_total ext on ext.create_by = su.id
@@ -121,6 +124,7 @@
             su.username,
             su.phonenumber,
             su.create_time,
+            su.update_time,
             sr.`name` AS role_name,
             u.username AS create_user
         FROM

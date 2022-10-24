@@ -422,14 +422,23 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         queryWrapper.eq(SysUser::getId, userId)
                 .eq(SysUser::getDelFlag, 0);
         SysUser sysUser = sysUserMapper.selectOne(queryWrapper);
+
+        sysUser.setUpdateTime(new Date());
+        sysUserMapper.updateById(sysUser);
+
         queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysUser::getCompanyid, sysUser.getCompanyid());
         long count = sysUserMapper.selectList(queryWrapper).stream().count();
         pageNum = (pageNum - 1) * pageSize;
         List<SysUserVo> userVoList = sysUserMapper.selectMyPage(sysUser.getCompanyid(), pageNum, pageSize);
+
+
+
+
         PageUtils pageUtils = new PageUtils();
         pageUtils.setTotal((int) count);
         pageUtils.setData(userVoList);
+        System.out.println(pageUtils);
         return ResponseVo.okResult(pageUtils);
     }
 

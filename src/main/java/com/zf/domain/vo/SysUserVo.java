@@ -52,6 +52,10 @@ public class SysUserVo {
     @ApiModelProperty(value = "创建时间",dataType = "Date")
     private Date createTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @ApiModelProperty(value = "修改时间",dataType = "Date")
+    private Date updateTime;
+
     @ApiModelProperty(value = "创建人",dataType = "String")
     private String createName;
 

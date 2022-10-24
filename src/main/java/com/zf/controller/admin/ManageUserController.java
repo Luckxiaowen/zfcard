@@ -33,31 +33,7 @@ public class ManageUserController {
      * 3.Put用来更新
      * 4.Delete用来删除*/
 
-/*
-    @ApiOperation(value = "添加员工信息接口")
-    @PostMapping("/add-user")
-    public ResponseVo addUser(@RequestHeader("token")String token, @RequestBody SysUser sysUser) throws Exception {
-        return sysUserService.add(sysUser, JwtUtil.parseJWT(token).getSubject());
-    }
 
-    @ApiOperation(value = "删除员工信息接口")
-    @DeleteMapping("/delete-user/{userid}")
-    public ResponseVo deleteUser(@RequestHeader("token")String token,@PathVariable("userid") long userid) throws Exception {
-        return sysUserService.delete(userid,JwtUtil.parseJWT(token).getSubject());
-    }
-
-    @ApiOperation(value = "修改员工信息接口")
-    @PutMapping("/modify-user")
-    public ResponseVo update(@RequestHeader("token")String token,@RequestBody SysUser sysUser) throws Exception {
-        return sysUserService.modify(sysUser,JwtUtil.parseJWT(token).getSubject());
-·    }
-
-    @ApiOperation(value = "查询员工信息接口")
-    @GetMapping("/list-user")
-    public ResponseVo list(@RequestHeader("token")String token) throws Exception {
-        return sysUserService.selectAll(JwtUtil.parseJWT(token).getSubject());
-    }
-*/
     @ApiOperation(value = "根据员工id获取员工信息")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", required = true),
