@@ -1,12 +1,17 @@
 package com.zf.mapper;
 
 
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.SearchUserVo;
 import com.zf.domain.vo.SysUserVo;
+import com.zf.domain.vo.UserQueryVo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,5 +32,5 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
     List<SysUser> selectAllAccount(Long companyid);
 
-    String selectUserNameById(int id);
+    Page<SysUserVo> selectUserByQuery(Page<SysUserVo> page,@Param("userId") String userId,@Param("userJob") String userJob,@Param("startTime") String startTime,@Param("endTime") String endTime);
 }

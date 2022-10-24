@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.dto.AccountDto;
 import com.zf.domain.dto.StaffDto;
@@ -12,10 +13,7 @@ import com.zf.domain.entity.CompanyFrame;
 import com.zf.domain.entity.SysRole;
 import com.zf.domain.entity.SysUser;
 import com.zf.domain.entity.SysUserRole;
-import com.zf.domain.vo.LoginUser;
-import com.zf.domain.vo.PswVo;
-import com.zf.domain.vo.ResponseVo;
-import com.zf.domain.vo.SysUserVo;
+import com.zf.domain.vo.*;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.exception.SystemException;
 import com.zf.mapper.*;
@@ -33,6 +31,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -367,20 +366,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new SystemException(AppHttpCodeEnum.DEPARTMENT_NOT_EXIST);
         String password = staff.getPhonenumber().substring(staff.getPhonenumber().length() - 6);
         String encodePassword = passwordEncoder.encode(password);
-        LambdaQueryWrapper<SysUser>queryWrapper=new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysUser::getPhonenumber,staff.getPhonenumber());
-        if (Objects.isNull(sysUserMapper.selectOne(queryWrapper))){
-            SysUser user = BeanCopyUtils.copyBean(staff, SysUser.class);
-            user.setCreateBy(loginUser.getSysUser().getId());
-            user.setPassword(encodePassword);
-            user.setSex(2);
-            user.setUserType(1);
-            user.setCompanyid(loginUser.getSysUser().getCompanyid());
-            user.setNickName(staff.getUsername());
-            save(user);
-        }else {
-            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "添加失败：当前员工手机号已存在请修改手机号");
-        }
+        SysUser user = BeanCopyUtils.copyBean(staff, SysUser.class);
+        user.setCreateBy(loginUser.getSysUser().getId());
+        user.setPassword(encodePassword);
+        user.setSex(2);
+        user.setUserType(1);
+        user.setCompanyid(loginUser.getSysUser().getCompanyid());
+        user.setNickName(staff.getUsername());
+        save(user);
         return ResponseVo.okResult();
 
     }
@@ -608,6 +601,59 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     return ResponseVo.errorResult(AppHttpCodeEnum.SUCCESS,"原密码错误");
+
+  }
+
+  @Override
+  public ResponseVo selectUserByQuery(String token, UserQueryVo userQueryVo) {
+
+      if (token == null){
+        return ResponseVo.errorResult(AppHttpCodeEnum.LOGIN_INVALID);
+      }
+
+    String id = String.valueOf(getInteger(token));
+
+
+    if (userQueryVo == null){
+
+        SysUser sysUser = sysUserMapper.selectById(id);
+        List<SysUserVo> userVoList = sysUserMapper.selectByCompanyId(sysUser.getCompanyid());
+
+        return ResponseVo.okResult(userVoList);
+      }
+
+
+
+    String userId = userQueryVo.getUserId();
+    String userJob = userQueryVo.getUserJob();
+    String startTime = userQueryVo.getStartTime();
+    String endTime = userQueryVo.getEndTime();
+    Integer pageNum = userQueryVo.getPageNum();
+    Integer pageSize = userQueryVo.getPageSize();
+
+
+    if (pageNum.equals("") || pageSize.equals("")){
+      return ResponseVo.errorResult(AppHttpCodeEnum.PARAMETER_ERROR,"无当前页或每页数据条数");
+    }
+
+    if(userJob.equals("")){
+      userJob = null;
+    }
+    if(startTime.equals("")){
+      startTime = null;
+    }
+    if(endTime.equals("")){
+      endTime = null;
+    }
+    if(userId.equals("")){
+      userId = null;
+    }
+
+    Page<SysUserVo> page = new Page<>(pageNum,pageSize);
+    Page<SysUserVo> selectUserByQuery = sysUserMapper.selectUserByQuery(page, userId, userJob, startTime, endTime);
+
+
+    return ResponseVo.okResult(selectUserByQuery);
 
   }
 

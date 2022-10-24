@@ -17,5 +17,4 @@ import org.springframework.stereotype.Repository;
 public interface CompanyImgMapper extends BaseMapper<CompanyImg> {
 
 
-
 }

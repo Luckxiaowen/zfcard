@@ -1,5 +1,6 @@
 package com.zf.controller.admin;
 
+import com.zf.domain.dto.CompanyDto;
 import com.zf.domain.entity.Company;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
@@ -11,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -34,8 +36,9 @@ public class SuperAdminController {
 
     @ApiOperation(value = "增加公司接口")
     @PostMapping("/add-company")
-    public ResponseVo add(@RequestHeader("token") String token, @RequestBody Company company ) throws Exception {
-        return companyService.insert(company,JwtUtil.parseJWT(token).getSubject());
+
+    public ResponseVo add(@RequestHeader("token") String token,@Valid @RequestBody CompanyDto companyDto ) throws Exception {
+        return companyService.insert(companyDto);
     }
 
     @ApiOperation(value = "删除公司接口")

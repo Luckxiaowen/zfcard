@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountDto {
+
     private Integer id;
     @NotBlank(message = "姓名不能为空")
     private String username;

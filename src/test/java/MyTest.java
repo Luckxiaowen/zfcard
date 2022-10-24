@@ -1,15 +1,19 @@
+import com.dingtalk.api.response.OapiV2DepartmentListsubResponse;
+import com.qiniu.util.Json;
 import com.zf.domain.entity.CompanyImg;
 import com.zf.mapper.CompanyImgMapper;
 import com.zf.service.CaseContentService;
 import com.zf.service.impl.CaseContentServiceImpl;
 import com.zf.utils.JwtUtil;
 import com.zf.utils.Validator;
+import com.zf.utils.dingtalkutil.DingTalkUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -46,5 +50,19 @@ public class MyTest {
         CaseContentServiceImpl caseContentService=new CaseContentServiceImpl();
         Object sdjgne_ = caseContentService.getParam("11111111");
         System.out.println("sdjgne_ = " + sdjgne_);
+    }
+
+    @Test
+    public void test2(){
+       DingTalkUtils dingTalkUtils=new DingTalkUtils();
+        OapiV2DepartmentListsubResponse department = dingTalkUtils.getDepartment();
+        List<OapiV2DepartmentListsubResponse.DeptBaseResponse> result = department.getResult();
+        for (OapiV2DepartmentListsubResponse.DeptBaseResponse deptBaseResponse : result) {
+            String name = deptBaseResponse.getName();
+            System.out.println("name = " + name);
+            Long deptId = deptBaseResponse.getDeptId();
+            System.out.println("deptId = " + deptId);
+
+        }
     }
 }

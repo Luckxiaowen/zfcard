@@ -108,8 +108,8 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
                 companyQueryWrapper.eq(Company::getId, companyId);
                 Company company = companyMapper.selectOne(companyQueryWrapper);
 
-                String companyName = company.getCompany();
-                String address = company.getAddress();
+                String companyName = company.getCompanyName();
+
 
                 HashMap<String, Object> map = new HashMap<>();
                 String email = personalCardVo.getEmail();
@@ -120,7 +120,6 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
                 map.put("companyName", companyName);
                 map.put("email", email);
                 map.put("username", username);
-                map.put("address", address);
                 map.put("phoneNumber", phoneNumber);
                 map.put("weixinCode", sysUser.getWeixinCode());
                 map.put("telWeixin", sysUser.getTelWeixin());

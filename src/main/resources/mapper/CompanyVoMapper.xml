@@ -9,12 +9,12 @@
         SELECT
             c.id,
             c.company,
-            su.username As manger,
+            su.username As 'manger',
             s.phonenumber,
             c.create_time,
             c.update_time,
             c.del_flag,
-            s.username AS  createname
+            s.username AS  'createname'
         FROM
             company c
                 LEFT JOIN sys_user s ON c.create_by = s.id

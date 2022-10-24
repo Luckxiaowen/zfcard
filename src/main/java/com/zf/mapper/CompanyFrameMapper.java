@@ -9,4 +9,5 @@ import com.zf.domain.entity.CompanyFrame;
  */
 
 public interface CompanyFrameMapper extends BaseMapper<CompanyFrame> {
+
 }

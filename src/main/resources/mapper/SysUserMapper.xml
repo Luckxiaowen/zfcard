@@ -141,4 +141,34 @@
         SELECT username FROM sys_user WHERE id=#{id}
     </select>
 
+  <select id="selectUserByQuery" resultType="com.zf.domain.vo.SysUserVo">
+
+
+    SELECT
+    *
+    FROM
+    sys_user
+    <where>
+
+      <if test="startTime != null">
+        create_time BETWEEN #{startTime}
+        AND #{endTime}
+      </if>
+
+      <if test="userJob != null">
+        AND station = #{userJob}
+      </if>
+
+      <if test="userId != null">
+        AND id like ("%",#{userId},"%")
+      </if>
+
+    </where>
+
+
+
+
+  </select>
+
+
 </mapper>
