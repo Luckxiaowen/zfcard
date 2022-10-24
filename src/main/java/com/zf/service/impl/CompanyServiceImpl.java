@@ -7,7 +7,10 @@ import com.zf.domain.entity.Company;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.exception.SystemException;
+import com.zf.mapper.CompanyImgMapper;
 import com.zf.mapper.CompanyMapper;
+import com.zf.mapper.SysRoleMapper;
+import com.zf.mapper.SysUserMapper;
 import com.zf.service.CompanyService;
 import com.zf.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,7 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
 
     @Autowired
     private CompanyMapper companyMapper;
+
 
     @Override
     public ResponseVo insert(Company company,String userId) {
