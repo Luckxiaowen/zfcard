@@ -52,7 +52,15 @@ public class ModuleConfigServiceImpl extends ServiceImpl<ModuleConfigMapper,Modu
 
     Company company = new Company();
 
+    if (switchFlag == 1 || switchFlag == 0){
+
+    }else {
+      return ResponseVo.okResult(200,"switchFlag只能是（1）开，或者（0）关");
+    }
+
+
     if ("个性化简介".equals(category)){
+
 
       company.setIntroductionSwitch(switchFlag);
 
