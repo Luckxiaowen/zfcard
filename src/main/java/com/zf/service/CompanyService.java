@@ -1,6 +1,7 @@
 package com.zf.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zf.domain.dto.CompanyDto;
 import com.zf.domain.entity.Company;
 import com.zf.domain.vo.ResponseVo;
 
@@ -14,7 +15,7 @@ import java.util.Map;
 */
 public interface CompanyService extends IService<Company> {
 
-    ResponseVo insert(Company company,String updateId);
+    ResponseVo insert(CompanyDto companyDto);
 
     ResponseVo delete(Long companyid,String updateId);
 
