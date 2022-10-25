@@ -5,15 +5,21 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.dto.CompanyDto;
 import com.zf.domain.entity.Company;
+import com.zf.domain.entity.SysUser;
+import com.zf.domain.entity.User;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.exception.SystemException;
 import com.zf.mapper.CompanyMapper;
 import com.zf.service.CompanyService;
+import com.zf.utils.BeanCopyUtils;
 import com.zf.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
@@ -26,6 +32,10 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
 
     @Autowired
     private CompanyMapper companyMapper;
+    @Resource
+    private PasswordEncoder passwordEncoder;
+    @Resource
+    private SysUserServiceImpl userService;
 
     /**
      *
@@ -33,9 +43,19 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
      * @return
      */
     @Override
+    @Transactional
     public ResponseVo insert(CompanyDto companyDto) {
-
-        return null;
+        Company company = BeanCopyUtils.copyBean(companyDto, Company.class);
+        save(company);
+        SysUser user = new SysUser();
+        user.setPassword(passwordEncoder.
+                encode(companyDto.getAdminTel().substring(companyDto.getAdminTel().length() - 6)));
+        user.setUsername(companyDto.getAdminName());
+        user.setNickName(companyDto.getAdminName());
+        user.setUserType(0);
+        user.setPhonenumber(companyDto.getAdminTel());
+        userService.save(user);
+        return ResponseVo.okResult();
     }
 
     @Override
