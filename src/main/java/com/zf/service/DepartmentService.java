@@ -2,6 +2,8 @@ package com.zf.service;
 
 import com.zf.domain.vo.ResponseVo;
 
+import java.text.ParseException;
+
 /**
  * @Author wenqin
  * @Date 2022/10/19 22:00
@@ -10,5 +12,10 @@ import com.zf.domain.vo.ResponseVo;
 public interface DepartmentService {
     ResponseVo getdepartmentRank();
 
-    ResponseVo getCardExposure();
+    ResponseVo getCardExposure() throws ParseException;
+
+    ResponseVo getMouthClientNum();
+
+    ResponseVo getMouthExcellent();
+
 }

@@ -1,8 +1,8 @@
 package com.zf.utils;
 
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ public class UpLoadUtil {
             try {
                 //参数就是图片保存在服务器的本地地址
 //              file.transferTo(new File(url+"\\src\\main\\resources\\static\\images\\"+id+".png"));
-
+                String relativelyPath=System.getProperty("user.dir");
                 file.transferTo(new File("/www/myproject/image/"+id+".png"));
                 map.put("url",request.getServerName()+":"+request.getServerPort()+"/images/"+id+".png");
                 map.put("msg",200);
