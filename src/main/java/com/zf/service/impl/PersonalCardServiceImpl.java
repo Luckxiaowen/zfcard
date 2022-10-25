@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.entity.*;
 import com.zf.domain.vo.CompanyClientVo;
+import com.zf.domain.vo.LoginUser;
 import com.zf.domain.vo.PersonalCardVo;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
@@ -18,6 +19,8 @@ import com.zf.utils.JwtUtil;
 import com.zf.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -70,7 +73,13 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         } else {
             //TODO 游客进入
             Integer userId = getInteger(id);
-            if (Objects.isNull(sysUserMapper.selectById(userId))) {
+
+          SysUser user = sysUserMapper.selectById(userId);
+          Long userCompanyId = user.getCompanyid();
+
+          Company companyMessage = companyMapper.selectById(userCompanyId);
+
+          if (Objects.isNull(sysUserMapper.selectById(userId))) {
                 return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "获取失败：不存在此员工");
             } else {
                 LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -108,7 +117,7 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
                 companyQueryWrapper.eq(Company::getId, companyId);
                 Company company = companyMapper.selectOne(companyQueryWrapper);
 
-                String companyName = company.getCompany();
+                String companyName = company.getCompanyName();
                 String address = company.getAddress();
 
                 HashMap<String, Object> map = new HashMap<>();
@@ -124,6 +133,8 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
                 map.put("phoneNumber", phoneNumber);
                 map.put("weixinCode", sysUser.getWeixinCode());
                 map.put("telWeixin", sysUser.getTelWeixin());
+                map.put("introductionSwitch", companyMessage.getIntroductionSwitch());
+                map.put("contentSwitch", companyMessage.getContentSwitch());
 
                 return ResponseVo.okResult(map);
             }

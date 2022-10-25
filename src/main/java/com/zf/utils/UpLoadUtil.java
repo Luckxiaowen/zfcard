@@ -2,7 +2,9 @@ package com.zf.utils;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,7 +18,8 @@ public class UpLoadUtil {
         if(!Objects.isNull(file)){
             UUID id=UUID.randomUUID();//生成文件名
             try {
-                //参数就是图片保存在服务器的本地地址
+//              String url = System.getProperty("user.dir");
+//              //参数就是图片保存在服务器的本地地址
 //              file.transferTo(new File(url+"\\src\\main\\resources\\static\\images\\"+id+".png"));
 
                 file.transferTo(new File("/www/myproject/image/"+id+".png"));
