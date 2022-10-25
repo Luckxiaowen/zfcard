@@ -28,8 +28,6 @@ public interface SysUserService extends IService<SysUser> {
 
     ResponseVo selectAll(String userId);
 
-    ResponseVo SelectPage(String subject, Integer pageNum, Integer pageSize);
-
   /**
    * 进入个人信息，查询个人简介以及头像
    * @param token
@@ -65,7 +63,7 @@ public interface SysUserService extends IService<SysUser> {
 
     ResponseVo delStaffById(Integer id);
 
-
+    ResponseVo SelectPage(String subject, Integer pageNum, Integer pageSize);
 
 
     ResponseVo getStaffById(Integer id);

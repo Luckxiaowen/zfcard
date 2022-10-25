@@ -70,7 +70,13 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
         } else {
             //TODO 游客进入
             Integer userId = getInteger(id);
-            if (Objects.isNull(sysUserMapper.selectById(userId))) {
+
+          SysUser user = sysUserMapper.selectById(userId);
+          Long userCompanyId = user.getCompanyid();
+
+          Company selectById = companyMapper.selectById(userCompanyId);
+
+          if (Objects.isNull(sysUserMapper.selectById(userId))) {
                 return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "获取失败：不存在此员工");
             } else {
                 LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -123,6 +129,8 @@ public class PersonalCardServiceImpl extends ServiceImpl<PersonalCardMapper, Per
                 map.put("phoneNumber", phoneNumber);
                 map.put("weixinCode", sysUser.getWeixinCode());
                 map.put("telWeixin", sysUser.getTelWeixin());
+                map.put("introductionSwitch",selectById.getIntroductionSwitch());
+                map.put("contentSwitch",selectById.getContentSwitch());
 
                 return ResponseVo.okResult(map);
             }
