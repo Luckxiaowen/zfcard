@@ -356,6 +356,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Resource
     private CompanyFrameService companyFrameService;
 
+    @Autowired
+    CompanyFrameMapper companyFrameMapper;
+
 
     @Override
     public ResponseVo addStaff(StaffDto staff) {
