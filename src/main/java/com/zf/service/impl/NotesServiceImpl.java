@@ -3,11 +3,7 @@ package com.zf.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zf.domain.entity.Client;
-import com.zf.domain.entity.CompanyClient;
-import com.zf.domain.entity.Notes;
-
-import com.zf.domain.entity.SysUser;
+import com.zf.domain.entity.*;
 
 import com.zf.domain.vo.CompanyClientVo;
 import com.zf.domain.vo.NotesVo;
@@ -15,6 +11,10 @@ import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.exception.SystemException;
 import com.zf.mapper.*;
+import com.zf.mapper.ClientMapper;
+import com.zf.mapper.CompanyClientMapper;
+import com.zf.mapper.NotesMapper;
+import com.zf.mapper.SysUserMapper;
 import com.zf.service.NotesService;
 import com.zf.utils.BeanCopyUtils;
 import com.zf.utils.JwtUtil;
@@ -49,6 +49,10 @@ public class NotesServiceImpl extends ServiceImpl<NotesMapper, Notes> implements
     @Resource
     private CompanyClientMapper companyClientMapper;
 
+    @Resource
+    private ExposureTotalMapper exposureTotalMapper;
+
+
 
     @Override
     public ResponseVo getAllNoteById(String id) throws Exception {
@@ -66,6 +70,26 @@ public class NotesServiceImpl extends ServiceImpl<NotesMapper, Notes> implements
         }
 
     }
+
+  public CompanyClient getClient(String phoneNum, String name, Long companyUserId) {
+
+    LambdaQueryWrapper<CompanyClient> wrapper = new LambdaQueryWrapper<>();
+    wrapper.eq(CompanyClient::getClientTel,phoneNum).eq(CompanyClient::getDelFlag,0);
+
+    CompanyClient client = companyClientMapper.selectOne(wrapper);
+
+    if (client == null || client.getDelFlag() == 1){
+      Date date = new Date();
+      CompanyClient companyC = new CompanyClient(null, name, phoneNum, "0", "0", "0", "0", "0", 0, companyUserId, date, date);
+      companyClientMapper.insert(companyC);
+    }
+
+    LambdaQueryWrapper<CompanyClient> queryWrapper = new LambdaQueryWrapper<>();
+    queryWrapper.eq(CompanyClient::getClientTel,phoneNum).eq(CompanyClient::getDelFlag,0);
+
+    return companyClientMapper.selectOne(queryWrapper);
+
+  }
 
     @Override
     public ResponseVo addNotes(String userId, Notes notes) {
@@ -87,13 +111,26 @@ public class NotesServiceImpl extends ServiceImpl<NotesMapper, Notes> implements
                                     notes.setCreateTime(new Date());
                                     notes.setDelFlag(0);
                                     int insert = notesMapper.insert(notes);
+                                    //todo 留言成功
                                     if (insert > 0) {
+                                        LambdaQueryWrapper<ExposureTotal>wrapper=new LambdaQueryWrapper<>();
+                                        wrapper.eq(ExposureTotal::getCreateBy,userId);
+                                        ExposureTotal eTotal = exposureTotalMapper.selectOne(wrapper);
+                                        eTotal.setDayNotes(eTotal.getDayNotes()+1);
+                                        System.out.println("eTotal = " + eTotal);
+                                        exposureTotalMapper.updateById(eTotal);
                                         LambdaQueryWrapper<Client> queryWrapper = new LambdaQueryWrapper<>();
                                         queryWrapper.eq(Client::getTel, notes.getTel());
                                         Client client1 = clientMapper.selectOne(queryWrapper);
                                         int insert1 = 0;
                                         if (!Objects.isNull(client1)) {
                                             System.out.println("已存在手机号为 :" + notes.getTel() + "的客户");
+                                            CompanyClient companyClient = getClient(notes.getTel(), notes.getName(), Long.valueOf(userId));
+                                            Integer saveLeaveNum = Integer.valueOf(companyClient.getLeaveNum());
+                                            companyClient.setSaveCaseNum(String.valueOf(saveLeaveNum+1));
+                                            companyClientMapper.updateById(companyClient);
+
+
                                         } else {
                                             Client client = new Client();
                                             client.setName(notes.getName());
@@ -104,7 +141,13 @@ public class NotesServiceImpl extends ServiceImpl<NotesMapper, Notes> implements
                                             client.setCreatedTime(new Date());
                                             insert1 = clientMapper.insert(client);
                                             CompanyClient companyClient = getClient(notes.getTel(), notes.getName(), Long.valueOf(userId));
-                                            System.out.println("companyClient = " + companyClient);
+                                            companyClient.setSaveCaseNum(companyClient.getSaveCaseNum()+1);
+                                            int i1 = companyClientMapper.updateById(companyClient);
+                                            LambdaQueryWrapper<ExposureTotal>queryWrapper1=new LambdaQueryWrapper<>();
+                                            queryWrapper1.eq(ExposureTotal::getCreateBy,userId);
+                                            ExposureTotal exposureTotal = exposureTotalMapper.selectOne(queryWrapper1);
+                                            exposureTotal.setDayAddClient(exposureTotal.getDayAddClient()+1);
+                                            exposureTotalMapper.updateById(exposureTotal);
                                         }
                                         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "留言成功");
                                     } else {
@@ -243,8 +286,9 @@ public class NotesServiceImpl extends ServiceImpl<NotesMapper, Notes> implements
 
     public NotesVo getChildrenNote(NotesVo noteVo, List<NotesVo> allList) {
         for (NotesVo item : allList) {
-            if (Objects.equals(item.getReplyId(), noteVo.getId()))
-                return item;
+            if (Objects.equals(item.getReplyId(), noteVo.getId())) {
+              return item;
+            }
         }
         return null;
     }
@@ -265,24 +309,7 @@ public class NotesServiceImpl extends ServiceImpl<NotesMapper, Notes> implements
         return id;
     }
 
-    public CompanyClient getClient(String phoneNum,String name,Long companyUserId) {
 
-        LambdaQueryWrapper<CompanyClient> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(CompanyClient::getClientTel,phoneNum).eq(CompanyClient::getDelFlag,0);
-
-        CompanyClient client = companyClientMapper.selectOne(wrapper);
-
-        if (client == null || client.getDelFlag() == 1){
-            Date date = new Date();
-            CompanyClient companyC = new CompanyClient(null, name, phoneNum, "0", "0", "0", "0", "0", 0, companyUserId, date, date);
-            companyClientMapper.insert(companyC);
-        }
-
-        LambdaQueryWrapper<CompanyClient> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(CompanyClient::getClientTel,phoneNum).eq(CompanyClient::getDelFlag,0);
-
-        return companyClientMapper.selectOne(queryWrapper);
-    }
 }
 
 

@@ -30,6 +30,4 @@ public class CompanyClientController {
         return companyClientService.selectByLike(token,pageNum,pageSize,query);
     }
 
-
-
 }

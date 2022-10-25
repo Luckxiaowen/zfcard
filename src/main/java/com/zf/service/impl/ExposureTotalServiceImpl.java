@@ -210,6 +210,7 @@ public class ExposureTotalServiceImpl extends ServiceImpl<ExposureTotalMapper, E
                     for (ExpoSnapshot expoSnapshot : expoSnapshotList) {
                         exposureVo = new ExposureVo();
                         exposureVo.setDate(expoSnapshot.getCreateTime());
+                        exposureVo.setId(expoSnapshot.getExpoTotalId());
                         exposureVo.setComment(Math.toIntExact(expoSnapshot.getDayNotesNum()));
                         if (expoSnapshot.getStayNum() == 0) {
                             exposureVo.setStay(0);
@@ -242,6 +243,7 @@ public class ExposureTotalServiceImpl extends ServiceImpl<ExposureTotalMapper, E
                 if (!Objects.isNull(exposureTotal)) {
                     Long dayTotal = exposureTotal.getDayTotal();
                     exposureTotal.setDayTotal(dayTotal + 1);
+                    exposureTotal.setVisitorTotal(exposureTotal.getVisitorTotal()+1);
                     exposureTotalMapper.updateById(exposureTotal);
                     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "访客量更新成功");
                 } else {

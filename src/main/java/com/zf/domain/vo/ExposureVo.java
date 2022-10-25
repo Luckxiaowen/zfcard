@@ -10,7 +10,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExposureVo {
-
+    private Long id;
     private Date date;
     private Integer visitor;
     private Integer stay;
