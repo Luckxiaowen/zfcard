@@ -48,4 +48,10 @@ public class Company implements Serializable {
     @TableLogic
     private Integer delFlag;
 
+    /**
+     * 创始人
+     */
+    @ApiModelProperty(value = "创始人",dataType = "Long")
+    private Long createBy;
+
 }
