@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -25,16 +26,15 @@ public class IndexController {
     @Resource
     private DepartmentService departmentService;
 
-
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", required = true),
+            @ApiImplicitParam(dataType = "int", name = "depId", value = "部门Id", required = true),
     })
     @ApiOperation(value = "获取首页部门统计")
     @GetMapping("/dep/rank")
-    public ResponseVo getdepartmentRank(){
-        return departmentService.getdepartmentRank();
+    public ResponseVo getdepartmentRank(@RequestParam("depId")int dePId){
+        return departmentService.getdepartmentRank(dePId);
     }
-
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", required = true),
     })
@@ -43,7 +43,6 @@ public class IndexController {
     public ResponseVo getCardExposure() throws ParseException {
         return departmentService.getCardExposure();
     }
-
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", required = true),
     })
@@ -56,7 +55,7 @@ public class IndexController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", required = true),
     })
-    @ApiOperation(value = "本月优秀人员")
+    @ApiOperation(value = "本月优秀人员接口")
     @GetMapping("/mouth-excellent")
     public ResponseVo getMouthExcellent(){
         return departmentService.getMouthExcellent();
