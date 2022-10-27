@@ -87,4 +87,5 @@ public interface SysUserService extends IService<SysUser> {
     ResponseVo selectUserByQuery(String token, UserQueryVo userQueryVo);
 
 
+    ResponseVo flterTel(String tel);
 }
