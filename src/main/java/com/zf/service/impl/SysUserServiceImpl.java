@@ -651,7 +651,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
   }
 
-  public Integer getInteger(String userId) {
+    @Override
+    public ResponseVo flterTel(String tel) {
+        LambdaQueryWrapper<SysUser>queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysUser::getPhonenumber,tel);
+        SysUser sysUser = sysUserMapper.selectOne(queryWrapper);
+        if (Objects.isNull(sysUser)){
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "当前手机号可用");
+        }else {
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "当前手机号已注册");
+        }
+    }
+
+    public Integer getInteger(String userId) {
         int id;
         if (Validator.isNumeric(userId)) {
             id = Integer.parseInt(userId);

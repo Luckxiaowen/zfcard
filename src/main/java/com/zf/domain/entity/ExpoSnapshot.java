@@ -3,6 +3,7 @@ package com.zf.domain.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -75,6 +76,7 @@ public class ExpoSnapshot implements Serializable {
      * 创建时间 创建时间
      */
     @ApiModelProperty(value = "创建时间",dataType = "long")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
 
     @ApiModelProperty(value = "总停留时常",dataType = "int")
