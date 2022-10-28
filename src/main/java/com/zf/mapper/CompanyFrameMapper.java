@@ -2,7 +2,10 @@ package com.zf.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zf.domain.entity.CompanyFrame;
+import com.zf.domain.vo.DepVo;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @Author wenqin
@@ -11,4 +14,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CompanyFrameMapper extends BaseMapper<CompanyFrame> {
 
+    List<DepVo> selectListByList(String depId);
 }

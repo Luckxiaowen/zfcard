@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zf.mapper.CompanyFrameMapper">
+
+    <resultMap id="DepVoMap" type="com.zf.domain.vo.DepVo">
+        <id property="depId" column="dep_id" jdbcType="BIGINT"/>
+        <result property="depName" column="depName" jdbcType="VARCHAR"/>
+        <result property="depPersonNum" column="person" jdbcType="INTEGER"/>
+        <result property="depVisitNum" column="visitor" jdbcType="INTEGER"/>
+        <result property="depVisitAverage" column="averageVisitor" jdbcType="INTEGER"/>
+        <result property="depActiveNum" column="active" jdbcType="INTEGER"/>
+        <result property="depActiveAverage" column="averageActive" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="selectListByList" resultType="com.zf.domain.vo.DepVo" resultMap="DepVoMap">
+        SELECT *
+        FROM (SELECT a2.su_id AS 'su_id', a2.dep_id,
+                     a2.depName,
+                     a2.depPerson as 'person', SUM(es.day_total)+a2.et_total as 'visitor', round((SUM(es.day_total) + a2.et_total) / a2.depPerson) AS 'averageVisitor' , SUM(
+                            es.day_total + es.day_notes_num + es.day_download_num + day_add_contact +
+                            es.day_add_client)+a2.et_active AS 'active', ROUND((SUM(es.day_total + es.day_notes_num +
+                                                                                    es.day_download_num +
+                                                                                    day_add_contact +
+                                                                                    es.day_add_client) + a2.et_active) /
+                                                                               a2.depPerson) AS 'averageActive'
+
+              FROM (SELECT et.id AS 'et_id' , su_id,
+                           a1.depName,
+                           a1.depPerson,
+                           a1.dep_id,
+                           et.day_total AS 'et_total', (et.day_total + et.id + et.day_download_num +
+                                                        et.day_add_contact + et.day_add_client +
+                                                        et.day_forward_num) AS 'et_active'
+
+                    FROM (
+                             SELECT su.id as 'su_id',cf.role_name as'depName', cf.id AS 'dep_id', COUNT(su.dep_id) as 'depPerson'
+                             FROM company_frame cf
+                                      LEFT JOIN sys_user su ON su.dep_id = cf.id
+                             WHERE cf.company_id = 1
+                               AND cf.parent_id = #{depId}
+                               AND su.del_flag = 0
+                               AND cf.del_flag = 0
+                             GROUP BY cf.id) a1,
+                         exposure_total et
+                    WHERE et.create_by = su_id) a2
+                       LEFT JOIN expo_snapshot es on es.expo_total_id = et_id
+              GROUP BY a2.dep_id) a3
+
+    </select>
+</mapper>

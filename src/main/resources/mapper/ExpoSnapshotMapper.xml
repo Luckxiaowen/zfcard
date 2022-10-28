@@ -11,10 +11,23 @@
             <result property="dayNotesNum" column="day_notes_num" jdbcType="BIGINT"/>
             <result property="dayDownloadNum" column="day_download_num" jdbcType="BIGINT"/>
             <result property="dayAddContact" column="day_add_contact" jdbcType="BIGINT"/>
+
             <result property="dayAddClient" column="day_add_client" jdbcType="BIGINT"/>
             <result property="weekVisitorNum" column="week_visitor_num" jdbcType="BIGINT"/>
             <result property="weekClientNum" column="week_client_num" jdbcType="BIGINT"/>
             <result property="createTime" column="create_time" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <resultMap id="ExposureVoMap" type="com.zf.domain.vo.ExposureVo">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="date" column="date" jdbcType="DATE"/>
+        <result property="visitor" column="visitor" jdbcType="INTEGER"/>
+        <result property="stay" column="stay" jdbcType="INTEGER"/>
+        <result property="download" column="download" jdbcType="INTEGER"/>
+        <result property="contact" column="contact" jdbcType="INTEGER"/>
+        <result property="comment" column="notes" jdbcType="INTEGER"/>
+        <result property="count" column="count" jdbcType="INTEGER"/>
+        <result property="stayMin" column="stay_min" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -56,5 +69,87 @@
         DATE_FORMAT(create_time,'%Y-%m-%d')
         Order By
         DATE_FORMAT(create_time,'%Y-%m-%d') desc;
+    </select>
+    <select id="selectHistory" resultType="com.zf.domain.vo.ExposureVo" resultMap="ExposureVoMap">
+        SELECT DISTINCT
+            et.visitor_total as'visitor',
+            SUM(es.day_download_num+et.day_download_num) as 'download',
+            SUM(es.average_stay_min+et.average_stay_min) as 'stay_min',
+            SUM(es.day_add_contact+et.day_add_contact) as 'contact',
+            SUM(es.day_add_client+et.day_add_client) as 'client',
+            SUM(es.day_notes_num+et.day_notes) as 'notes',
+            COUNT(es.expo_total_id)+1 as 'count',
+            es.create_time as 'date',
+            SUM(es.stay_num) 'stay'
+        from sys_user su
+                 LEFT JOIN exposure_total et on et.create_by=su.id
+                 LEFT JOIN expo_snapshot es on es.expo_total_id= et.id
+        <where>
+            <if test="startTime !=null">
+                and  es.create_time &gt;=#{startTime}
+            </if>
+
+            <if test="endTime != null">
+                and  es.create_time &lt;=#{endTime}
+            </if>
+
+           <if test="1>0">
+            and su.id=#{id} AND su.del_flag=0
+        </if>
+        </where>
+
+    </select>
+    <select id="selectHistoryWithOut" resultType="com.zf.domain.vo.ExposureVo" resultMap="ExposureVoMap">
+        SELECT DISTINCT
+        et.visitor_total as'visitor',
+        SUM(es.day_download_num+et.day_download_num) as 'download',
+        SUM(es.average_stay_min+et.average_stay_min) as 'stay_min',
+        SUM(es.day_add_contact+et.day_add_contact) as 'contact',
+        SUM(es.day_add_client+et.day_add_client) as 'client',
+        SUM(es.day_notes_num+et.day_notes) as 'notes',
+        COUNT(es.expo_total_id)+1 as 'count',
+        es.create_time as 'date',
+        SUM(es.stay_num) 'stay'
+        from sys_user su
+        LEFT JOIN exposure_total et on et.create_by=su.id
+        LEFT JOIN expo_snapshot es on es.expo_total_id= et.id
+                and su.id=#{id} AND su.del_flag=0
+    </select>
+
+    <select id="selectListById" resultType="com.zf.domain.vo.ExposureVo" resultMap="ExposureVoMap">
+        SELECT
+            es.day_total as 'visitor',
+            es.average_stay_min as 'stay_min',
+            es.stay_num as 'stay',
+            es.day_download_num as 'download',
+            es.day_add_contact as 'contact',
+            es.day_notes_num as 'notes',
+            es.create_time as 'date'
+        FROM expo_snapshot es
+        WHERE expo_total_id=#{userId}
+    </select>
+    <select id="selectListByTime" resultType="com.zf.domain.vo.ExposureVo" resultMap="ExposureVoMap">
+        SELECT
+            es.day_total as 'visitor',
+                es.average_stay_min as 'stay_min',
+                es.stay_num as 'stay',
+                es.day_download_num as 'download',
+                es.day_add_contact as 'contact',
+                es.day_notes_num as 'notes',
+                es.create_time as 'date'
+        FROM expo_snapshot es
+        <where>
+            <if test="startTime !=null">
+                and  es.create_time &gt;=#{startTime}
+            </if>
+
+            <if test="endTime != null">
+                and  es.create_time &lt;=#{endTime}
+            </if>
+
+            <if test="1>0">
+               and expo_total_id=#{id}
+            </if>
+        </where>
     </select>
 </mapper>

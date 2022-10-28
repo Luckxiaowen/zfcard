@@ -9,7 +9,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class DepVo {
+public class DepVo implements Comparable<DepVo>{
     private int depId;
     private String depName;
     private int depPersonNum;
@@ -20,4 +20,9 @@ public class DepVo {
     private int depActiveNum;
     private int depActiveAverage;
 
+    @Override
+    public int compareTo(DepVo depVo) {
+
+        return this.depPersonNum+depVo.depPersonNum;
+    }
 }

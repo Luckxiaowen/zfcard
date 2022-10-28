@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/exposure")
@@ -35,8 +36,12 @@ public class ExposureController {
 
     @ApiOperation(value = "历史数据接口")
     @GetMapping("/exposure-history")
-    public ResponseVo exposureHistory(@RequestHeader("token") String token) throws Exception {
-        return exposureTotalService.getExposureHistory(JwtUtil.parseJWT(token).getSubject());
+    @ApiImplicitParams({
+            @ApiImplicitParam(dataType = "string", name = "startTime", value = "开始时间", required = false),
+            @ApiImplicitParam(dataType = "string", name = "endTime", value = "结束时间", required = false),
+    })
+    public ResponseVo exposureHistory(@RequestHeader("token") String token, String startTime, String endTime) throws Exception {
+        return exposureTotalService.getExposureHistory(JwtUtil.parseJWT(token).getSubject(),startTime,endTime);
     }
 
     @ApiOperation(value = "访客量增加接口")
