@@ -29,14 +29,14 @@ public class UserQueryVo {
   @ApiModelProperty(value = "员工编号",dataType = "int")
   private String userId;
 
-  @ApiModelProperty(value = "员工岗位",dataType = "String")
-  private String userJob;
+  @ApiModelProperty(value = "员工部门",dataType = "String")
+  private String roleName;
 
   @JsonFormat(pattern = "yyyy-MM-dd")
-  @ApiModelProperty(value = "开始时间",dataType = "String")
-  private String startTime;
+  @ApiModelProperty(value = "开始时间",dataType = "Date")
+  private Date startTime;
 
   @JsonFormat(pattern = "yyyy-MM-dd")
-  @ApiModelProperty(value = "结束时间",dataType = "String")
-  private String endTime;
+  @ApiModelProperty(value = "结束时间",dataType = "Date")
+  private Date endTime;
 }
