@@ -55,6 +55,7 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
         user.setUserType(0);
         user.setPhonenumber(companyDto.getAdminTel());
         userService.save(user);
+
         return ResponseVo.okResult();
     }
 

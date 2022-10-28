@@ -1,6 +1,7 @@
 package com.zf.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zf.domain.dto.AppKey;
 import com.zf.domain.entity.CompanyFrame;
 import com.zf.domain.vo.ResponseVo;
 
@@ -17,4 +18,6 @@ public interface CompanyFrameService extends IService<CompanyFrame> {
     ResponseVo updateCompanyRole(CompanyFrame companyFrame);
 
     ResponseVo<?> delCompanyFrameworkById(Long id);
+
+    ResponseVo dingDingImport(AppKey appKey, String rootName);
 }

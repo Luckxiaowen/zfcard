@@ -1,9 +1,6 @@
 package com.zf.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -11,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -20,11 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 public class CompanyFrame {
 
-    @TableId
+    @TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "部门id名称")
-    @NotNull(message = "ID不能为空")
-    private Integer id;
-
+    private Long id;
     /**
      * 公司id 公司id
      */
@@ -35,7 +29,7 @@ public class CompanyFrame {
     private String roleName;
 
     @ApiModelProperty(value = "该部门的父ID",required = true)
-    private Integer parentId;
+    private Long parentId;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @TableField(value = "create_time", fill = FieldFill.INSERT)

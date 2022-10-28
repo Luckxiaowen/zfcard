@@ -1,9 +1,12 @@
 package com.zf.controller.admin;
 
+import com.zf.domain.dto.AppKey;
 import com.zf.domain.entity.CompanyFrame;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.service.CompanyFrameService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +46,15 @@ public class CompanyFrameController {
     @DeleteMapping("/company-frame/{id}")
     public ResponseVo<?> delCompanyFramework(@RequestHeader String token,@PathVariable Long id){
         return companyFrameService.delCompanyFrameworkById(id);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "token", required = true),
+    })
+    @ApiOperation(value = "钉钉导入")
+    @PostMapping("/dd-import")
+    public ResponseVo dingDingImport(@RequestBody AppKey appKey, @RequestParam("rootName") String rootName){
+        return companyFrameService.dingDingImport(appKey,rootName);
     }
 
 

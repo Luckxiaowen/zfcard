@@ -48,6 +48,12 @@ public class Company implements Serializable {
     @NotBlank(message = "公司到期时间不能为空")
     private String expirationTime;
 
+    @NotBlank(message = "appKey不能为空")
+    private String appKey;
+
+    @NotBlank(message = "appSecret不能为空")
+    private String appSecret;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     @ApiModelProperty(value = "创建时间",dataType = "Date")
