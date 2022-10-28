@@ -10,7 +10,7 @@ import java.text.ParseException;
  */
 
 public interface DepartmentService {
-    ResponseVo getdepartmentRank(int depId);
+    ResponseVo getdepartmentRank(int depId,String startTime,String endTime);
 
     ResponseVo getCardExposure() throws ParseException;
 

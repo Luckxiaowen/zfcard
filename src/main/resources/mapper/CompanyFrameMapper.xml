@@ -74,7 +74,16 @@
                                   </foreach>
                               AND su.dep_id=cf.id GROUP BY cf.id ) a1
                                LEFT JOIN exposure_total et ON et.create_by=a1.su_id GROUP BY a1.dep_id) a2
-                          LEFT JOIN expo_snapshot es ON a2.et_id=es.expo_total_id  GROUP BY a2.dep_id) a3
+                          LEFT JOIN expo_snapshot es ON a2.et_id=es.expo_total_id
+                            <where>
+                                <if test="startTime !=null">
+                                      es.create_time &gt;=#{startTime}
+                                </if>
+                                <if test="endTime != null">
+                                    and  es.create_time &lt;=#{endTime}
+                                </if>
+                            </where>
+                 GROUP BY a2.dep_id) a3
                      LEFT JOIN client ct on FIND_IN_SET(ct.created_by,a3.su_list)  GROUP BY a3.dep_id) a4
         GROUP BY  a4.dep_id
     </select>

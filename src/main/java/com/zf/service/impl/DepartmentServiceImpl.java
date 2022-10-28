@@ -12,6 +12,7 @@ import com.zf.service.DepartmentService;
 import com.zf.utils.BeanCopyUtils;
 import com.zf.utils.DateUtil;
 import com.zf.utils.UserUtils;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -46,7 +47,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     private CompanyFrameMapper companyFrameMapper;
 
     @Override
-    public ResponseVo<?> getdepartmentRank(int depId) {
+    public ResponseVo<?> getdepartmentRank(int depId,String startTime,String endTime) {
         LoginUser loginUser = UserUtils.getLoginUser();
         SysUser sysUser = loginUser.getSysUser();
         Long companyid = sysUser.getCompanyid();
@@ -76,7 +77,13 @@ public class DepartmentServiceImpl implements DepartmentService {
                     if (depId==1){
                         List<Long>depIdList=new ArrayList<>();
                         depIdList.add(-1L);
-                        List<DepVo> depVoList = companyFrameMapper.selectListByList(depIdList);
+                        if ("".equals(startTime)){
+                            startTime=null;
+                        }
+                        if ("".equals(endTime)){
+                            endTime=null;
+                        }
+                        List<DepVo> depVoList = companyFrameMapper.selectListByList(depIdList,startTime,endTime);
                         Collections.sort(depVoList);
                         returnMap.put("depVoList",depVoList);
                         return new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(),"操作成功：默认人数排序",returnMap);
@@ -94,7 +101,13 @@ public class DepartmentServiceImpl implements DepartmentService {
                         for (CompanyFrame companyFrame : childList) {
                             depIdList.add(companyFrame.getParentId());
                         }
-                        depVoList = companyFrameMapper.selectListByList(depIdList);
+                        if ("".equals(startTime)){
+                            startTime=null;
+                        }
+                        if ("".equals(endTime)){
+                            endTime=null;
+                        }
+                        depVoList = companyFrameMapper.selectListByList(depIdList,startTime,endTime);
                         Collections.sort(depVoList);
                         returnMap.put("depVoList",depVoList);
                         return new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(),"操作成功：默认人数排序",returnMap);
@@ -119,7 +132,13 @@ public class DepartmentServiceImpl implements DepartmentService {
                         for (CompanyFrame companyFrame : secondList) {
                             depIdList.add(companyFrame.getParentId());
                         }
-                        depVoList = companyFrameMapper.selectListByList(depIdList);
+                        if ("".equals(startTime)){
+                            startTime=null;
+                        }
+                        if ("".equals(endTime)){
+                            endTime=null;
+                        }
+                        depVoList = companyFrameMapper.selectListByList(depIdList,startTime,endTime);
                         Collections.sort(depVoList);
                         returnMap.put("depVoList",depVoList);
                         return new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(),"操作成功：默认人数排序",returnMap);
