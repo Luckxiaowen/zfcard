@@ -6,47 +6,76 @@
 
     <resultMap id="DepVoMap" type="com.zf.domain.vo.DepVo">
         <id property="depId" column="dep_id" jdbcType="BIGINT"/>
-        <result property="depName" column="depName" jdbcType="VARCHAR"/>
-        <result property="depPersonNum" column="person" jdbcType="INTEGER"/>
-        <result property="depVisitNum" column="visitor" jdbcType="INTEGER"/>
-        <result property="depVisitAverage" column="averageVisitor" jdbcType="INTEGER"/>
-        <result property="depActiveNum" column="active" jdbcType="INTEGER"/>
-        <result property="depActiveAverage" column="averageActive" jdbcType="INTEGER"/>
+        <result property="depName" column="dep_name" jdbcType="VARCHAR"/>
+        <result property="depPersonNum" column="dep_person" jdbcType="INTEGER"/>
+        <result property="depVisitNum" column="dep_visitor" jdbcType="INTEGER"/>
+        <result property="depVisitAverage" column="avg_dep_visitor" jdbcType="INTEGER"/>
+        <result property="depClientNum" column="dep_client" jdbcType="INTEGER"/>
+        <result property="depClientAverage" column="avg_dep_client" jdbcType="INTEGER"/>
+        <result property="depActiveNum" column="dep_active" jdbcType="INTEGER"/>
+        <result property="depActiveAverage" column="avg_dep_active" jdbcType="INTEGER"/>
+
     </resultMap>
 
     <select id="selectListByList" resultType="com.zf.domain.vo.DepVo" resultMap="DepVoMap">
-        SELECT *
-        FROM (SELECT a2.su_id AS 'su_id', a2.dep_id,
-                     a2.depName,
-                     a2.depPerson as 'person', SUM(es.day_total)+a2.et_total as 'visitor', round((SUM(es.day_total) + a2.et_total) / a2.depPerson) AS 'averageVisitor' , SUM(
-                            es.day_total + es.day_notes_num + es.day_download_num + day_add_contact +
-                            es.day_add_client)+a2.et_active AS 'active', ROUND((SUM(es.day_total + es.day_notes_num +
-                                                                                    es.day_download_num +
-                                                                                    day_add_contact +
-                                                                                    es.day_add_client) + a2.et_active) /
-                                                                               a2.depPerson) AS 'averageActive'
+        SELECT
+            a4.dep_id AS 'dep_id',
+            a4.dep_name AS 'dep_name',
+            a4.dep_person AS 'dep_person',
+            a4.dep_visitor AS 'dep_visitor',
+            a4.avg_dep_visitor AS 'avg_dep_visitor',
+            a4.dep_client  AS 'dep_client',
+            ROUND(AVG(a4.dep_client/a4.dep_person)) AS 'avg_dep_client',
+            a4.dep_active AS 'dep_active',
+            a4.avg_dep_active  AS 'avg_dep_active'
+        FROM
+            (SELECT
+                 a3.dep_id AS 'dep_id',
+                     a3.dep_role_name AS 'dep_name',
+                     a3.dep_person AS 'dep_person',
+                     a3.dep_visitor AS 'dep_visitor',
+                     ROUND(AVG(a3.dep_visitor/a3.dep_person)) AS 'avg_dep_visitor',
+                     COUNT(ct.created_by) AS 'dep_client',
+                     a3.dep_active AS 'dep_active',
+                     ROUND(AVG(a3.dep_active/a3.dep_person)) AS 'avg_dep_active'
+             FROM
+                 (SELECT
+                      a2.dep_id AS 'dep_id',
+                          a2.su_id AS 'dep_su_id',
+                          a2.role_name AS 'dep_role_name',
+                          a2.dep_person AS 'dep_person',
+                          SUM(es.day_total)+a2.et_visitor AS 'dep_visitor',
+                          SUM(es.day_total+es.day_notes_num+es.day_add_contact+es.day_add_client)+a2.et_active AS 'dep_active',
+                          a2.su_list AS 'su_list'
+                  FROM
+                      (SELECT
+                           a1.dep_id 'dep_id',
+                               a1.su_id 'su_id',
+                               a1.role_name AS'role_name',
+                               a1.dep_person AS 'dep_person',
+                               et.id AS 'et_id',
+                               et.day_total AS 'et_visitor',
+                               a1.su_list AS 'su_list',
+                               SUM(et.day_total+et.day_download_num +et.day_notes+et.day_add_contact+et.day_add_client+et.day_forward_num) AS 'et_active'
+                       FROM
+                           (SELECT
+                                cf.id AS 'dep_id',
+                                    cf.role_name AS 'role_name',
+                                    COUNT(DISTINCT su.dep_id,su.id) AS 'dep_person',
+                                    SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT su.id),' ',500) AS 'su_list',
+                                    su.id AS'su_id'
+                            FROM company_frame cf
+                                     LEFT JOIN company cy on cy.id =cf.company_id AND cy.del_flag=0
+                                     LEFT JOIN sys_user su On su.companyid=cy.id and su.del_flag=0
 
-              FROM (SELECT et.id AS 'et_id' , su_id,
-                           a1.depName,
-                           a1.depPerson,
-                           a1.dep_id,
-                           et.day_total AS 'et_total', (et.day_total + et.id + et.day_download_num +
-                                                        et.day_add_contact + et.day_add_client +
-                                                        et.day_forward_num) AS 'et_active'
-
-                    FROM (
-                             SELECT su.id as 'su_id',cf.role_name as'depName', cf.id AS 'dep_id', COUNT(su.dep_id) as 'depPerson'
-                             FROM company_frame cf
-                                      LEFT JOIN sys_user su ON su.dep_id = cf.id
-                             WHERE cf.company_id = 1
-                               AND cf.parent_id = #{depId}
-                               AND su.del_flag = 0
-                               AND cf.del_flag = 0
-                             GROUP BY cf.id) a1,
-                         exposure_total et
-                    WHERE et.create_by = su_id) a2
-                       LEFT JOIN expo_snapshot es on es.expo_total_id = et_id
-              GROUP BY a2.dep_id) a3
-
+                            WHERE cf.parent_id in
+                                  <foreach collection="depIdList" item="depId" separator="," open="(" close=")">
+                                     #{depId}
+                                  </foreach>
+                              AND su.dep_id=cf.id GROUP BY cf.id ) a1
+                               LEFT JOIN exposure_total et ON et.create_by=a1.su_id GROUP BY a1.dep_id) a2
+                          LEFT JOIN expo_snapshot es ON a2.et_id=es.expo_total_id  GROUP BY a2.dep_id) a3
+                     LEFT JOIN client ct on FIND_IN_SET(ct.created_by,a3.su_list)  GROUP BY a3.dep_id) a4
+        GROUP BY  a4.dep_id
     </select>
 </mapper>

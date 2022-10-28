@@ -14,5 +14,5 @@ import java.util.List;
 @Repository
 public interface CompanyFrameMapper extends BaseMapper<CompanyFrame> {
 
-    List<DepVo> selectListByList(String depId);
+    List<DepVo> selectListByList( List<Long>depIdList);
 }

@@ -73,11 +73,10 @@ public class DepartmentServiceImpl implements DepartmentService {
                     companyFrameWrapper.eq(CompanyFrame::getCompanyId,company.getId());
                     companyFrameWrapper.eq(CompanyFrame::getDelFlag,0);
                     allList = companyFrameMapper.selectList(companyFrameWrapper);
-                    for (CompanyFrame companyFrame : allList) {
-                        System.out.println("companyFrame = " + companyFrame);
-                    }
                     if (depId==1){
-                        List<DepVo> depVoList = companyFrameMapper.selectListByList(String.valueOf(-1));
+                        List<Long>depIdList=new ArrayList<>();
+                        depIdList.add(-1L);
+                        List<DepVo> depVoList = companyFrameMapper.selectListByList(depIdList);
                         Collections.sort(depVoList);
                         returnMap.put("depVoList",depVoList);
                         return new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(),"操作成功：默认人数排序",returnMap);
@@ -91,9 +90,11 @@ public class DepartmentServiceImpl implements DepartmentService {
                             }
                         }
                         List<DepVo> depVoList=new ArrayList<>();
+                        List<Long>depIdList=new ArrayList<>();
                         for (CompanyFrame companyFrame : childList) {
-                           depVoList = companyFrameMapper.selectListByList(String.valueOf(companyFrame.getParentId()));
+                            depIdList.add(companyFrame.getParentId());
                         }
+                        depVoList = companyFrameMapper.selectListByList(depIdList);
                         Collections.sort(depVoList);
                         returnMap.put("depVoList",depVoList);
                         return new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(),"操作成功：默认人数排序",returnMap);
@@ -114,9 +115,11 @@ public class DepartmentServiceImpl implements DepartmentService {
                             }
                         }
                         List<DepVo> depVoList=new ArrayList<>();
+                        List<Long>depIdList=new ArrayList<>();
                         for (CompanyFrame companyFrame : secondList) {
-                            depVoList = companyFrameMapper.selectListByList(String.valueOf(companyFrame.getParentId()));
+                            depIdList.add(companyFrame.getParentId());
                         }
+                        depVoList = companyFrameMapper.selectListByList(depIdList);
                         Collections.sort(depVoList);
                         returnMap.put("depVoList",depVoList);
                         return new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(),"操作成功：默认人数排序",returnMap);
