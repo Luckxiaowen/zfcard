@@ -13,8 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Map;
+
 
 @RestController
 @Api(value = "提供超级管理员对公司的增删改查", tags = "PC公司管理")

@@ -44,4 +44,15 @@
         Order By
         DATE_FORMAT(create_time,'%Y-%m-%d') desc;
     </select>
+    <select id="selectListById" resultType="com.zf.domain.vo.ExposureVo" resultMap="BaseResultMap">
+        SELECT
+               es.day_total,
+               es.average_stay_min,
+               es.stay_num,
+               es.day_download_num,
+               es.day_add_client,
+               es.day_notes_num
+        FROM expo_snapshot es
+        WHERE expo_total_id=11
+    </select>
 </mapper>
