@@ -15,5 +15,5 @@ import java.util.List;
 @Repository
 public interface CompanyFrameMapper extends BaseMapper<CompanyFrame> {
 
-    List<DepVo> selectListByList(@Param("depIdList") List<Long>depIdList,@Param("startTime") String startTime, @Param("endTime")String endTime);
+    List<DepVo> selectListByList(@Param("depIdList") List<Long>depIdList,@Param("startTime") String startTime, @Param("endTime")String endTime,@Param("companyId")String companyId);
 }

@@ -83,7 +83,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                         if ("".equals(endTime)){
                             endTime=null;
                         }
-                        List<DepVo> depVoList = companyFrameMapper.selectListByList(depIdList,startTime,endTime);
+                        List<DepVo> depVoList = companyFrameMapper.selectListByList(depIdList,startTime,endTime, String.valueOf(sysUser.getCompanyid()));
                         Collections.sort(depVoList);
                         returnMap.put("depVoList",depVoList);
                         return new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(),"操作成功：默认人数排序",returnMap);
@@ -107,7 +107,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                         if ("".equals(endTime)){
                             endTime=null;
                         }
-                        depVoList = companyFrameMapper.selectListByList(depIdList,startTime,endTime);
+                        depVoList = companyFrameMapper.selectListByList(depIdList,startTime,endTime,String.valueOf(sysUser.getCompanyid()));
                         Collections.sort(depVoList);
                         returnMap.put("depVoList",depVoList);
                         return new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(),"操作成功：默认人数排序",returnMap);
@@ -138,7 +138,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                         if ("".equals(endTime)){
                             endTime=null;
                         }
-                        depVoList = companyFrameMapper.selectListByList(depIdList,startTime,endTime);
+                        depVoList = companyFrameMapper.selectListByList(depIdList,startTime,endTime,String.valueOf(sysUser.getCompanyid()));
                         Collections.sort(depVoList);
                         returnMap.put("depVoList",depVoList);
                         return new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(),"操作成功：默认人数排序",returnMap);
@@ -153,7 +153,6 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public ResponseVo<?> getCardExposure() {
-
         LoginUser loginUser = UserUtils.getLoginUser();
         Map<String, Object> returnMap = new TreeMap<>(new Comparator<String>() {
             @Override
@@ -182,13 +181,21 @@ public class DepartmentServiceImpl implements DepartmentService {
                         exposureTotalQueryWrapper.eq(ExposureTotal::getCreateBy, user.getId());
                         ExposureTotal exposureTotal = exposureTotalMapper.selectOne(exposureTotalQueryWrapper);
                         if (Objects.isNull(exposureTotal)) {
-                            System.out.println("exposureTotal = " + exposureTotal);
-                        } else {
+                            ExposureTotal exposure=new ExposureTotal(null,sysUser.getId(),new Date(),new Date(),0l,0L,0L,0L,0L,0L,0L,0L,0L,0l,0,0);
+                            exposureTotalMapper.insert(exposure);
+                            LambdaQueryWrapper<ExposureTotal>queryWrapper=new LambdaQueryWrapper<>();
+                            queryWrapper.eq(ExposureTotal::getCreateBy,sysUser.getId());
+                            exposureTotal= exposureTotalMapper.selectOne(queryWrapper);
+                        }
                             LambdaQueryWrapper<ExpoSnapshot> expoSnapshotQueryWrapper = new LambdaQueryWrapper<>();
                             expoSnapshotQueryWrapper.eq(ExpoSnapshot::getExpoTotalId, exposureTotal.getId());
                             List<ExpoSnapshot> expoSnapshotList = expoSnapshotMapper.selectList(expoSnapshotQueryWrapper);
                             List<String> sixMouth = DateUtil.getSixMouth();
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+                            if (expoSnapshotList.size()==0){
+                                ExpoSnapshot expoSnapshot=new ExpoSnapshot(0l,0l,0l,0l,0l,0l,0l,0l,0l,new Date(),0,0);
+                                expoSnapshotList.add(expoSnapshot);
+                            }
                             for (String mouth : sixMouth) {
                                 List<ExpoSnapshot> snapshotList = new ArrayList<>();
                                 for (ExpoSnapshot expoSnapshot : expoSnapshotList) {
@@ -207,12 +214,13 @@ public class DepartmentServiceImpl implements DepartmentService {
                                 returnMap.put(mouth, internalNum);
                             }
                             return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询成功", returnMap);
-                        }
+
                     }
                 }
             }
+            return null;
         }
-        return null;
+
     }
 
     @Override

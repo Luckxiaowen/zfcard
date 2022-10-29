@@ -17,6 +17,7 @@ import com.zf.mapper.SysRoleMapper;
 import com.zf.mapper.SysUserMapper;
 import com.zf.service.CompanyService;
 import com.zf.utils.BeanCopyUtils;
+import com.zf.utils.UserUtils;
 import com.zf.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,6 +53,8 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     @Transactional
     public ResponseVo insert(CompanyDto companyDto) {
         Company company = BeanCopyUtils.copyBean(companyDto, Company.class);
+        SysUser sysUser = UserUtils.getLoginUser().getSysUser();
+        company.setCreateBy(sysUser.getId());
         save(company);
         SysUser user = new SysUser();
         user.setPassword(passwordEncoder.
@@ -60,6 +63,7 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
         user.setNickName(companyDto.getAdminName());
         user.setUserType(0);
         user.setPhonenumber(companyDto.getAdminTel());
+        user.setCreateBy(sysUser.getId());
         userService.save(user);
         for (Integer roleId : companyDto.getCompanyAuthority()) {
             sysUserRoleService.save(new SysUserRole(user.getId(),Long.valueOf(roleId)));

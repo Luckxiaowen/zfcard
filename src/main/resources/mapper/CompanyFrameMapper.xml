@@ -65,7 +65,7 @@
                                     SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT su.id),' ',500) AS 'su_list',
                                     su.id AS'su_id'
                             FROM company_frame cf
-                                     LEFT JOIN company cy on cy.id =cf.company_id AND cy.del_flag=0
+                                     LEFT JOIN company cy on cy.id =cf.company_id =#{companyId} AND cy.del_flag=0
                                      LEFT JOIN sys_user su On su.companyid=cy.id and su.del_flag=0
 
                             WHERE cf.parent_id in
