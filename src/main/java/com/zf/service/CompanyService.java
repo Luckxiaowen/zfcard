@@ -19,7 +19,7 @@ public interface CompanyService extends IService<Company> {
 
     ResponseVo delete(Long companyid,String updateId);
 
-    ResponseVo modify(Company company,String updateId);
+    ResponseVo modify(CompanyDto companyDto);
 
     ResponseVo searchCompany(String conditions);
 }
