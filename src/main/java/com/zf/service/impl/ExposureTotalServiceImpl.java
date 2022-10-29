@@ -150,6 +150,12 @@ public class ExposureTotalServiceImpl extends ServiceImpl<ExposureTotalMapper, E
                 if ("".equals(startTime)&& "".equals(endTime)){
                     totalData= expoSnapshotMapper.selectHistoryWithOut(String.valueOf(userId));
                     averageData.setVisitor(totalData.getVisitor()/totalData.getCount());
+                    if (totalData.getCount()==0){
+                        averageData.setStayMin(0.00);
+                        averageData.setDownload(0);
+                        averageData.setContact(0);
+                        averageData.setComment(0);
+                    }
                     int dayAverage= totalData.getStay()/totalData.getCount()/60;
                     averageData.setStayMin(totalData.getStayMin()/dayAverage);
                     averageData.setDownload(totalData.getDownload()/totalData.getCount());
