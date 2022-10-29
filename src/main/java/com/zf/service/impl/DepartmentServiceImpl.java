@@ -9,8 +9,10 @@ import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.mapper.*;
 import com.zf.service.DepartmentService;
+import com.zf.utils.BeanCopyUtils;
 import com.zf.utils.DateUtil;
 import com.zf.utils.UserUtils;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -45,18 +47,15 @@ public class DepartmentServiceImpl implements DepartmentService {
     private CompanyFrameMapper companyFrameMapper;
 
     @Override
-    public ResponseVo<?> getdepartmentRank(int depId) {
-        DepVo depVo = new DepVo();
-        Map<String, Object> returnMap = new TreeMap<>();
-        List<DepVo> depVoList = new ArrayList<>();
+    public ResponseVo<?> getdepartmentRank(int depId,String startTime,String endTime) {
         LoginUser loginUser = UserUtils.getLoginUser();
         SysUser sysUser = loginUser.getSysUser();
         Long companyid = sysUser.getCompanyid();
-        List<SysUser>sysUserList=new ArrayList<>();
-        List<CompanyFrame> companyFrameList=new ArrayList<>();
-        List<CompanyFrame> childCompanyFrameList=new ArrayList<>();
-        List<CompanyFrame> parentCompanyFrameList=new ArrayList<>();
-        List<SysUser>compareList=new ArrayList<>();
+        List<CompanyFrame> parentList=new ArrayList<>();
+        List<CompanyFrame> allList=new ArrayList<>();
+        List<CompanyFrame> childList=new ArrayList<>();
+        List<CompanyFrame> secondList=new ArrayList<>();
+        Map<String,Object>returnMap=new TreeMap<>();
         if (companyid == null || "".equals(companyid)) {
             return new ResponseVo<>(AppHttpCodeEnum.FAIL.getCode(), "查询失败：该员工未加入任何公司");
         } else {
@@ -71,148 +70,84 @@ public class DepartmentServiceImpl implements DepartmentService {
                 if (Objects.isNull(company)) {
                     return new ResponseVo<>(AppHttpCodeEnum.FAIL.getCode(), "查询失败：当前公司已被删除!");
                 }else {
-                    //TODO 拿拿到公司总人数
-                    LambdaQueryWrapper<SysUser>sysUserWrapper=new LambdaQueryWrapper<>();
-                    sysUserWrapper.eq(SysUser::getCompanyid,companyid);
-                    //TODO 已拿到公司总人数
-                    sysUserList = sysUserMapper.selectList(sysUserWrapper);
-                    //TODO 通过传递的depId和用户公司Id拿到公司部门Id集合
                     LambdaQueryWrapper<CompanyFrame>companyFrameWrapper=new LambdaQueryWrapper<>();
-                    //TODO 已拿到公司DepId集合
-                    companyFrameWrapper.eq(CompanyFrame::getCompanyId,companyid).eq(CompanyFrame::getDelFlag,0);
-                    companyFrameList = companyFrameMapper.selectList(companyFrameWrapper);
+                    companyFrameWrapper.eq(CompanyFrame::getCompanyId,company.getId());
+                    companyFrameWrapper.eq(CompanyFrame::getDelFlag,0);
+                    allList = companyFrameMapper.selectList(companyFrameWrapper);
                     if (depId==1){
-                        //TODO 拿到父级Id员工并且分组
-                        companyFrameList= companyFrameList.stream().filter(parentId->parentId.getParentId()==-1).collect(Collectors.toList());
-                        for (CompanyFrame companyFrame : companyFrameList) {
-                            //todo 对比拿到parentId下的员工
-                            for (SysUser user : sysUserList) {
-                                if (Objects.equals(user.getDepId(), companyFrame.getId())){
-                                    compareList.add(user);
-                                }
-                            }
-                            /**部门访客数*/
-                            int depVisitNum=0;
-                            /**部门客户总数*/
-                            int depClientNum=0;
-                            /**部门总人数*/
-                            int depPersonNum=0;
-                            /**部门活跃总数*/
-                            int depActiveNum=0;
-                            for (SysUser user : compareList) {
-                                 depVisitNum=0;
-                                 depClientNum=0;
-                                 depActiveNum=0;
-                                //TODO 遍历部门成员查询曝光统计表和曝光快照表
-                                LambdaQueryWrapper<ExposureTotal>exposureTotalWrapper=new LambdaQueryWrapper<>();
-                                exposureTotalWrapper.eq(ExposureTotal::getCreateBy,user.getId());
-                                ExposureTotal exposureTotal = exposureTotalMapper.selectOne(exposureTotalWrapper);
-                                LambdaQueryWrapper<ExpoSnapshot>expoSnapshotWrapper=new LambdaQueryWrapper<>();
-                                expoSnapshotWrapper.eq(ExpoSnapshot::getExpoTotalId,exposureTotal.getId());
-                                List<ExpoSnapshot> expoSnapshotList = expoSnapshotMapper.selectList(expoSnapshotWrapper);
-                                //TODO 计算
-                                for (ExpoSnapshot expoSnapshot : expoSnapshotList) {
-                                    depActiveNum= (int) (depActiveNum+expoSnapshot.getDayNotesNum()+expoSnapshot.getDayDownloadNum()+expoSnapshot.getDayAddContact()+expoSnapshot.getDayAddClient());
-                                }
-                                depActiveNum= (int) (depActiveNum+exposureTotal.getDayTotal()+exposureTotal.getDayForwardNum()+exposureTotal.getDayNotes()+exposureTotal.getDayAddContact()+exposureTotal.getDayAddClient()+exposureTotal.getDayForwardNum());
-                                depVisitNum= (int) (depVisitNum+exposureTotal.getVisitorTotal());
-                                depClientNum= (int) (depClientNum+exposureTotal.getClientTotalNum());
-                            }
-                            depPersonNum=compareList.size();
-                            depVo.setDepId(companyFrame.getId());
-                            depVo.setDepName(companyFrame.getRoleName());
-                            depVo.setDepClientNum(depClientNum);
-                            depVo.setDepActiveNum(depActiveNum);
-                            depVo.setDepVisitNum(depVisitNum);
-                            depVo.setDepPersonNum(depPersonNum);
-                            if (compareList.size()==0){
-                                depVo.setDepActiveAverage(0);
-                                depVo.setDepVisitAverage(0);
-                                depVo.setDepClientAverage(0);
-                            }else {
-                                depVo.setDepActiveAverage(depActiveNum/compareList.size());
-                                depVo.setDepVisitAverage(depVisitNum/compareList.size());
-                                depVo.setDepClientAverage(depClientNum/compareList.size());
-                            }
-                            depVoList.add(depVo);
-                            depVo=new DepVo();
+                        List<Long>depIdList=new ArrayList<>();
+                        depIdList.add(-1L);
+                        if ("".equals(startTime)){
+                            startTime=null;
                         }
+                        if ("".equals(endTime)){
+                            endTime=null;
+                        }
+                        List<DepVo> depVoList = companyFrameMapper.selectListByList(depIdList,startTime,endTime);
+                        Collections.sort(depVoList);
                         returnMap.put("depVoList",depVoList);
-                        return new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(), "操作成功",returnMap);
-                    }else {
-                        if (depId==2){
-                            //TODO 先拿到子级Id集合
-                            parentCompanyFrameList= companyFrameList.stream().filter(parentId->parentId.getParentId()==-1).collect(Collectors.toList());
-                            for (CompanyFrame parentFrame : parentCompanyFrameList) {
-                                for (CompanyFrame child : companyFrameList) {
-                                    if (Objects.equals(child.getParentId(),parentFrame.getId())){
-                                        childCompanyFrameList.add(child);
-                                    }
+                        return new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(),"操作成功：默认人数排序",returnMap);
+                    }else if (depId==2){
+                      parentList=  allList.stream().filter(item->item.getParentId()==-1).collect(Collectors.toList());
+                        for (CompanyFrame companyFrame : parentList) {
+                            for (CompanyFrame frame : allList) {
+                                if (Objects.equals(frame.getParentId(),companyFrame.getId())){
+                                    childList.add(frame);
                                 }
-                            }
-                            for (CompanyFrame childFrame : childCompanyFrameList) {
-                                for (SysUser user : sysUserList) {
-                                    if (Objects.equals(childFrame.getId(),user.getDepId()));
-                                    compareList.add(user);
-                                }
-                                /**部门访客数*/
-                                int depVisitNum=0;
-                                /**部门客户总数*/
-                                int depClientNum=0;
-                                /**部门总人数*/
-                                int depPersonNum=0;
-                                /**部门活跃总数*/
-                                int depActiveNum=0;
-                                for (SysUser user : compareList) {
-                                    //TODO 遍历部门成员查询曝光统计表和曝光快照表
-                                    LambdaQueryWrapper<ExposureTotal>exposureTotalWrapper=new LambdaQueryWrapper<>();
-                                    exposureTotalWrapper.eq(ExposureTotal::getCreateBy,user.getId());
-                                    ExposureTotal exposureTotal = exposureTotalMapper.selectOne(exposureTotalWrapper);
-                                    LambdaQueryWrapper<ExpoSnapshot>expoSnapshotWrapper=new LambdaQueryWrapper<>();
-                                    expoSnapshotWrapper.eq(ExpoSnapshot::getExpoTotalId,exposureTotal.getId());
-                                    List<ExpoSnapshot> expoSnapshotList = expoSnapshotMapper.selectList(expoSnapshotWrapper);
-                                    //TODO 计算
-                                    for (ExpoSnapshot expoSnapshot : expoSnapshotList) {
-                                        depActiveNum= (int) (depActiveNum+expoSnapshot.getDayNotesNum()+expoSnapshot.getDayDownloadNum()+expoSnapshot.getDayAddContact()+expoSnapshot.getDayAddClient());
-                                    }
-                                    depActiveNum= (int) (depActiveNum+exposureTotal.getDayTotal()+exposureTotal.getDayForwardNum()+exposureTotal.getDayNotes()+exposureTotal.getDayAddContact()+exposureTotal.getDayAddClient()+exposureTotal.getDayForwardNum());
-                                    depVisitNum= (int) (depVisitNum+exposureTotal.getVisitorTotal());
-                                    depClientNum= (int) (depClientNum+exposureTotal.getClientTotalNum());
-                                }
-                                depPersonNum=compareList.size();
-                                depVo.setDepId(childFrame.getId());
-                                depVo.setDepName(childFrame.getRoleName());
-                                depVo.setDepClientNum(depClientNum);
-                                depVo.setDepActiveNum(depActiveNum);
-                                depVo.setDepVisitNum(depVisitNum);
-                                depVo.setDepPersonNum(depPersonNum);
-                                if (compareList.size()==0){
-                                    depVo.setDepActiveAverage(0);
-                                    depVo.setDepVisitAverage(0);
-                                    depVo.setDepClientAverage(0);
-                                }else {
-                                    depVo.setDepActiveAverage(depActiveNum/compareList.size());
-                                    depVo.setDepVisitAverage(depVisitNum/compareList.size());
-                                    depVo.setDepClientAverage(depClientNum/compareList.size());
-                                }
-                                depVoList.add(depVo);
-                                depVo=new DepVo();
-                            }
-                            returnMap.put("depVoList",depVoList);
-                            return new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(), "操作成功",returnMap);
-                        }else {
-                            if (depId==3){
-
-                            }else {
-                                return new ResponseVo<>(AppHttpCodeEnum.FAIL.getCode(), "查询失败: 权限不足");
                             }
                         }
+                        List<DepVo> depVoList=new ArrayList<>();
+                        List<Long>depIdList=new ArrayList<>();
+                        for (CompanyFrame companyFrame : childList) {
+                            depIdList.add(companyFrame.getParentId());
+                        }
+                        if ("".equals(startTime)){
+                            startTime=null;
+                        }
+                        if ("".equals(endTime)){
+                            endTime=null;
+                        }
+                        depVoList = companyFrameMapper.selectListByList(depIdList,startTime,endTime);
+                        Collections.sort(depVoList);
+                        returnMap.put("depVoList",depVoList);
+                        return new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(),"操作成功：默认人数排序",returnMap);
+                    }else if (depId==3){
+                        parentList=  allList.stream().filter(item->item.getParentId()==-1).collect(Collectors.toList());
+                        for (CompanyFrame companyFrame : parentList) {
+                            for (CompanyFrame frame : allList) {
+                                if (Objects.equals(frame.getParentId(),companyFrame.getId())){
+                                    childList.add(frame);
+                                }
+                            }
+                        }
+                        for (CompanyFrame companyFrame : childList) {
+                            for (CompanyFrame frame : allList) {
+                                if (Objects.equals(frame.getParentId(),companyFrame.getId())){
+                                    secondList.add(frame);
+                                }
+                            }
+                        }
+                        List<DepVo> depVoList=new ArrayList<>();
+                        List<Long>depIdList=new ArrayList<>();
+                        for (CompanyFrame companyFrame : secondList) {
+                            depIdList.add(companyFrame.getParentId());
+                        }
+                        if ("".equals(startTime)){
+                            startTime=null;
+                        }
+                        if ("".equals(endTime)){
+                            endTime=null;
+                        }
+                        depVoList = companyFrameMapper.selectListByList(depIdList,startTime,endTime);
+                        Collections.sort(depVoList);
+                        returnMap.put("depVoList",depVoList);
+                        return new ResponseVo<>(AppHttpCodeEnum.SUCCESS.getCode(),"操作成功：默认人数排序",returnMap);
                     }
+                    //TODO 返回
+                    return null;
                 }
             }
         }
-        //TODO 返回
-        return null;
     }
 
 

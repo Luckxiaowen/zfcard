@@ -27,7 +27,7 @@ public class InsertSnapshotJob {
     @Autowired
     private ExposureTotalMapper exposureTotalMapper;
     //todo 每天凌晨清空清空曝光统计表 将数据添加至快照表
-    @Scheduled(cron = "0 0 0 * * ?")
+//    @Scheduled(cron = "0 0 0 * * ?")
     public void CheckAndInsertSnapshotJob() {
         //TODO。查询那些账户需要执行定时任务
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
@@ -55,12 +55,14 @@ public class InsertSnapshotJob {
                     expoSnapshot.setDayTotal(exposureTotal.getDayTotal());
                     expoSnapshot.setDayNotesNum(exposureTotal.getDayNotes());
                     expoSnapshot.setDayDownloadNum(exposureTotal.getDayDownloadNum());
+
                     expoSnapshot.setDayAddClient(exposureTotal.getDayAddClient());
                     expoSnapshot.setDayAddContact(exposureTotal.getDayAddContact());
                     expoSnapshot.setWeekClientNum(exposureTotal.getWeekAddClient());
                     expoSnapshot.setWeekVisitorNum(exposureTotal.getVisitorTotal());
                     expoSnapshot.setAverageStayMin(exposureTotal.getAverageStayMin());
                     expoSnapshot.setStayNum(exposureTotal.getStayNum());
+
                     expoSnapshot.setCreateTime(new Date());
                     expoSnapshotMapper.insert(expoSnapshot);
 
@@ -75,6 +77,7 @@ public class InsertSnapshotJob {
                         total.setDayForwardNum(0L);
                         total.setWeekAddClient(0L);
                         total.setSevenTotal(0L);
+                        total.setAverageStayMin(0);
                         List<String> sevenDate = DateUtil.getSevenDate();
                         List<ExpoSnapshot> expoSnapshotList = expoSnapshotMapper.selectSevenDayByTotalId(total.getId(), sevenDate);
 

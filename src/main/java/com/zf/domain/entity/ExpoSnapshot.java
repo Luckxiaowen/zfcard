@@ -60,6 +60,7 @@ public class ExpoSnapshot implements Serializable {
     @ApiModelProperty(value = "日客户增加量",dataType = "long")
     private Long dayAddClient;
 
+
     /**
      * 周访客量 周访客量
      */

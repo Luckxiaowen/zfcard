@@ -29,11 +29,13 @@ public class IndexController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", required = true),
             @ApiImplicitParam(dataType = "int", name = "depId", value = "部门Id", required = true),
+            @ApiImplicitParam(dataType = "int", name = "startTime", value = "开始时间", required = false),
+            @ApiImplicitParam(dataType = "int", name = "endTime", value = "结束时间", required = false ),
     })
     @ApiOperation(value = "获取首页部门统计")
     @GetMapping("/dep/rank")
-    public ResponseVo getdepartmentRank(@RequestParam("depId")int dePId){
-        return departmentService.getdepartmentRank(dePId);
+    public ResponseVo getdepartmentRank(@RequestParam("depId")int dePId,String startTime,String endTime){
+        return departmentService.getdepartmentRank(dePId,startTime,endTime);
     }
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", required = true),
