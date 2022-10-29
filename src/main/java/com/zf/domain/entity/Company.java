@@ -48,6 +48,12 @@ public class Company implements Serializable {
     @NotBlank(message = "公司到期时间不能为空")
     private String expirationTime;
 
+    @NotBlank(message = "appKey不能为空")
+    private String appKey;
+
+    @NotBlank(message = "appSecret不能为空")
+    private String appSecret;
+
     @NotBlank(message = "创建人不能为空")
     private Long createBy;
 
@@ -73,10 +79,4 @@ public class Company implements Serializable {
     @TableLogic
     private Integer delFlag;
 
-  /*  *//**
-     * 创始人
-     *//*
-    @ApiModelProperty(value = "创始人",dataType = "Long")
-    private Long createBy;
-*/
 }

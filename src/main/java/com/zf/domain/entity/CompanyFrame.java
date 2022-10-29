@@ -1,9 +1,6 @@
 package com.zf.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -20,10 +17,10 @@ import java.util.List;
 @NoArgsConstructor
 public class CompanyFrame {
 
-    @TableId
+    @TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "部门id名称")
-    @NotNull(message = "ID不能为空")
     private Long id;
+
 
     /**
      * 公司id 公司id
