@@ -170,7 +170,14 @@ public class ModuleConfigServiceImpl extends ServiceImpl<ModuleConfigMapper,Modu
       queryWrapper.eq(ModuleConfig::getCategory,category);
       ModuleConfig personaEcho = moduleConfigMapper.selectOne(queryWrapper);
 
-      return ResponseVo.okResult(personaEcho);
+      Company company = companyMapper.selectById(companyId);
+      int introductionSwitch = company.getIntroductionSwitch();
+
+      HashMap<String, Object> map = new HashMap<>();
+      map.put("introductionSwitch",introductionSwitch);
+      map.put("personaEcho",personaEcho);
+
+      return ResponseVo.okResult(map);
 
     }
     if("个性化内容".equals(category)){
@@ -180,7 +187,15 @@ public class ModuleConfigServiceImpl extends ServiceImpl<ModuleConfigMapper,Modu
       queryWrapper.eq(ModuleConfig::getCompanyId,companyId);
       queryWrapper.eq(ModuleConfig::getCategory,category);
       ModuleConfig contentEcho = moduleConfigMapper.selectOne(queryWrapper);
-      return ResponseVo.okResult(contentEcho);
+
+      Company company = companyMapper.selectById(companyId);
+      int contentSwitch = company.getContentSwitch();
+
+      HashMap<String, Object> map = new HashMap<>();
+      map.put("contentSwitch",contentSwitch);
+      map.put("contentEcho",contentEcho);
+
+      return ResponseVo.okResult(map);
     }
 
     return null;
