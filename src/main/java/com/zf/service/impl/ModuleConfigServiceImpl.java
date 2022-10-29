@@ -100,21 +100,60 @@ public class ModuleConfigServiceImpl extends ServiceImpl<ModuleConfigMapper,Modu
 
     String url = String.valueOf(map.get("url"));
 
-    String moduleId = String.valueOf(System.currentTimeMillis());
 
     if ("个性化简介".equals(category)){
+
+      LambdaQueryWrapper<ModuleConfig> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+      lambdaQueryWrapper.eq(ModuleConfig::getCategory,category).eq(ModuleConfig::getCompanyId,companyId);
+      ModuleConfig persona = moduleConfigMapper.selectOne(lambdaQueryWrapper);
+
+      if (persona == null){
+        moduleConfigMapper.insert(new ModuleConfig(moduleName,url,companyId,category,null));
+        return ResponseVo.okResult(url);
+      }else {
+        String id = persona.getModuleId();
+
+        ModuleConfig moduleConfig = new ModuleConfig();
+        moduleConfig.setCategory(category);
+        moduleConfig.setModuleName(moduleName);
+        moduleConfig.setModuleBanner(url);
+        moduleConfig.setCompanyId(companyId);
+        moduleConfig.setModuleId(id);
+
+        moduleConfigMapper.updateById(moduleConfig);
+
+        return ResponseVo.okResult(AppHttpCodeEnum.SUCCESS);
+      }
 
 
     }else if ("个性化内容".equals(category)) {
 
+      LambdaQueryWrapper<ModuleConfig> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+      lambdaQueryWrapper.eq(ModuleConfig::getCategory,category).eq(ModuleConfig::getCompanyId,companyId);
+      ModuleConfig persona = moduleConfigMapper.selectOne(lambdaQueryWrapper);
 
-    }else {
-      return ResponseVo.okResult(200,"category只能是（个性化简介），或者（个性化内容）");
+      if (persona == null){
+        moduleConfigMapper.insert(new ModuleConfig(moduleName,url,companyId,category,null));
+        return ResponseVo.okResult(url);
+      }else {
+        String id = persona.getModuleId();
+
+        ModuleConfig moduleConfig = new ModuleConfig();
+        moduleConfig.setCategory(category);
+        moduleConfig.setModuleName(moduleName);
+        moduleConfig.setModuleBanner(url);
+        moduleConfig.setCompanyId(companyId);
+        moduleConfig.setModuleId(id);
+
+        moduleConfigMapper.updateById(moduleConfig);
+
+        return ResponseVo.okResult(AppHttpCodeEnum.SUCCESS);
+
+      }
     }
 
-    moduleConfigMapper.insert(new ModuleConfig(moduleName,url,companyId,category,moduleId));
+    return ResponseVo.okResult(200,"category只能是（个性化简介），或者（个性化内容）");
 
-    return ResponseVo.okResult(url);
   }
 
   @Override

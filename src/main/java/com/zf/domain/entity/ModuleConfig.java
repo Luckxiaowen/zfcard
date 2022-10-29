@@ -1,9 +1,12 @@
 package com.zf.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 
 /**
  * Created with IntelliJ IDEA.
@@ -45,7 +48,10 @@ public class ModuleConfig {
    * 类别
    */
   @ApiModelProperty(value = "模块id",dataType = "String")
+  @TableId(type = IdType.ASSIGN_ID)
   private String moduleId;
+
+
 
 
 }
