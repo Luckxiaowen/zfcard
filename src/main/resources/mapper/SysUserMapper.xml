@@ -118,6 +118,34 @@
             LIMIT #{pageNum}
             , #{pageSize}
     </select>
+
+  <select id="selectAllUser" resultType="com.zf.domain.vo.SysUserVo" resultMap="SysUserVoMap">
+    SELECT
+      su.id as 'id',
+      su.username as 'username',
+      cof.role_name as 'dep_name',
+      su.station as'station',
+      ext.visitor_total as 'visitor_num',
+      ext.client_total_num as 'client_num',
+      SUM(exs.day_notes_num) as'note_num',
+      SUM(exs.day_download_num) as 'save_card_num',
+      SUM(exs.day_add_contact) as 'save_contact_num',
+      ext.active_num AS'active_num' ,
+      ext.stay_num as'stay_num' ,
+      ext.average_stay_min as 'average_stay_min',
+      su.create_time as 'create_time',
+      su.update_time as 'update_time',
+      su.create_by as'create_by'
+    FROM sys_user su
+           LEFT JOIN exposure_total ext on ext.create_by = su.id
+           LEFT JOIN expo_snapshot exs on exs.expo_total_id = ext.id
+           LEFT JOIN company_frame cof on cof.id=su.dep_id
+    WHERE su.companyid = #{companyid}
+      AND su.del_flag = 0
+    GROUP BY su.id
+  </select>
+
+
     <select id="selectAllAccount" resultType="com.zf.domain.entity.SysUser">
         SELECT
             su.id,
@@ -145,22 +173,32 @@
 
 
     SELECT
-    *
+    id,username,role_name as dep_name,station,visitor_total as visitorNum,client_total_num as clientNum,
+           day_notes_num as noteNum,saveCardNum,
+           saveContactNum,activeNum,stayNum,averageStayMin,createTime,updateTime,createName
     FROM
-    sys_user
+    sys_user s
+
+
+      <if test="userDepartment != null">
+        left join company_frame com on com.parent_id = s.id
+      </if>
+
     <where>
 
+      <if test="userDepartment != null">
+        com.role_name = #{userDepartment}
+      </if>
+
+
       <if test="startTime != null">
-        create_time BETWEEN #{startTime}
+        AND s.create_time BETWEEN #{startTime}
         AND #{endTime}
       </if>
 
-      <if test="userJob != null">
-        AND station = #{userJob}
-      </if>
 
       <if test="userId != null">
-        AND id like ("%",#{userId},"%")
+        AND s.id like ("%",#{userId},"%")
       </if>
 
     </where>

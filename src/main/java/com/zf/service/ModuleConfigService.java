@@ -20,4 +20,6 @@ public interface ModuleConfigService extends IService<ModuleConfig> {
 
   ResponseVo insertIntroduceModule(String token,String moduleName, HttpServletRequest request, MultipartFile file,String category);
 
+  ResponseVo PersonaEcho(String token,String category);
+
 }
