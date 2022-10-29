@@ -4,16 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.dto.CompanyDto;
-import com.zf.domain.entity.Company;
-import com.zf.domain.entity.SysUser;
-import com.zf.domain.entity.SysUserRole;
-import com.zf.domain.entity.User;
+import com.zf.domain.entity.*;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.exception.SystemException;
 import com.zf.mapper.CompanyMapper;
 import com.zf.service.CompanyService;
 import com.zf.utils.BeanCopyUtils;
+import com.zf.utils.UserUtils;
 import com.zf.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,6 +37,10 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     private SysUserServiceImpl userService;
     @Resource
     private SysUserRoleServiceImpl sysUserRoleService;
+    @Resource
+    private SysRoleMenuServiceImpl roleMenuService;
+    @Resource
+    private SysRoleServiceImpl roleService;
 
     /**
      *
@@ -48,7 +50,9 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     @Override
     @Transactional
     public ResponseVo insert(CompanyDto companyDto) {
+        SysUser loginUser = UserUtils.getLoginUser().getSysUser();
         Company company = BeanCopyUtils.copyBean(companyDto, Company.class);
+        company.setCreateBy(loginUser.getId());
         save(company);
         SysUser user = new SysUser();
         user.setPassword(passwordEncoder.
@@ -58,8 +62,15 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
         user.setUserType(0);
         user.setPhonenumber(companyDto.getAdminTel());
         userService.save(user);
-        for (Integer roleId : companyDto.getCompanyAuthority()) {
-            sysUserRoleService.save(new SysUserRole(user.getId(),Long.valueOf(roleId)));
+
+        SysRole role = new SysRole();
+        role.setCompanyId(Long.valueOf(company.getId()));
+        role.setName(companyDto.getAdminName());
+        role.setCreateBy(loginUser.getId());
+        roleService.save(role);
+        sysUserRoleService.save(new SysUserRole(user.getId(),role.getId()));
+        for (Integer menuId : companyDto.getCompanyAuthority()) {
+            roleMenuService.save(new SysRoleMenu(role.getId(),Long.valueOf(menuId)));
         }
         return ResponseVo.okResult();
     }

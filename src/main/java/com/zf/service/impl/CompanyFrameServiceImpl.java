@@ -133,6 +133,7 @@ public class CompanyFrameServiceImpl extends ServiceImpl<CompanyFrameMapper, Com
     }
 
     @Override
+    @Transactional
     public ResponseVo dingDingImport(AppKey appKey, String rootName) {
         LoginUser loginUser = UserUtils.getLoginUser();
 
