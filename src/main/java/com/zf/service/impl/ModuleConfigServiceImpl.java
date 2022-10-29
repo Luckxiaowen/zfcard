@@ -1,5 +1,6 @@
 package com.zf.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.entity.Company;
@@ -119,19 +120,30 @@ public class ModuleConfigServiceImpl extends ServiceImpl<ModuleConfigMapper,Modu
   @Override
   public ResponseVo PersonaEcho(String token, String category) {
 
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+    Long companyId =loginUser.getSysUser().getCompanyid();
+
+
     if ("个性化简介".equals(category)){
-      QueryWrapper<ModuleConfig> wrapper = new QueryWrapper<>();
-      wrapper.eq("category",category);
-      ModuleConfig introduction = moduleConfigMapper.selectOne(wrapper);
-      return ResponseVo.okResult(introduction);
-    }
-    if("个性化内容".equals(category)){
-      QueryWrapper<ModuleConfig> wrapper = new QueryWrapper<>();
-      wrapper.eq("category",category);
-      ModuleConfig content = moduleConfigMapper.selectOne(wrapper);
-      return ResponseVo.okResult(content);
+      LambdaQueryWrapper<ModuleConfig> queryWrapper = new LambdaQueryWrapper<>();
+      queryWrapper.eq(ModuleConfig::getCompanyId,companyId);
+      queryWrapper.eq(ModuleConfig::getCategory,category);
+      ModuleConfig personaEcho = moduleConfigMapper.selectOne(queryWrapper);
+
+      return ResponseVo.okResult(personaEcho);
 
     }
-    return ResponseVo.errorResult(AppHttpCodeEnum.PARAMETER_ERROR);
+    if("个性化内容".equals(category)){
+
+      LambdaQueryWrapper<ModuleConfig> queryWrapper = new LambdaQueryWrapper<>();
+
+      queryWrapper.eq(ModuleConfig::getCompanyId,companyId);
+      queryWrapper.eq(ModuleConfig::getCategory,category);
+      ModuleConfig contentEcho = moduleConfigMapper.selectOne(queryWrapper);
+      return ResponseVo.okResult(contentEcho);
+    }
+
+    return null;
   }
 }
