@@ -1,6 +1,7 @@
 package com.zf.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.dto.CompanyDto;
@@ -97,40 +98,28 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     }
 
     @Override
-    public ResponseVo modify(Company company,String updateId) {
-
-        if ("".equals(company.getCompanyName()) || company.getCompanyName() == null) {
-            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司名称不能为空");
-        } else {
-            if (company.getCompanyName().length() < 3) {
-                return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司名称长度不能小于三个字符");
-            } else {
-
-                if (companyMapper.selectList(null).stream().filter(company1 -> company1.getCompanyName().equals(company.getCompanyName())).count() > 0) {
-                    return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "当前公司名字重复请核实公司");
-                } else {
-                    if ("".equals(company.getCompanyLogo()) || company.getCompanyLogo() == null) {
-                        return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司LOGO不能为空");
-                    } else {
-                            if (company.getAdminTel().length() < 11) {
-                                return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "手机号码长度有误");
-                            } else {
-                                if (Validator.isMobile(company.getAdminTel())) {
-                                    //TODO 插入数据库
-                                    if (companyMapper.updateById(company) > 0) {
-                                        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg());
-                                    } else {
-                                        return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "修改失败");
-                                    }
-                                } else {
-                                    return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "手机号错误请重新输入");
-                                }
-                            }
-
-                    }
-                }
-            }
+    @Transactional
+    public ResponseVo modify(CompanyDto companyDto) {
+        SysUser loginUser = UserUtils.getLoginUser().getSysUser();
+        Company company = companyMapper.selectById(loginUser.getCompanyid());
+        SysUser user = userService.getOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getPhonenumber, company.getAdminTel()));
+        if (Objects.isNull(company) || Objects.isNull(user))
+            throw new SystemException(AppHttpCodeEnum.COMPANY_NOF_FIND);
+        company.setCompanyLogo(companyDto.getCompanyLogo());
+        company.setCompanyName(companyDto.getCompanyName());
+        company.setCompanyAbbreviation(companyDto.getCompanyAbbreviation());
+        company.setExpirationTime(companyDto.getExpirationTime());
+        company.setAdminName(companyDto.getAdminName());
+        company.setAdminTel(companyDto.getAdminTel());
+        updateById(company);
+        user.setPhonenumber(companyDto.getAdminTel());
+        userService.updateById(user);
+        Long roleId = sysUserRoleService.getById(user.getId()).getRoleId();
+        roleMenuService.remove(new LambdaQueryWrapper<SysRoleMenu>().eq(SysRoleMenu::getRoleId,roleId));
+        for (Integer menuId : companyDto.getCompanyAuthority()) {
+            roleMenuService.save(new SysRoleMenu(roleId,Long.valueOf(menuId)));
         }
+        return ResponseVo.okResult();
     }
 
     @Override

@@ -49,8 +49,8 @@ public class SuperAdminController {
 
     @ApiOperation(value = "修改公司接口")
     @PutMapping("/modify-company")
-    public ResponseVo modify(@RequestHeader("token") String token,@RequestBody Company company) throws Exception {
-        return companyService.modify(company,JwtUtil.parseJWT(token).getSubject());
+    public ResponseVo modify(@RequestHeader("token") String token,@RequestBody CompanyDto CompanyDto) throws Exception {
+        return companyService.modify(CompanyDto);
     }
 
     @ApiOperation(value = "公司列表查询接口")
