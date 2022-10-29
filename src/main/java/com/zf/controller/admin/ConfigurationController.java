@@ -54,5 +54,11 @@ public class ConfigurationController {
     return moduleConfigService.insertIntroduceModule(token,moduleName,request,file,category);
   }
 
+  @ApiOperation(value = "个性化简介录入数据回显")
+  @GetMapping("/persona_module_echo")
+  public ResponseVo personaEcho(@RequestHeader("token") String token,@RequestParam("category") String category){
+    return moduleConfigService.PersonaEcho(token,category);
+  }
+
 
 }

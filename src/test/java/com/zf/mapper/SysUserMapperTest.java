@@ -34,7 +34,7 @@ public class SysUserMapperTest {
   @Test
   public void testSelectUserByQuery() {
 
-    Page<SysUserVo> page = new Page<>(1,1);
-    sysUserMapper.selectUserByQuery(page,null,"总经理",null,null);
+    Page<SysUserVo> page = new Page<>(1,8);
+    sysUserMapper.selectUserByQuery(page,"1",null,null,null);
   }
 }

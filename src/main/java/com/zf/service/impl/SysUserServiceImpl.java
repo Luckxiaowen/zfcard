@@ -21,6 +21,8 @@ import com.zf.service.CompanyFrameService;
 import com.zf.service.SysUserService;
 import com.zf.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Amireux
@@ -53,6 +57,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private SysUserRoleServiceImpl userRoleService;
     @Resource
     private SysRoleServiceImpl roleService;
+
+
 
 
     @Override
@@ -598,6 +604,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
   }
 
+
   @Override
   public ResponseVo selectUserByQuery(String token, UserQueryVo userQueryVo) {
 
@@ -607,48 +614,192 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     String id = String.valueOf(getInteger(token));
 
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+    Long companyId = loginUser.getSysUser().getCompanyid();
 
-    if (userQueryVo == null){
-
-        SysUser sysUser = sysUserMapper.selectById(id);
-        List<SysUserVo> userVoList = sysUserMapper.selectByCompanyId(sysUser.getCompanyid());
-
-        return ResponseVo.okResult(userVoList);
-      }
-
-
-
-    String userId = userQueryVo.getUserId();
-    String userJob = userQueryVo.getUserJob();
-    String startTime = userQueryVo.getStartTime();
-    String endTime = userQueryVo.getEndTime();
     Integer pageNum = userQueryVo.getPageNum();
     Integer pageSize = userQueryVo.getPageSize();
 
+    List<SysUserVo> sysUserVos = sysUserMapper.selectAllUser(companyId);
 
-    if (pageNum.equals("") || pageSize.equals("")){
+    String userId = userQueryVo.getUserId();
+    String userDepartment = userQueryVo.getRoleName();
+    Date startTime = userQueryVo.getStartTime();
+    Date endTime = userQueryVo.getEndTime();
+
+
+    if ("".equals(userId)){
+      userId = null;
+    }
+    if ("".equals(userDepartment)){
+      userDepartment = null;
+    }
+    if ("".equals(startTime)){
+      startTime = null;
+    }
+    if ("".equals(endTime)){
+      endTime = null;
+    }
+    if ("".equals(pageNum)){
+      pageNum = null;
+    }
+    if ("".equals(pageSize)){
+      pageSize = null;
+    }
+
+
+
+    if (pageNum == null || pageSize == null){
       return ResponseVo.errorResult(AppHttpCodeEnum.PARAMETER_ERROR,"无当前页或每页数据条数");
     }
 
-    if(userJob.equals("")){
-      userJob = null;
-    }
-    if(startTime.equals("")){
-      startTime = null;
-    }
-    if(endTime.equals("")){
-      endTime = null;
-    }
-    if(userId.equals("")){
-      userId = null;
+
+    if (userId == null) {
+
+      if (startTime == null && endTime == null && userDepartment == null){
+        return ResponseVo.okResult(sysUserMapper.selectAllUser(companyId));
+
+      }
+
+      if (startTime == null && endTime == null) {
+
+        String finalUserDepartment = userDepartment;
+        List<SysUserVo> queryDepartment = sysUserVos.stream().filter(item -> item.getDep_name() != null && item.getDep_name().equals(finalUserDepartment)).collect(Collectors.toList());
+
+        if (queryDepartment.size() == 0) {
+
+          return ResponseVo.okResult(200, "查询未果");
+
+        }
+
+        return ResponseVo.okResult(queryDepartment);
+      }
+
+      if (userDepartment == null) {
+
+        Date finalStartTime = startTime;
+        Date finalEndTime = endTime;
+
+        List<SysUserVo> queryTime = sysUserVos.stream().filter(item -> item.getCreateTime() != null && item.getCreateTime().compareTo(finalStartTime) >= 0 && item.getCreateTime().compareTo(finalEndTime) <= 0).collect(Collectors.toList());
+
+
+        if (queryTime.size() == 0) {
+
+          return ResponseVo.okResult(200, "查询未果");
+
+        }
+        return ResponseVo.okResult(queryTime);
+      }
+
+      if (startTime != null && endTime != null) {
+
+        Date finalStartTime1 = startTime;
+        Date finalEndTime1 = endTime;
+        List<SysUserVo> queryTime = sysUserVos.stream().filter(item -> item.getCreateTime() != null && item.getCreateTime().compareTo(finalStartTime1) >= 0 && item.getCreateTime().compareTo(finalEndTime1) <= 0).collect(Collectors.toList());
+
+        if (queryTime.size() == 0){
+          return ResponseVo.okResult(200,"查询未果");
+        }
+
+        String finalUserDepartment1 = userDepartment;
+        List<SysUserVo> queryDepartmentTime = queryTime.stream().filter(item -> item.getDep_name() != null && item.getDep_name().equals(finalUserDepartment1)).collect(Collectors.toList());
+
+        if (queryDepartmentTime.size() == 0) {
+
+          return ResponseVo.okResult(200, "查询未果");
+
+        }
+
+        return ResponseVo.okResult(queryDepartmentTime);
+      }
     }
 
-    Page<SysUserVo> page = new Page<>(pageNum,pageSize);
-    Page<SysUserVo> selectUserByQuery = sysUserMapper.selectUserByQuery(page, userId, userJob, startTime, endTime);
+
+    if (userId != null){
 
 
-    return ResponseVo.okResult(selectUserByQuery);
+      if (startTime != null && endTime != null && userDepartment != null){
 
+        String finalUserId = userId;
+        List<SysUserVo > queryUserId = sysUserVos.stream().filter(item -> item.getId() != null && item.getId().toString().contains(finalUserId)).collect(Collectors.toList());
+
+        if (queryUserId.size() == 0){
+          return ResponseVo.okResult(200,"查询未果");
+        }
+
+        String finalUserDepartment2 = userDepartment;
+        List<SysUserVo> queryDepartment = queryUserId.stream().filter(item -> item.getDep_name() != null && item.getDep_name().equals(finalUserDepartment2)).collect(Collectors.toList());
+
+        if (queryDepartment.size() == 0){
+          return ResponseVo.okResult(200,"查询未果");
+        }
+
+        Date finalStartTime2 = startTime;
+        Date finalEndTime2 = endTime;
+        List<SysUserVo> queryTimeDepartmentUserId = queryDepartment.stream().filter(item -> item.getCreateTime().compareTo(finalStartTime2) >= 0 && item.getCreateTime().compareTo(finalEndTime2) <= 0).collect(Collectors.toList());
+
+        if (queryTimeDepartmentUserId.size() == 0){
+
+          return ResponseVo.okResult(200,"查询未果");
+
+        }
+
+        return ResponseVo.okResult(queryTimeDepartmentUserId);
+
+      }
+
+      if (startTime != null && endTime != null){
+
+        Date finalEndTime3 = endTime;
+        Date finalStartTime3 = startTime;
+        List<SysUserVo> queryTime = sysUserVos.stream().filter(item -> item.getCreateTime().compareTo(finalStartTime3) >= 0 && item.getCreateTime().compareTo(finalEndTime3) <= 0).collect(Collectors.toList());
+
+        if (queryTime.size() == 0){
+          return ResponseVo.okResult(200,"查询未果");
+        }
+
+        String finalUserId1 = userId;
+        List<SysUserVo> queryTimeUserId = queryTime.stream().filter(item -> item.getId().toString().contains(finalUserId1)).collect(Collectors.toList());
+
+        if (queryTimeUserId.size() == 0){
+
+          return ResponseVo.okResult(200,"查询未果");
+
+        }
+
+        return ResponseVo.okResult(queryTimeUserId);
+      }
+
+      if (userDepartment != null){
+
+        String finalUserDepartment3 = userDepartment;
+        List<SysUserVo> queryDepartment = sysUserVos.stream().filter(item -> item.getDep_name().equals(finalUserDepartment3)).collect(Collectors.toList());
+
+        if (queryDepartment.size() == 0){
+          return ResponseVo.okResult(200,"查询未果");
+        }
+
+        String finalUserId2 = userId;
+        List<SysUserVo> queryDepartmentUserId = queryDepartment.stream().filter(item -> item.getId().toString().contains(finalUserId2)).collect(Collectors.toList());
+
+
+        if (queryDepartmentUserId.size() == 0){
+
+          return ResponseVo.okResult(200,"查询未果");
+
+        }
+
+        return ResponseVo.okResult(queryDepartmentUserId);
+      }
+
+      String finalUserId3 = userId;
+      List<SysUserVo> queryUserId = sysUserVos.stream().filter(item -> item.getId().toString().contains(finalUserId3)).collect(Collectors.toList());
+
+      return ResponseVo.okResult(queryUserId);
+    }
+
+    return null;
   }
 
     @Override
