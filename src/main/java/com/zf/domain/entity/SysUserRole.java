@@ -21,6 +21,7 @@ public class SysUserRole implements Serializable {
      * 用户id
      */
     @ApiModelProperty(value = "用户id",dataType = "long")
+    @TableId
     private Long userId;
 
     /**

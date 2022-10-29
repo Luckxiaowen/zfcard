@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zf.domain.entity.SysMenu;
 import com.zf.domain.entity.SysUser;
+import com.zf.domain.entity.SysUserRole;
 import com.zf.domain.vo.LoginUser;
 import com.zf.domain.vo.MenuVo;
 import com.zf.domain.vo.ResponseVo;
@@ -55,6 +56,9 @@ public class LoginServiceImpl implements LoginService {
     @Resource
     private SysMenuService menuService;
 
+    @Resource
+    private SysUserRoleServiceImpl userRoleService;
+
     @Override
     public ResponseVo login(SysUser sysUser) {
         if (!Validator.isMobile(sysUser.getPhonenumber())) {
@@ -81,6 +85,8 @@ public class LoginServiceImpl implements LoginService {
         map.put("username",loginUser.getSysUser().getUsername());
         map.put("phoneNumber",loginUser.getSysUser().getPhonenumber());
         map.put("userId",loginUser.getSysUser().getId());
+        Long roleId = userRoleService.getById(loginUser.getSysUser().getId()).getRoleId();
+        map.put("roleId",roleId);
         //TODO 把完整的用户信息存入到redis userid作为key
         redisCache.setCacheObject("login:" + userId, loginUser);
         return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(), map);

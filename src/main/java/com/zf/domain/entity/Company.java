@@ -79,4 +79,6 @@ public class Company implements Serializable {
     @TableLogic
     private Integer delFlag;
 
+    private Long createBy;
+
 }
