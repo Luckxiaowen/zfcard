@@ -34,7 +34,7 @@ public class DIngDingJob {
     @Resource
     private CompanyFrameService companyFrameService;
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 0 1 ? * 5")
     public void DingDingImportDb(){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -63,9 +63,31 @@ public class DIngDingJob {
             if (result == null || result.getErrcode() != 0)
                 continue;
             List<Info> infoList = result.getResult();
-            LambdaQueryWrapper<CompanyFrame> wrapper = new LambdaQueryWrapper();
-            wrapper.eq(CompanyFrame::getCompanyId,company.getId());
-            companyFrameService.remove(wrapper);
+            for (Info info : infoList) {
+                CompanyFrame companyFrame = new CompanyFrame();
+                companyFrame.setRoleName(info.getName());
+                companyFrame.setRoleName(info.getName());
+                companyFrame.setCompanyId(Long.valueOf(company.getId()));
+                boolean byId = companyFrameService.updateById(companyFrame);
+                if (!byId){
+                    companyFrameService.save(companyFrame);
+                }
+                map.put("dept_id", info.getDept_id());
+                DingDingResult res = restTemplate.postForObject(url, request, DingDingResult.class);
+                if (res.getErrcode() == 0){
+                    info.setChildren(res.getResult());
+                    for (Info child : info.getChildren()) {
+                        CompanyFrame tempFrame = new CompanyFrame();
+                        tempFrame.setId(child.getDept_id());
+                        tempFrame.setParentId(child.getParent_id());
+                        tempFrame.setRoleName(child.getName());
+                        boolean byId1 = companyFrameService.updateById(tempFrame);
+                        if (!byId1){
+                            companyFrameService.save(tempFrame);
+                        }
+                    }
+                }
+            }
         }
     }
 }
