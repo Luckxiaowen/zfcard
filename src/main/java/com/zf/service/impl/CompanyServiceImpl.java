@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.dto.CompanyDto;
 import com.zf.domain.entity.Company;
 import com.zf.domain.entity.SysUser;
+import com.zf.domain.entity.SysUserRole;
 import com.zf.domain.entity.User;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
@@ -36,6 +37,8 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     private PasswordEncoder passwordEncoder;
     @Resource
     private SysUserServiceImpl userService;
+    @Resource
+    private SysUserRoleServiceImpl sysUserRoleService;
 
     /**
      *
@@ -55,7 +58,9 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
         user.setUserType(0);
         user.setPhonenumber(companyDto.getAdminTel());
         userService.save(user);
-
+        for (Integer roleId : companyDto.getCompanyAuthority()) {
+            sysUserRoleService.save(new SysUserRole(user.getId(),Long.valueOf(roleId)));
+        }
         return ResponseVo.okResult();
     }
 
