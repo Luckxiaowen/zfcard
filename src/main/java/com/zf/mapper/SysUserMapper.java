@@ -32,7 +32,7 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
     List<SysUser> selectAllAccount(Long companyid);
 
-    List<SysUserVo> selectAllUser(Long companyid);
+    List<SysUserVo> selectAllUser(@Param("companyid") Long companyid, @Param("userQueryVo") UserQueryVo userQueryVo);
 
     Page<SysUserVo> selectUserByQuery(Page<SysUserVo> page,@Param("userId") String userId,@Param("userDepartment") String userDepartment,@Param("startTime") String startTime,@Param("endTime") String endTime);
 }

@@ -36,7 +36,7 @@ public class ConfigurationController {
   @ApiOperation(value = "个性化简介录入")
   @PostMapping("/persona_module_message")
   public ResponseVo PersonaConfig(@RequestHeader("token") String token,@RequestParam("moduleName") String moduleName,
-                                  HttpServletRequest request, MultipartFile file,@RequestParam("category") String category){
+                                  HttpServletRequest request, @RequestPart(value = "file",required = false) MultipartFile file,@RequestParam("category" ) String category){
     return moduleConfigService.insertIntroduceModule(token,moduleName,request,file,category);
   }
 
@@ -49,7 +49,7 @@ public class ConfigurationController {
 
   @ApiOperation(value = "个性化内容录入")
   @PostMapping("/content_module_message")
-  public ResponseVo contentConfig(@RequestHeader("token") String token,@RequestParam("moduleName") String moduleName, HttpServletRequest request, MultipartFile file,
+  public ResponseVo contentConfig(@RequestHeader("token") String token,@RequestParam("moduleName") String moduleName, HttpServletRequest request, @RequestPart(value = "file",required = false) MultipartFile file,
                                   @RequestParam("category") String category){
     return moduleConfigService.insertIntroduceModule(token,moduleName,request,file,category);
   }

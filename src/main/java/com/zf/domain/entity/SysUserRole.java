@@ -2,6 +2,7 @@ package com.zf.domain.entity;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,7 +22,7 @@ public class SysUserRole implements Serializable {
      * 用户id
      */
     @ApiModelProperty(value = "用户id",dataType = "long")
-    @TableId
+    @TableId(type = IdType.INPUT)
     private Long userId;
 
     /**

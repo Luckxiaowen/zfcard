@@ -1,10 +1,11 @@
 package com.zf.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.entity.Company;
 import com.zf.domain.entity.ModuleConfig;
+import com.zf.domain.entity.ModuleConfigVo;
 import com.zf.domain.vo.LoginUser;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
@@ -16,6 +17,7 @@ import com.zf.utils.JwtUtil;
 import com.zf.utils.UpLoadUtil;
 import com.zf.utils.emailutil.RandomUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
@@ -83,23 +86,28 @@ public class ModuleConfigServiceImpl extends ServiceImpl<ModuleConfigMapper,Modu
 
   @Override
   public ResponseVo insertIntroduceModule(String token,String moduleName, HttpServletRequest request, MultipartFile file,String category) {
-
     if (token == null){
       return ResponseVo.errorResult(AppHttpCodeEnum.LOGIN_INVALID);
     }
-
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     LoginUser loginUser = (LoginUser) authentication.getPrincipal();
     Long companyId =loginUser.getSysUser().getCompanyid();
-
-    HashMap map = UpLoadUtil.updateUserWxCode(request, file);
-
-    if (!map.get("msg").equals(200)){
-      return ResponseVo.errorResult(AppHttpCodeEnum.FAIL,"上传图片失败");
+    String url = "";
+    HashMap map=new HashMap();
+    if (Objects.isNull(file)){
+        LambdaQueryWrapper<ModuleConfig>wrapper=new LambdaQueryWrapper<>();
+      wrapper.eq(ModuleConfig::getCompanyId,companyId);
+      wrapper.eq(ModuleConfig::getCategory,category);
+      ModuleConfig moduleConfig = moduleConfigMapper.selectOne(wrapper);
+      url=moduleConfig.getModuleBanner();
+    }else {
+      map = UpLoadUtil.updateUserWxCode(request, file);
+      if (!map.get("msg").equals(200)){
+        return ResponseVo.errorResult(AppHttpCodeEnum.FAIL,"上传图片失败");
+      }else {
+        url = String.valueOf(map.get("url"));
+      }
     }
-
-    String url = String.valueOf(map.get("url"));
-
 
     if ("个性化简介".equals(category)){
 
@@ -169,9 +177,11 @@ public class ModuleConfigServiceImpl extends ServiceImpl<ModuleConfigMapper,Modu
       queryWrapper.eq(ModuleConfig::getCompanyId,companyId);
       queryWrapper.eq(ModuleConfig::getCategory,category);
       ModuleConfig personaEcho = moduleConfigMapper.selectOne(queryWrapper);
-
-      return ResponseVo.okResult(personaEcho);
-
+      LambdaQueryWrapper<Company>companyLambdaQueryWrapper=new LambdaQueryWrapper<>();
+      companyLambdaQueryWrapper.eq(Company::getId,personaEcho.getCompanyId());
+      Company company = companyMapper.selectOne(companyLambdaQueryWrapper);
+      ModuleConfigVo moduleConfigVo=new ModuleConfigVo(personaEcho.getModuleName(),personaEcho.getModuleBanner(),personaEcho.getCompanyId(),personaEcho.getCategory(),personaEcho.getModuleId(),company.getContentSwitch());
+      return ResponseVo.okResult(moduleConfigVo);
     }
     if("个性化内容".equals(category)){
 
@@ -180,7 +190,13 @@ public class ModuleConfigServiceImpl extends ServiceImpl<ModuleConfigMapper,Modu
       queryWrapper.eq(ModuleConfig::getCompanyId,companyId);
       queryWrapper.eq(ModuleConfig::getCategory,category);
       ModuleConfig contentEcho = moduleConfigMapper.selectOne(queryWrapper);
-      return ResponseVo.okResult(contentEcho);
+
+      LambdaQueryWrapper<Company>companyLambdaQueryWrapper=new LambdaQueryWrapper<>();
+      companyLambdaQueryWrapper.eq(Company::getId,contentEcho.getCompanyId());
+      Company company = companyMapper.selectOne(companyLambdaQueryWrapper);
+      ModuleConfigVo moduleConfigVo=new ModuleConfigVo(contentEcho.getModuleName(),contentEcho.getModuleBanner(),contentEcho.getCompanyId(),contentEcho.getCategory(),contentEcho.getModuleId(),company.getContentSwitch());
+
+      return ResponseVo.okResult(moduleConfigVo);
     }
 
     return null;

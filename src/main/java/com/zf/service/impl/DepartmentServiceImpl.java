@@ -322,19 +322,23 @@ public class DepartmentServiceImpl implements DepartmentService {
                         } else {
                             Integer depId = user.getDepId();
                             CompanyFrame companyFrame1 = companyFrameMapper.selectById(depId);
-                            if (companyFrame1.getParentId() == -1) {
-                                excellentStaffVo.setStation(company.getCompanyName() + "-" + companyFrame1.getRoleName());
-                            } else {
-                                companyFrameQueryWrapper = new LambdaQueryWrapper<>();
-                                companyFrameQueryWrapper.eq(CompanyFrame::getId, companyFrame1.getParentId())
-                                        .eq(CompanyFrame::getDelFlag, 0);
-                                CompanyFrame parentCompanyFrame = companyFrameMapper.selectOne(companyFrameQueryWrapper);
-                                if (Objects.isNull(parentCompanyFrame)) {
-                                    station = "公司" + company.getCompanyName() + "的组织架构出现问题，请检查";
-                                    excellentStaffVo.setStation(station);
+                            if (Objects.isNull(companyFrame1)){
+                                excellentStaffVo.setStation(company.getCompanyName());
+                            }else {
+                                if (companyFrame1.getParentId() == -1) {
+                                    excellentStaffVo.setStation(company.getCompanyName() + "-" + companyFrame1.getRoleName());
                                 } else {
-                                    station = company.getCompanyName() + "-" + parentCompanyFrame.getRoleName() + "-" + companyFrame1.getRoleName();
-                                    excellentStaffVo.setStation(station);
+                                    companyFrameQueryWrapper = new LambdaQueryWrapper<>();
+                                    companyFrameQueryWrapper.eq(CompanyFrame::getId, companyFrame1.getParentId())
+                                            .eq(CompanyFrame::getDelFlag, 0);
+                                    CompanyFrame parentCompanyFrame = companyFrameMapper.selectOne(companyFrameQueryWrapper);
+                                    if (Objects.isNull(parentCompanyFrame)) {
+                                        station = "公司" + company.getCompanyName() + "的组织架构出现问题，请检查";
+                                        excellentStaffVo.setStation(station);
+                                    } else {
+                                        station = company.getCompanyName() + "-" + parentCompanyFrame.getRoleName() + "-" + companyFrame1.getRoleName();
+                                        excellentStaffVo.setStation(station);
+                                    }
                                 }
                             }
                             //TODO 客户数量

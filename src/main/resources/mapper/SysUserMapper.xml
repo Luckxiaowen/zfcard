@@ -120,29 +120,59 @@
     </select>
 
   <select id="selectAllUser" resultType="com.zf.domain.vo.SysUserVo" resultMap="SysUserVoMap">
-    SELECT
-      su.id as 'id',
-      su.username as 'username',
-      cof.role_name as 'dep_name',
-      su.station as'station',
-      ext.visitor_total as 'visitor_num',
-      ext.client_total_num as 'client_num',
-      SUM(exs.day_notes_num) as'note_num',
-      SUM(exs.day_download_num) as 'save_card_num',
-      SUM(exs.day_add_contact) as 'save_contact_num',
-      ext.active_num AS'active_num' ,
-      ext.stay_num as'stay_num' ,
-      ext.average_stay_min as 'average_stay_min',
-      su.create_time as 'create_time',
-      su.update_time as 'update_time',
-      su.create_by as'create_by'
-    FROM sys_user su
-           LEFT JOIN exposure_total ext on ext.create_by = su.id
-           LEFT JOIN expo_snapshot exs on exs.expo_total_id = ext.id
-           LEFT JOIN company_frame cof on cof.id=su.dep_id
-    WHERE su.companyid = #{companyid}
-      AND su.del_flag = 0
-    GROUP BY su.id
+      SELECT
+          su.id as 'id',
+              su.username as 'username',
+              cof.role_name as 'dep_name',
+              su.station as'station',
+              ext.visitor_total as 'visitor_num',
+              ext.client_total_num as 'client_num',
+              SUM(exs.day_total+exs.day_notes_num+exs.day_download_num+exs.day_add_contact+exs.day_add_client)+SUM(ext.day_total+ext.day_download_num+ext.day_notes+ext.day_add_contact+ext.day_add_client+ext.day_forward_num) AS 'active_num',
+              SUM(exs.day_notes_num) as'note_num',
+              SUM(exs.day_download_num) as 'save_card_num',
+              SUM(exs.day_add_contact) as 'save_contact_num',
+              ROUND(SUM((exs.average_stay_min)+ext.active_num)/(SUM(exs.stay_num)+ext.stay_num)/60)  as'stay_num' ,
+              ext.average_stay_min as 'average_stay_min',
+              su.create_time as 'create_time',
+              su.update_time as 'update_time',
+              su.create_by as'create_by'
+      FROM sys_user su
+               LEFT JOIN exposure_total ext on ext.create_by = su.id
+               LEFT JOIN expo_snapshot exs on exs.expo_total_id = ext.id
+               LEFT JOIN company_frame cof on cof.id=su.dep_id
+      <where>
+
+          <if test="userQueryVo.userId != null">
+                su.id=#{userQueryVo.userId}
+          </if>
+          <if test="userQueryVo.roleId != null">
+              and  su.dep_id=#{userQueryVo.roleId}
+          </if>
+          <if test="userQueryVo.startTime !=null">
+             and su.create_time &gt;=#{userQueryVo.startTime}
+          </if>
+
+          <if test="userQueryVo.endTime != null">
+              and  su.create_time &lt;=#{userQueryVo.endTime}
+          </if>
+
+
+          <if test="1>0">
+              and su.companyid =#{companyid}
+              AND su.del_flag = 0
+              GROUP BY su.id
+          </if>
+
+          <if test="userQueryVo.pageNum != null">
+              LIMIT #{userQueryVo.pageNum}
+          </if>
+
+          <if test="userQueryVo.pageSize != null">
+              ,#{userQueryVo.pageSize}
+          </if>
+      </where>
+
+
   </select>
 
 
