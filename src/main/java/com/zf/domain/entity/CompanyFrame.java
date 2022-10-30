@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,8 @@ public class CompanyFrame {
     @TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "部门id名称")
     private Long id;
+
+
     /**
      * 公司id 公司id
      */

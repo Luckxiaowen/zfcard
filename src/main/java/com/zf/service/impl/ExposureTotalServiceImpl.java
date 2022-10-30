@@ -132,12 +132,14 @@ public class ExposureTotalServiceImpl extends ServiceImpl<ExposureTotalMapper, E
         }
     }
 
+
     @Override
-    public ResponseVo getExposureHistory(String id) {
+    public ResponseVo getExposureHistory(String id,String startTime,String endTime) {
         HashMap<String, Object> historyMap = new HashMap<>();
         ExposureVo totalData = new ExposureVo();
         ExposureVo averageData = new ExposureVo();
         List<ExposureVo> exposureVoList = new ArrayList<>();
+        List<ExposureVo> exposureVoListByReturn = new ArrayList<>();
         if ("".equals(id) || id == null) {
             return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "获取访客概况失败:用户Id为空");
         } else {
@@ -145,88 +147,95 @@ public class ExposureTotalServiceImpl extends ServiceImpl<ExposureTotalMapper, E
             if (Objects.isNull(sysUserMapper.selectById(userId))) {
                 return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "获取访客概况失败:未查询到用户");
             } else {
-                LambdaQueryWrapper<ExposureTotal> queryWrapper = new LambdaQueryWrapper<>();
-                queryWrapper.eq(ExposureTotal::getCreateBy, userId);
-                ExposureTotal exposureTotal = exposureTotalMapper.selectOne(queryWrapper);
-                if (!Objects.isNull(exposureTotal)) {
-                    //TODO 访客总量
-                    totalData.setVisitor(Math.toIntExact(exposureTotal.getVisitorTotal()));
-                    LambdaQueryWrapper<ExpoSnapshot> wrapper = new LambdaQueryWrapper<>();
-                    wrapper.eq(ExpoSnapshot::getExpoTotalId, exposureTotal.getId());
-                    Integer count = expoSnapshotMapper.selectCount(wrapper);
-                    if (count == 0) {
-                        //TODO 日均访问量
-                        averageData.setVisitor(0);
-                        //TODO 日均访问时常
-                        averageData.setStay(0);
-                        //TODO 日均保存名片数
+                if ("".equals(startTime)&& "".equals(endTime)){
+                    totalData= expoSnapshotMapper.selectHistoryWithOut(String.valueOf(userId));
+                    averageData.setVisitor(totalData.getVisitor()/totalData.getCount());
+                    if (totalData.getCount()==0){
+                        averageData.setStayMin(0.00);
                         averageData.setDownload(0);
-                    } else {
-                        averageData.setVisitor(Math.toIntExact(exposureTotal.getVisitorTotal() / count));
-                        Integer averageStayMin = exposureTotal.getAverageStayMin();
-                        if (averageStayMin == null) {
-                            totalData.setStay(0);
-                        } else {
-                            totalData.setStay(averageStayMin);
-                            averageData.setStay(averageStayMin / count);
-
-                            //TODO 名片下载总量以及日均名片下载 通讯录 留言
-                            Integer saveCard = 0;
-                            Integer saveContact = 0;
-                            Integer addNotesTotal = 0;
-                            List<ExpoSnapshot> expoSnapshotList = expoSnapshotMapper.selectList(wrapper);
-                            if (expoSnapshotList.size() == 0) {
-                                totalData.setDownload(saveCard);
-                                averageData.setDownload(saveCard);
-                                averageData.setContact(saveContact);
-                                averageData.setComment(addNotesTotal);
-                            } else {
-                                for (ExpoSnapshot expoSnapshot : expoSnapshotList) {
-                                    saveCard = saveCard + Math.toIntExact(expoSnapshot.getDayDownloadNum());
-                                    saveContact = Math.toIntExact(saveContact + expoSnapshot.getDayAddClient());
-                                    addNotesTotal = Math.toIntExact(addNotesTotal + expoSnapshot.getDayNotesNum());
-                                }
-                                totalData.setDownload(saveCard);
-                                totalData.setContact(saveContact);
-                                totalData.setComment(addNotesTotal);
-                                averageData.setDownload(saveCard / expoSnapshotList.size());
-                                averageData.setContact(saveContact / expoSnapshotList.size());
-                                averageData.setComment(addNotesTotal / expoSnapshotList.size());
-
-                            }
-                        }
+                        averageData.setContact(0);
+                        averageData.setComment(0);
                     }
-                    historyMap.put("totalData", totalData);
-                    historyMap.put("averageData", averageData);
-                    ExposureVo exposureVo = new ExposureVo();
-                    exposureVo.setDate(exposureTotal.getUpdateTime());
-                    exposureVo.setComment(Math.toIntExact(exposureTotal.getDayNotes()));
-                    exposureVo.setStay(exposureTotal.getAverageStayMin() / exposureTotal.getStayNum());
-                    exposureVo.setDownload(Math.toIntExact(exposureTotal.getDayDownloadNum()));
-                    exposureVo.setContact(Math.toIntExact(exposureTotal.getDayAddContact()));
-                    exposureVo.setVisitor(Math.toIntExact(exposureTotal.getDayTotal()));
-                    exposureVoList.add(exposureVo);
-                    List<ExpoSnapshot> expoSnapshotList = expoSnapshotMapper.selectList(wrapper);
-                    for (ExpoSnapshot expoSnapshot : expoSnapshotList) {
-                        exposureVo = new ExposureVo();
-                        exposureVo.setDate(expoSnapshot.getCreateTime());
-                        exposureVo.setId(expoSnapshot.getExpoTotalId());
-                        exposureVo.setComment(Math.toIntExact(expoSnapshot.getDayNotesNum()));
-                        if (expoSnapshot.getStayNum() == 0) {
-                            exposureVo.setStay(0);
-                        } else {
-                            exposureVo.setStay(expoSnapshot.getAverageStayMin() / expoSnapshot.getStayNum());
-                        }
-                        exposureVo.setDownload(Math.toIntExact(expoSnapshot.getDayDownloadNum()));
-                        exposureVo.setContact(Math.toIntExact(expoSnapshot.getDayAddContact()));
-                        exposureVo.setVisitor(Math.toIntExact(expoSnapshot.getDayTotal()));
+                    int dayAverage= totalData.getStay()/totalData.getCount()/60;
+                    averageData.setStayMin(totalData.getStayMin()/dayAverage);
+                    averageData.setDownload(totalData.getDownload()/totalData.getCount());
+                    averageData.setContact(totalData.getContact()/totalData.getCount());
+                    averageData.setComment(totalData.getComment()/totalData.getCount());
+                    totalData.setStayMin(totalData.getStayMin()/60);
+                    historyMap.put("totalData",totalData);
+                    historyMap.put("averageDate",averageData);
+                    LambdaQueryWrapper<ExposureTotal>queryWrapper=new LambdaQueryWrapper<>();
+                    queryWrapper.eq(ExposureTotal::getCreateBy,userId);
+                    ExposureTotal exposureTotal = exposureTotalMapper.selectOne(queryWrapper);
+                    if (Objects.isNull(exposureTotal)){
+                        exposureVoList=null;
+                    }else {
+                        ExposureVo exposureVo=new ExposureVo();
+                        exposureVo.setDate(exposureTotal.getUpdateTime());
+                        exposureVo.setVisitor(Math.toIntExact(exposureTotal.getDayTotal()));
+                        exposureVo.setStay(exposureTotal.getAverageStayMin()/exposureTotal.getStayNum()/60);
+                        exposureVo.setDownload(Math.toIntExact(exposureTotal.getDayDownloadNum()));
+                        exposureVo.setContact(Math.toIntExact(exposureTotal.getDayAddContact()));
+                        exposureVo.setComment(Math.toIntExact(exposureTotal.getDayNotes()));
                         exposureVoList.add(exposureVo);
+                        exposureVoList=expoSnapshotMapper.selectListById(Math.toIntExact(exposureTotal.getId()));
+                        for (ExposureVo vo : exposureVoList) {
+                            if (vo.getStay()==null||vo.getStay()==0){
+                                vo.setStayMin((double) 0);
+                            }
+                            vo.setStayMin(vo.getStayMin()/vo.getStay()/60);
+                            exposureVoListByReturn.add(vo);
+                        }
+
+                        historyMap.put("exposureVoList",exposureVoListByReturn);
                     }
-                    historyMap.put("dataList", exposureVoList);
+                    return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询成功:", historyMap);
+                }else {
+                    if ("".equals(startTime)){
+                        startTime=null;
+                    }
+                    if ("".equals(endTime)){
+                        endTime=null;
+                    }
+                    totalData= expoSnapshotMapper.selectHistory(String.valueOf(userId),startTime,endTime);
+                    averageData.setVisitor(totalData.getVisitor()/totalData.getCount());
+                    int dayAverage= totalData.getStay()/totalData.getCount();
+                    averageData.setStayMin(totalData.getStayMin()/dayAverage/60);
+                    averageData.setDownload(totalData.getDownload()/totalData.getCount());
+                    averageData.setContact(totalData.getContact()/totalData.getCount());
+                    averageData.setComment(totalData.getComment()/totalData.getCount());
+                    totalData.setStayMin(totalData.getStayMin()/60);
+                    historyMap.put("totalData",totalData);
+                    historyMap.put("averageDate",averageData);
+                    LambdaQueryWrapper<ExposureTotal>queryWrapper=new LambdaQueryWrapper<>();
+                    queryWrapper.eq(ExposureTotal::getCreateBy,userId);
+                    ExposureTotal exposureTotal = exposureTotalMapper.selectOne(queryWrapper);
+                    if (Objects.isNull(exposureTotal)){
+                        exposureVoList=null;
+                    }else {
+                        ExposureVo exposureVo=new ExposureVo();
+                        exposureVo.setDate(exposureTotal.getUpdateTime());
+                        exposureVo.setVisitor(Math.toIntExact(exposureTotal.getDayTotal()));
+                        exposureVo.setStay(exposureTotal.getAverageStayMin()/exposureTotal.getStayNum()/60);
+                        exposureVo.setDownload(Math.toIntExact(exposureTotal.getDayDownloadNum()));
+                        exposureVo.setContact(Math.toIntExact(exposureTotal.getDayAddContact()));
+                        exposureVo.setComment(Math.toIntExact(exposureTotal.getDayNotes()));
+                        exposureVoList.add(exposureVo);
+                        exposureVoList=expoSnapshotMapper.selectListByTime(String.valueOf(exposureTotal.getId()),startTime,endTime);
+                        for (ExposureVo vo : exposureVoList) {
+                            if (vo.getStay()==null||vo.getStay()==0){
+                                vo.setStayMin((double) 0);
+                            }
+                            vo.setStayMin(vo.getStayMin()/vo.getStay()/60);
+                            exposureVoListByReturn.add(vo);
+                        }
+
+                        historyMap.put("exposureVoList",exposureVoListByReturn);
+                    }
+                    return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询成功:", historyMap);
                 }
             }
         }
-        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "查询成功:", historyMap);
     }
 
     @Override
@@ -251,7 +260,6 @@ public class ExposureTotalServiceImpl extends ServiceImpl<ExposureTotalMapper, E
                 }
             }
         }
-
     }
 
     @Override

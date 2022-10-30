@@ -3,6 +3,8 @@ package com.zf.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zf.domain.entity.Company;
+import com.zf.domain.vo.NewCompanyVo;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,5 +19,7 @@ import java.util.List;
 public interface CompanyMapper extends BaseMapper<Company> {
 
 
-    List<Company> selectByConditions(List<String> conList);
+    List<Company> selectByConditions(@Param("conditions") Object conditions, @Param("status")String status,@Param("num")int num);
+
+    NewCompanyVo selectOneCompany(Integer companyId);
 }

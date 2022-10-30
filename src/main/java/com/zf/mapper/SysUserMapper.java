@@ -32,5 +32,7 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
     List<SysUser> selectAllAccount(Long companyid);
 
-    Page<SysUserVo> selectUserByQuery(Page<SysUserVo> page,@Param("userId") String userId,@Param("userJob") String userJob,@Param("startTime") String startTime,@Param("endTime") String endTime);
+    List<SysUserVo> selectAllUser(@Param("companyid") Long companyid, @Param("userQueryVo") UserQueryVo userQueryVo);
+
+    Page<SysUserVo> selectUserByQuery(Page<SysUserVo> page,@Param("userId") String userId,@Param("userDepartment") String userDepartment,@Param("startTime") String startTime,@Param("endTime") String endTime);
 }

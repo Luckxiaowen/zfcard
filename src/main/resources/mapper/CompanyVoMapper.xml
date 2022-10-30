@@ -8,18 +8,17 @@
     <select id="selectByCreatBy" resultType="com.zf.domain.vo.CompanyVo">
         SELECT
             c.id,
-            c.company,
-            su.username As 'manger',
-            s.phonenumber,
+            c.company_name,
+            c.admin_name,
+            c.admin_tel,
             c.create_time,
             c.update_time,
             c.del_flag,
-            s.username AS  'createname'
+            s.username
         FROM
             company c
                 LEFT JOIN sys_user s ON c.create_by = s.id
-                LEFT JOIN sys_user su ON c.id = su.companyid
-        where su.user_type = 0
-
+        where c.del_flag=0
     </select>
+
 </mapper>

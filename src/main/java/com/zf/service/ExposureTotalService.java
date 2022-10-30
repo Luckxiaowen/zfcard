@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zf.domain.entity.ExposureTotal;
 import com.zf.domain.vo.ResponseVo;
 
+import java.util.Date;
+
 /**
 * @author Amireux
 * @description 针对表【exposure_total(曝光统计)】的数据库操作Service
@@ -15,7 +17,7 @@ public interface ExposureTotalService extends IService<ExposureTotal> {
 
     ResponseVo getSevenVisitorTrend(String userId);
 
-    ResponseVo getExposureHistory(String userId);
+    ResponseVo getExposureHistory(String userId, String startTime, String endTime);
 
     ResponseVo updateVisitor(String userId);
 

@@ -3,6 +3,7 @@ package com.zf.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zf.domain.entity.ExposureTotal;
+import com.zf.domain.vo.ExposureVo;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.stereotype.Repository;
 
@@ -19,4 +20,7 @@ public interface ExposureTotalMapper extends BaseMapper<ExposureTotal> {
 
 
     List<Integer> selectSevenDayByExposureTotal(@Param("expoTotalId") Long expoTotalId, @Param("sevenDate") List<String> sevenDate);
+
+
+
 }

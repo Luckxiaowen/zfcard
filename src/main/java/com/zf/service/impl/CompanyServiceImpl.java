@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.dto.CompanyDto;
 import com.zf.domain.entity.*;
+import com.zf.domain.vo.NewCompanyVo;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.exception.SystemException;
@@ -54,6 +55,7 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
         SysUser loginUser = UserUtils.getLoginUser().getSysUser();
         Company company = BeanCopyUtils.copyBean(companyDto, Company.class);
         company.setCreateBy(loginUser.getId());
+        company.setStatus(0);
         save(company);
         SysUser user = new SysUser();
         user.setPassword(passwordEncoder.
@@ -63,7 +65,6 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
         user.setUserType(0);
         user.setPhonenumber(companyDto.getAdminTel());
         userService.save(user);
-
         SysRole role = new SysRole();
         role.setCompanyId(Long.valueOf(company.getId()));
         role.setName(companyDto.getAdminName());
@@ -84,11 +85,9 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
         } else {
             if (company.getDelFlag() == 1) {
                 throw new SystemException(AppHttpCodeEnum.COMPANY_NOF_FIND);
-//                return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "未添加此公司或者此公司已删除，请刷新页面");
             } else {
-                company.setDelFlag(1);
-
-                if (companyMapper.updateById(company)>0) {
+                boolean delFlag = removeById(company.getId());
+                if (delFlag==true) {
                     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "删除成功");
                 } else {
                     return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "删除失败");
@@ -123,8 +122,50 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     }
 
     @Override
-    public ResponseVo searchCompany(String conditions) {
-        System.out.println("conditions = " + conditions);
-        return null;
+    public ResponseVo searchCompany(String conditions,String status) {
+        Object strObject=new Object();
+        Object telObject=new Object();
+        Object numObject=new Object();
+        List<Company>companyList= new ArrayList<>();
+        if (Validator.isNumeric(conditions)){
+            if (Validator.isMobile(conditions)){
+                telObject=conditions;
+                int num=1;
+                if ("".equals(status)||status==null){
+                    status=null;
+                }
+                companyList= companyMapper.selectByConditions(telObject,status,num);
+            }else {
+                int num=2;
+                numObject=conditions;
+                if ("".equals(status)||status==null){
+                    status=null;
+                }
+                companyList= companyMapper.selectByConditions(numObject,status,num);
+            }
+        }else {
+            int num=3;
+            strObject=conditions;
+            if ("".equals(status)||status==null){
+                status=null;
+            }
+            companyList= companyMapper.selectByConditions(strObject,status,num);
+        }
+        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "公司列表查询成功",companyList);
+    }
+
+    @Override
+    public ResponseVo selectOneCompany(Integer companyId) {
+        Company company = companyMapper.selectById(companyId);
+        if (Objects.isNull(company)) {
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "您的访问有误");
+        } else {
+            if (company.getDelFlag() == 1) {
+                throw new SystemException(AppHttpCodeEnum.COMPANY_NOF_FIND);
+            } else {
+              NewCompanyVo companyVo= companyMapper.selectOneCompany(companyId);
+              return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "操作成功",companyVo);
+            }
+        }
     }
 }

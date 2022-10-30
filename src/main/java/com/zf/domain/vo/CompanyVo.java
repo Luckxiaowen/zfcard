@@ -1,5 +1,6 @@
 package com.zf.domain.vo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -21,30 +22,17 @@ public class CompanyVo {
      * 公司Id 公司id
      */
     @ApiModelProperty(value = "公司Id",dataType = "long")
-    @TableId
+    @TableId(value = "id",type = IdType.AUTO)
     private Long id;
 
-    /**
-     * 公司名称 公司名称
-     */
-    @ApiModelProperty(value = "公司名称",dataType = "String")
-    @NotBlank(message = "公司名称不能为空")
-    private String company;
+    @NotBlank(message = "公司名不能为空")
+    private String companyName;
 
+    @NotBlank(message = "公司管理员姓名不能为空")
+    private String adminName;
 
-
-
-    /**
-     * 管理员用户名 用户名
-     */
-    @ApiModelProperty(value = "管理员用户名",dataType = "String")
-    private String manger;
-
-    /**
-     * 管理员手机号 手机号
-     */
-    @ApiModelProperty(value = "管理员手机号",dataType = "String")
-    private String phoneNumber;
+    @NotBlank(message = "公司管理员电话不能为空")
+    private String adminTel;
 
     /**
      * 是否删除 删除标志（0代表未删除，1代表已删除）
@@ -73,5 +61,5 @@ public class CompanyVo {
      */
 
     @ApiModelProperty(value = "创始人",dataType = "String")
-    private String createName;
+    private String userName;
 }

@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class  SysUserVo {
     @ApiModelProperty(value = "用户编号",dataType = "int")
-    private int id;
+    private Integer id;
 
     @ApiModelProperty(value = "用户名称",dataType = "String")
     private String username;
