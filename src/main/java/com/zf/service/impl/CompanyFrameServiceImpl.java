@@ -43,6 +43,7 @@ public class CompanyFrameServiceImpl extends ServiceImpl<CompanyFrameMapper, Com
     @Resource
     private CompanyService companyService;
 
+
     @Override
     public ResponseVo<?> getCompanyFramework(String token) {
         LoginUser loginUser = UserUtils.getLoginUser();
@@ -169,7 +170,18 @@ public class CompanyFrameServiceImpl extends ServiceImpl<CompanyFrameMapper, Com
         companyFrame.setRoleName(rootName);
         companyFrame.setCreateBy(Math.toIntExact(loginUser.getSysUser().getId()));
         companyFrame.setUpdateBy(Math.toIntExact(loginUser.getSysUser().getId()));
-        save(companyFrame);
+        LambdaQueryWrapper<CompanyFrame> queryWrapper = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<CompanyFrame> wrapper = queryWrapper
+                .eq(CompanyFrame::getCompanyId, loginUser.getSysUser().getCompanyid())
+                .eq(CompanyFrame::getParentId, -1);
+        CompanyFrame frame = getOne(wrapper);
+        if (Objects.isNull(frame)){
+            save(companyFrame);
+        }else {
+            frame.setRoleName(rootName);
+            updateById(frame);
+        }
+
 
         for (Info info : infoList) {
             map.put("dept_id", info.getDept_id());
@@ -182,7 +194,14 @@ public class CompanyFrameServiceImpl extends ServiceImpl<CompanyFrameMapper, Com
             tempFrame.setRoleName(info.getName());
             tempFrame.setCreateBy(Math.toIntExact(loginUser.getSysUser().getId()));
             tempFrame.setUpdateBy(Math.toIntExact(loginUser.getSysUser().getId()));
-            save(tempFrame);
+            CompanyFrame byId = getById(info.getDept_id());
+            if (Objects.isNull(byId)){
+                save(tempFrame);
+            }else {
+                byId.setRoleName(info.getName());
+                updateById(byId);
+            }
+
 
             if (res.getErrcode() == 0){
                 info.setChildren(res.getResult());
@@ -190,7 +209,13 @@ public class CompanyFrameServiceImpl extends ServiceImpl<CompanyFrameMapper, Com
                     tempFrame.setId(child.getDept_id());
                     tempFrame.setParentId(child.getParent_id());
                     tempFrame.setRoleName(child.getName());
-                    save(tempFrame);
+                    CompanyFrame byId1 = getById(info.getDept_id());
+                    if (Objects.isNull(byId)){
+                        save(tempFrame);
+                    }else {
+                        byId1.setRoleName(child.getName());
+                        updateById(byId1);
+                    }
                 }
             }
         }
