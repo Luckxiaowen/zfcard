@@ -37,7 +37,6 @@ public class SuperAdminController {
 
     @ApiOperation(value = "增加公司接口")
     @PostMapping("/add-company")
-
     public ResponseVo add(@RequestHeader("token") String token,@Valid @RequestBody CompanyDto companyDto ) throws Exception {
         return companyService.insert(companyDto);
     }
@@ -75,4 +74,10 @@ public class SuperAdminController {
         return companyService.searchCompany(conditions,status);
     }
 
+
+    @ApiOperation(value = "公司启用停用接口")
+    @GetMapping("/switch-company-status")
+    public ResponseVo switchCompanyStatus(@RequestHeader("token")String token,@RequestParam("companyId") String companyId) {
+        return companyService.switchCompanyStatus(companyId);
+    }
 }

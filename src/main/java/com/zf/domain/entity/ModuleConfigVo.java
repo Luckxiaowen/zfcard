@@ -53,6 +53,4 @@ public class ModuleConfigVo {
   @ApiModelProperty(value = "是否打开",dataType = "String")
   private int isOpened;
 
-
-
 }

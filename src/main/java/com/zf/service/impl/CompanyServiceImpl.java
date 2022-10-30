@@ -86,7 +86,7 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
             if (company.getDelFlag() == 1) {
                 throw new SystemException(AppHttpCodeEnum.COMPANY_NOF_FIND);
             } else {
-                boolean delFlag = removeById(company.getId());
+                boolean delFlag = removeById(companyid);
                 if (delFlag==true) {
                     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "删除成功");
                 } else {
@@ -166,6 +166,35 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
               NewCompanyVo companyVo= companyMapper.selectOneCompany(companyId);
               return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "操作成功",companyVo);
             }
+        }
+    }
+
+    @Override
+    public ResponseVo switchCompanyStatus(String companyId) {
+        SysUser sysUser = UserUtils.getLoginUser().getSysUser();
+        Company company=new Company();
+        company = companyMapper.selectById(companyId);
+        if (Objects.isNull(company)){
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "失败：当前公司不存在");
+        }else {
+           if (company.getDelFlag()==1||"".equals(company.getDelFlag())){
+               return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "失败：当前公司已被删除");
+           }else {
+               Integer status = company.getStatus();
+               if (status==0){
+                   company.setStatus(1);
+               }else {
+                   company.setStatus(0);
+               }
+               int i = companyMapper.updateById(company);
+               if (i>0){
+                   return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "操作成功",company);
+               }else {
+                   return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "操作成功：未知错误",company);
+               }
+
+           }
+
         }
     }
 }

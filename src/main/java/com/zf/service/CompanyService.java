@@ -24,4 +24,6 @@ public interface CompanyService extends IService<Company> {
     ResponseVo searchCompany(String conditions,String status);
 
     ResponseVo selectOneCompany(Integer companyId);
+
+    ResponseVo switchCompanyStatus(String companyId);
 }

@@ -171,20 +171,19 @@ public class ModuleConfigServiceImpl extends ServiceImpl<ModuleConfigMapper,Modu
     LoginUser loginUser = (LoginUser) authentication.getPrincipal();
     Long companyId =loginUser.getSysUser().getCompanyid();
 
-
     if ("个性化简介".equals(category)){
       LambdaQueryWrapper<ModuleConfig> queryWrapper = new LambdaQueryWrapper<>();
       queryWrapper.eq(ModuleConfig::getCompanyId,companyId);
       queryWrapper.eq(ModuleConfig::getCategory,category);
       ModuleConfig personaEcho = moduleConfigMapper.selectOne(queryWrapper);
+      System.out.println("personaEcho = " + personaEcho);
       LambdaQueryWrapper<Company>companyLambdaQueryWrapper=new LambdaQueryWrapper<>();
       companyLambdaQueryWrapper.eq(Company::getId,personaEcho.getCompanyId());
       Company company = companyMapper.selectOne(companyLambdaQueryWrapper);
-      ModuleConfigVo moduleConfigVo=new ModuleConfigVo(personaEcho.getModuleName(),personaEcho.getModuleBanner(),personaEcho.getCompanyId(),personaEcho.getCategory(),personaEcho.getModuleId(),company.getContentSwitch());
+      ModuleConfigVo moduleConfigVo=new ModuleConfigVo(personaEcho.getModuleName(),personaEcho.getModuleBanner(),personaEcho.getCompanyId(),personaEcho.getCategory(),personaEcho.getModuleId(),company.getIntroductionSwitch());
       return ResponseVo.okResult(moduleConfigVo);
     }
     if("个性化内容".equals(category)){
-
       LambdaQueryWrapper<ModuleConfig> queryWrapper = new LambdaQueryWrapper<>();
 
       queryWrapper.eq(ModuleConfig::getCompanyId,companyId);

@@ -67,19 +67,24 @@
         c.status
         from company c
         LEFT JOIN sys_user su ON su.id=c.create_by
+
         <where>
+            <if test="1>0">
+                c.del_flag=0
+            </if>
             <if test="num==1">
-                c.admin_tel like "%"#{conditions}"%"
+               and c.admin_tel like "%"#{conditions}"%"
             </if>
             <if test="num==2">
-                c.id like "%"#{conditions}"%"
+                and c.id like "%"#{conditions}"%"
             </if>
             <if test="num==3">
-                c.admin_name like "%"#{conditions}"%"
+                and c.admin_name like "%"#{conditions}"%"
             </if>
             <if test="status!=null">
                and c.status=#{status}
             </if>
+
         </where>
     </select>
     <select id="selectOneCompany" resultType="com.zf.domain.vo.NewCompanyVo">
