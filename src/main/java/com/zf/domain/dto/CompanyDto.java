@@ -16,6 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class CompanyDto {
+
+
+    private Integer companyId;
     @NotBlank(message = "公司名不能为空")
     private String companyName;
     @NotBlank(message = "公司简称不能为空")

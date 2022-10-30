@@ -11,6 +11,7 @@ import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.exception.SystemException;
 import com.zf.mapper.CompanyMapper;
+import com.zf.mapper.SysUserMapper;
 import com.zf.service.CompanyService;
 import com.zf.utils.BeanCopyUtils;
 import com.zf.utils.UserUtils;
@@ -44,7 +45,8 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     private SysRoleMenuServiceImpl roleMenuService;
     @Resource
     private SysRoleServiceImpl roleService;
-
+    @Resource
+    private SysUserMapper sysUserMapper;
     /**
      *
      * @param companyDto
@@ -101,25 +103,66 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     @Transactional
     public ResponseVo modify(CompanyDto companyDto) {
         SysUser loginUser = UserUtils.getLoginUser().getSysUser();
-        Company company = companyMapper.selectById(loginUser.getCompanyid());
-        SysUser user = userService.getOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getPhonenumber, company.getAdminTel()));
-        if (Objects.isNull(company) || Objects.isNull(user))
-            throw new SystemException(AppHttpCodeEnum.COMPANY_NOF_FIND);
-        company.setCompanyLogo(companyDto.getCompanyLogo());
-        company.setCompanyName(companyDto.getCompanyName());
-        company.setCompanyAbbreviation(companyDto.getCompanyAbbreviation());
-        company.setExpirationTime(companyDto.getExpirationTime());
-        company.setAdminName(companyDto.getAdminName());
-        company.setAdminTel(companyDto.getAdminTel());
-        updateById(company);
-        user.setPhonenumber(companyDto.getAdminTel());
-        userService.updateById(user);
-        Long roleId = sysUserRoleService.getById(user.getId()).getRoleId();
-        roleMenuService.remove(new LambdaQueryWrapper<SysRoleMenu>().eq(SysRoleMenu::getRoleId,roleId));
-        for (Integer menuId : companyDto.getCompanyAuthority()) {
-            roleMenuService.save(new SysRoleMenu(roleId,Long.valueOf(menuId)));
+        LambdaQueryWrapper<Company>companyLambdaQueryWrapper=new LambdaQueryWrapper<>();
+        companyLambdaQueryWrapper.eq(Company::getId,companyDto.getCompanyId());
+        Company company = companyMapper.selectOne(companyLambdaQueryWrapper);
+        if (Objects.isNull(company)){
+            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司修改失败:数据库中无此公司");
         }
-        return ResponseVo.okResult();
+        LambdaQueryWrapper<SysUser> sysUserLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        sysUserLambdaQueryWrapper.eq(SysUser::getPhonenumber, company.getAdminTel());
+        SysUser user = sysUserMapper.selectOne(sysUserLambdaQueryWrapper);
+        if (Objects.isNull(company) || Objects.isNull(user)){
+            throw new SystemException(AppHttpCodeEnum.COMPANY_NOF_FIND);
+        }else {
+            if (companyDto.getCompanyName().trim().equals(company.getCompanyName().trim())){
+                company.setAdminName(companyDto.getAdminName());
+            }else {
+                LambdaQueryWrapper<Company>companyQueryWrapper=new LambdaQueryWrapper<>();
+                companyQueryWrapper.eq(Company::getCompanyName,companyDto.getCompanyName()).eq(Company::getDelFlag,0);
+                Company company1 = companyMapper.selectOne(companyQueryWrapper);
+                if (Objects.isNull(company1)){
+                    company.setAdminName(companyDto.getAdminName());
+                }else {
+                    return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司修改失败:当前公司名称已存在与平台中");
+                }
+            }
+
+            company.setCompanyLogo(companyDto.getCompanyLogo());
+            company.setCompanyAbbreviation(companyDto.getCompanyAbbreviation());
+            company.setExpirationTime(companyDto.getExpirationTime());
+            company.setAdminName(companyDto.getAdminName());
+            if (companyDto.getAdminTel().equals(company.getAdminTel())){
+                company.setAdminTel(company.getAdminTel());
+            }else {
+                if (Validator.isMobile(companyDto.getAdminTel())){
+                    LambdaQueryWrapper<Company>companyWrapper=new LambdaQueryWrapper<>();
+                    companyWrapper.eq(Company::getAdminTel,companyDto.getAdminTel()).eq(Company::getDelFlag,0);
+                    Company company2 = companyMapper.selectOne(companyWrapper);
+                    LambdaQueryWrapper<SysUser>queryWrapper=new LambdaQueryWrapper<>();
+                    queryWrapper.eq(SysUser::getPhonenumber,companyDto.getAdminTel()).eq(SysUser::getDelFlag,0);
+                    SysUser sysUser = sysUserMapper.selectOne(queryWrapper);
+                    if (Objects.nonNull(company2)||Objects.nonNull(sysUser)){
+                        return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "修改失败：当前手机号已被使用");
+                    }else{
+                        company.setAdminTel(companyDto.getAdminTel());
+                    }
+                }else {
+                    return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "手机号格式错误");
+                }
+            }
+            updateById(company);
+            user.setPhonenumber(company.getAdminTel());
+            userService.updateById(user);
+            Long roleId = sysUserRoleService.getById(user.getId()).getRoleId();
+            roleMenuService.remove(new LambdaQueryWrapper<SysRoleMenu>().eq(SysRoleMenu::getRoleId,roleId));
+            for (Integer menuId : companyDto.getCompanyAuthority()) {
+                roleMenuService.save(new SysRoleMenu(roleId,Long.valueOf(menuId)));
+            }
+
+
+            return ResponseVo.okResult(company);
+        }
     }
 
     @Override
