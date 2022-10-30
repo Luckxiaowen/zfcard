@@ -48,5 +48,4 @@ public class UserInfoController {
         return sysUserService.selectUserProPhotoByWu(userId);
     }
 
-
 }

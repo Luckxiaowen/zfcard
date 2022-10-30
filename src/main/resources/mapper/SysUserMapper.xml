@@ -156,7 +156,6 @@
               and  su.create_time &lt;=#{userQueryVo.endTime}
           </if>
 
-
           <if test="1>0">
               and su.companyid =#{companyid}
               AND su.del_flag = 0

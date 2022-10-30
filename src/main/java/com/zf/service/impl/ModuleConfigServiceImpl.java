@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.entity.Company;
 import com.zf.domain.entity.ModuleConfig;
 import com.zf.domain.entity.ModuleConfigVo;
+import com.zf.domain.entity.SysUser;
 import com.zf.domain.vo.LoginUser;
 import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
@@ -15,6 +16,7 @@ import com.zf.service.ModuleConfigService;
 import com.zf.service.UploadService;
 import com.zf.utils.JwtUtil;
 import com.zf.utils.UpLoadUtil;
+import com.zf.utils.UserUtils;
 import com.zf.utils.emailutil.RandomUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -63,9 +65,7 @@ public class ModuleConfigServiceImpl extends ServiceImpl<ModuleConfigMapper,Modu
       return ResponseVo.okResult(200,"switchFlag只能是（1）开，或者（0）关");
     }
 
-
     if ("个性化简介".equals(category)){
-
 
       company.setIntroductionSwitch(switchFlag);
 
@@ -201,4 +201,34 @@ public class ModuleConfigServiceImpl extends ServiceImpl<ModuleConfigMapper,Modu
 
     return null;
   }
+
+  @Override
+  public ResponseVo isSwitch(String token, int switchFlag, String category) {
+    SysUser sysUser = UserUtils.getLoginUser().getSysUser();
+    Long companyid = sysUser.getCompanyid();
+    Company company =new Company();
+    if ("个性化简介".equals(category)||"个性化内容".equals(category)){
+      company= companyMapper.selectById(companyid);
+      if ("个性化简介".equals(category)){
+        if (switchFlag == 1 || switchFlag == 0){
+          company.setIntroductionSwitch(switchFlag);
+        }else {
+          return ResponseVo.okResult(200,"switchFlag只能是（1）开，或者（0）关");
+        }
+      }else {
+        if ("个性化内容".equals(category)){
+          if (switchFlag == 1 || switchFlag == 0){
+            company.setContentSwitch(switchFlag);
+          }else {
+            return ResponseVo.okResult(200,"switchFlag只能是（1）开，或者（0）关");
+          }
+        }
+      }
+    }else {
+      return ResponseVo.okResult(200,"category只能是（个性化简介），或者（个性化内容）");
+    }
+    companyMapper.updateById(company);
+    return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "操作成功",company);
+  }
+
 }

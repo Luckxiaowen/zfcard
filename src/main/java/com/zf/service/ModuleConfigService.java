@@ -22,4 +22,5 @@ public interface ModuleConfigService extends IService<ModuleConfig> {
 
   ResponseVo PersonaEcho(String token,String category);
 
+  ResponseVo isSwitch(String token, int switchFlag, String category);
 }

@@ -600,9 +600,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
       return ResponseVo.errorResult(AppHttpCodeEnum.SUCCESS,"两次密码输入不一致");
 
     }
-
     return ResponseVo.errorResult(AppHttpCodeEnum.SUCCESS,"原密码错误");
-
   }
 
 
@@ -830,7 +828,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             userQueryVo.setEndTime(null);
         }
         List<SysUserVo> userVoList = sysUserMapper.selectAllUser(companyid, userQueryVo);
-        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(),"操作成功",userVoList);
+        System.out.println("userVoList = " + userVoList);
+        return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getMsg(),userVoList);
     }
 
 

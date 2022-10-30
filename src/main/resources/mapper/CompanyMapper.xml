@@ -6,14 +6,41 @@
 
     <resultMap id="BaseResultMap" type="com.zf.domain.entity.Company">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="company" column="company" jdbcType="VARCHAR"/>
-            <result property="address" column="address" jdbcType="VARCHAR"/>
-            <result property="tel" column="tel" jdbcType="VARCHAR"/>
-            <result property="createBy" column="create_by" jdbcType="BIGINT"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+            <result property="companyName" column="company_name" jdbcType="VARCHAR"/>
+            <result property="companyAbbreviation" column="company_abbreviation" jdbcType="VARCHAR"/>
+            <result property="companyLogo" column="company_logo" jdbcType="VARCHAR"/>
+            <result property="adminName" column="admin_name" jdbcType="VARCHAR"/>
+            <result property="adminTel" column="admin_tel" jdbcType="VARCHAR"/>
+            <result property="expirationTime" column="expiration_time" jdbcType="VARCHAR"/>
+            <result property="appKey" column="app_key" jdbcType="VARCHAR"/>
+            <result property="appSecret" column="app_secret" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="introductionSwitch" column="introduction_switch" jdbcType="BIGINT"/>
+        <result property="contentSwitch" column="content_switch" jdbcType="BIGINT"/>
+        <result property="createTime" column="create_time" jdbcType="DATE"/>
+        <result property="updateTime" column="update_time" jdbcType="DATE"/>
+        <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    <resultMap id="newCompanyVoMap" type="com.zf.domain.vo.NewCompanyVo">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="companyName" column="company_name" jdbcType="VARCHAR"/>
+        <result property="companyAbbreviation" column="company_abbreviation" jdbcType="VARCHAR"/>
+        <result property="companyLogo" column="company_logo" jdbcType="VARCHAR"/>
+        <result property="adminName" column="admin_name" jdbcType="VARCHAR"/>
+        <result property="adminTel" column="admin_tel" jdbcType="VARCHAR"/>
+        <result property="expirationTime" column="expiration_time" jdbcType="VARCHAR"/>
+        <result property="appKey" column="app_key" jdbcType="VARCHAR"/>
+        <result property="appSecret" column="app_secret" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="introductionSwitch" column="introduction_switch" jdbcType="BIGINT"/>
+        <result property="contentSwitch" column="content_switch" jdbcType="BIGINT"/>
+        <result property="createTime" column="create_time" jdbcType="DATE"/>
+        <result property="updateTime" column="update_time" jdbcType="DATE"/>
+        <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -22,7 +49,58 @@
         del_flag,update_time,create_by
     </sql>
 
-    <select id="selectByConditions" resultType="com.zf.domain.entity.Company">
-        select * from company where
+    <select id="selectByConditions" resultType="com.zf.domain.entity.Company" resultMap="newCompanyVoMap">
+        select
+        c.id,
+        c.company_name,
+        c.company_abbreviation,
+        c.company_logo, admin_name,
+        c.admin_tel, expiration_time,
+        c.app_key,
+        c.app_secret,
+        su.username AS 'create_by',
+        c.introduction_switch,
+        c.content_switch,
+        c.create_time,
+        c.update_time,
+        c.del_flag,
+        c.status
+        from company c
+        LEFT JOIN sys_user su ON su.id=c.create_by
+        <where>
+            <if test="num==1">
+                c.admin_tel like "%"#{conditions}"%"
+            </if>
+            <if test="num==2">
+                c.id like "%"#{conditions}"%"
+            </if>
+            <if test="num==3">
+                c.admin_name like "%"#{conditions}"%"
+            </if>
+            <if test="status!=null">
+               and c.status=#{status}
+            </if>
+        </where>
     </select>
+    <select id="selectOneCompany" resultType="com.zf.domain.vo.NewCompanyVo">
+        select
+            c.id,
+            c.company_name,
+            c.company_abbreviation,
+            c.company_logo, admin_name,
+            c.admin_tel, expiration_time,
+            c.app_key,
+            c.app_secret,
+            su.username AS 'create_by',
+                c.introduction_switch,
+            c.content_switch,
+            c.create_time,
+            c.update_time,
+            c.del_flag,
+            c.status
+        from company c
+                 LEFT JOIN sys_user su ON su.id=c.create_by
+        where c.id=#{companyId}
+    </select>
+
 </mapper>

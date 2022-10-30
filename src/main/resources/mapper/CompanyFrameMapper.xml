@@ -87,4 +87,5 @@
                      LEFT JOIN client ct on FIND_IN_SET(ct.created_by,a3.su_list)  GROUP BY a3.dep_id) a4
         GROUP BY  a4.dep_id
     </select>
+
 </mapper>

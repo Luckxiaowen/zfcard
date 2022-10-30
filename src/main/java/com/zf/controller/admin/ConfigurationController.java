@@ -27,11 +27,11 @@ public class ConfigurationController {
   @Autowired
   private ModuleConfigService moduleConfigService;
 
-  @ApiOperation(value = "个性化简介模块展示开关(1开，0关)")
-  @PostMapping("/persona_module_show")
-  public ResponseVo personaModuleShow(@RequestHeader("token") String token,@RequestParam("switchFlag") int switchFlag,@RequestParam("category") String category) throws Exception {
-    return moduleConfigService.setModuleSwitch(token,switchFlag,category);
-  }
+//  @ApiOperation(value = "个性化简介模块展示开关(1开，0关)")
+//  @PostMapping("/persona_module_show")
+//  public ResponseVo personaModuleShow(@RequestHeader("token") String token,@RequestParam("switchFlag") int switchFlag,@RequestParam("category") String category) throws Exception {
+//    return moduleConfigService.setModuleSwitch(token,switchFlag,category);
+//  }
 
   @ApiOperation(value = "个性化简介录入")
   @PostMapping("/persona_module_message")
@@ -41,10 +41,11 @@ public class ConfigurationController {
   }
 
 
-  @ApiOperation(value = "个性化内容模块展示开关(1开，0关)")
+  @ApiOperation(value ="简介与内容展示开关(1开，0关)通过传递的字符串判断")
   @PostMapping("/content_module_show")
   public ResponseVo contentModuleShow(@RequestHeader("token") String token,@RequestParam("switchFlag") int switchFlag,@RequestParam("category") String category) throws Exception {
-    return moduleConfigService.setModuleSwitch(token,switchFlag,category);
+    return moduleConfigService.isSwitch(token,switchFlag,category);
+//    return moduleConfigService.setModuleSwitch(token,switchFlag,category);
   }
 
   @ApiOperation(value = "个性化内容录入")

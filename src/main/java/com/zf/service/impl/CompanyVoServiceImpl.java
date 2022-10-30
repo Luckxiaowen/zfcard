@@ -36,4 +36,5 @@ public class CompanyVoServiceImpl extends ServiceImpl<CompanyVoMapper, CompanyVo
 
         return ResponseVo.okResult(companyVoPage);
     }
+
 }

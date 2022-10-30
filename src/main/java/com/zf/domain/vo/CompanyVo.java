@@ -1,5 +1,6 @@
 package com.zf.domain.vo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -21,14 +22,11 @@ public class CompanyVo {
      * 公司Id 公司id
      */
     @ApiModelProperty(value = "公司Id",dataType = "long")
-    @TableId
+    @TableId(value = "id",type = IdType.AUTO)
     private Long id;
 
     @NotBlank(message = "公司名不能为空")
     private String companyName;
-
-
-
 
     @NotBlank(message = "公司管理员姓名不能为空")
     private String adminName;
