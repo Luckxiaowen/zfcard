@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Amireux
@@ -157,16 +158,19 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     @Override
     public ResponseVo selectOneCompany(Integer companyId) {
         Company company = companyMapper.selectById(companyId);
-        if (Objects.isNull(company)) {
-            return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "您的访问有误");
-        } else {
-            if (company.getDelFlag() == 1) {
-                throw new SystemException(AppHttpCodeEnum.COMPANY_NOF_FIND);
-            } else {
-              NewCompanyVo companyVo= companyMapper.selectOneCompany(companyId);
-              return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "操作成功",companyVo);
-            }
-        }
+        SysUser companyAdmin =
+                userService.getOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getPhonenumber, company.getAdminTel()));
+        if (Objects.isNull(companyAdmin))
+            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
+        SysUserRole userRole = sysUserRoleService.getById(companyAdmin.getId());
+        if (Objects.isNull(userRole))
+            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
+        List<SysRoleMenu> list =
+                roleMenuService.list(new LambdaQueryWrapper<SysRoleMenu>().eq(SysRoleMenu::getRoleId, userRole.getRoleId()));
+        List<Integer> roleIdList = list.stream().map(s -> Integer.parseInt(String.valueOf(s.getMenuId()))).collect(Collectors.toList());
+        CompanyDto companyDto = BeanCopyUtils.copyBean(company, CompanyDto.class);
+        companyDto.setCompanyAuthority(roleIdList);
+        return ResponseVo.okResult(companyDto);
     }
 
     @Override
