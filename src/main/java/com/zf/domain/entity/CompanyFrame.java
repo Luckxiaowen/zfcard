@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CompanyFrame {
 
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.INPUT)
     @ApiModelProperty(value = "部门id名称")
     private Long id;
 

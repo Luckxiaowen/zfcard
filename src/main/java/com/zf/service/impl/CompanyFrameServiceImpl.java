@@ -1,5 +1,7 @@
 package com.zf.service.impl;
 
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.system.SystemUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -82,9 +84,10 @@ public class CompanyFrameServiceImpl extends ServiceImpl<CompanyFrameMapper, Com
         if (companyService.getById(companyId) == null)
             throw new SystemException(AppHttpCodeEnum.COMPANY_NOF_FIND);
 
+        int randomInt = RandomUtil.randomInt(100000000, 999999999);
 
         companyFrame.setCompanyId(companyId);
-
+        companyFrame.setId((long) randomInt);
         companyFrame.setCreateBy(Math.toIntExact(loginUser.getSysUser().getId()));
         companyFrame.setUpdateBy(Math.toIntExact(loginUser.getSysUser().getId()));
 
@@ -164,7 +167,9 @@ public class CompanyFrameServiceImpl extends ServiceImpl<CompanyFrameMapper, Com
             throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
         List<Info> infoList = result.getResult();
 
+        int randomInt = RandomUtil.randomInt(100000000, 999999999);
         CompanyFrame companyFrame = new CompanyFrame();
+        companyFrame.setId((long) randomInt);
         companyFrame.setParentId(-1L);
         companyFrame.setCompanyId(loginUser.getSysUser().getCompanyid());
         companyFrame.setRoleName(rootName);
