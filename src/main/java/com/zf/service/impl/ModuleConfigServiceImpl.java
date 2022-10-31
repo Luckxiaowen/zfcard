@@ -25,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Objects;
@@ -132,7 +133,6 @@ public class ModuleConfigServiceImpl extends ServiceImpl<ModuleConfigMapper,Modu
 
         return ResponseVo.okResult(AppHttpCodeEnum.SUCCESS);
       }
-
 
     }else if ("个性化内容".equals(category)) {
 

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zf.domain.dto.AppKey;
 import com.zf.domain.entity.Company;
 import com.zf.domain.entity.CompanyFrame;
+import com.zf.domain.entity.SysUser;
 import com.zf.domain.entity.User;
 import com.zf.domain.vo.DingDingResult;
 import com.zf.domain.vo.Info;
@@ -14,6 +15,8 @@ import com.zf.domain.vo.ResponseVo;
 import com.zf.enums.AppHttpCodeEnum;
 import com.zf.exception.SystemException;
 import com.zf.mapper.CompanyFrameMapper;
+import com.zf.mapper.CompanyMapper;
+import com.zf.mapper.SysUserMapper;
 import com.zf.service.CompanyFrameService;
 import com.zf.service.CompanyService;
 import com.zf.utils.UserUtils;
@@ -42,6 +45,11 @@ public class CompanyFrameServiceImpl extends ServiceImpl<CompanyFrameMapper, Com
 
     @Resource
     private CompanyService companyService;
+
+    @Resource
+    private CompanyMapper companyMapper;
+    @Resource
+    private SysUserMapper sysUserMapper;
 
 
     @Override
@@ -135,9 +143,12 @@ public class CompanyFrameServiceImpl extends ServiceImpl<CompanyFrameMapper, Com
 
     @Override
     @Transactional
-    public ResponseVo dingDingImport(AppKey appKey, String rootName) {
+    public ResponseVo dingDingImport(String userId,AppKey appKey, String rootName) {
+        System.out.println("appKey = " + appKey);
         LoginUser loginUser = UserUtils.getLoginUser();
-
+        System.out.println("loginUser = " + loginUser);
+        Long companyid = loginUser.getSysUser().getCompanyid();
+        System.out.println("companyid = " + companyid);
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         MediaType type=MediaType.parseMediaType("application/json;charset=UTF-8");
@@ -182,7 +193,6 @@ public class CompanyFrameServiceImpl extends ServiceImpl<CompanyFrameMapper, Com
             updateById(frame);
         }
 
-
         for (Info info : infoList) {
             map.put("dept_id", info.getDept_id());
             DingDingResult res = restTemplate.postForObject(url, request, DingDingResult.class);
@@ -201,8 +211,6 @@ public class CompanyFrameServiceImpl extends ServiceImpl<CompanyFrameMapper, Com
                 byId.setRoleName(info.getName());
                 updateById(byId);
             }
-
-
             if (res.getErrcode() == 0){
                 info.setChildren(res.getResult());
                 for (Info child : info.getChildren()) {
@@ -219,8 +227,9 @@ public class CompanyFrameServiceImpl extends ServiceImpl<CompanyFrameMapper, Com
                 }
             }
         }
+        SysUser sysUser = sysUserMapper.selectById(userId);
+        Company company =companyMapper.selectById(sysUser.getCompanyid());
 
-        Company company = companyService.getById(loginUser.getSysUser().getCompanyid());
         company.setAppKey(appKey.getAppKey());
         company.setAppSecret(appKey.getAppSecret());
         companyService.updateById(company);
@@ -228,6 +237,5 @@ public class CompanyFrameServiceImpl extends ServiceImpl<CompanyFrameMapper, Com
 
         return ResponseVo.okResult();
     }
-
 
 }

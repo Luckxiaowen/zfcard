@@ -85,6 +85,7 @@ public class LoginServiceImpl implements LoginService {
         map.put("username",loginUser.getSysUser().getUsername());
         map.put("phoneNumber",loginUser.getSysUser().getPhonenumber());
         map.put("userId",loginUser.getSysUser().getId());
+        map.put("companyId",loginUser.getSysUser().getCompanyid());
         Long roleId = userRoleService.getById(loginUser.getSysUser().getId()).getRoleId();
         map.put("roleId",roleId);
         //TODO 把完整的用户信息存入到redis userid作为key

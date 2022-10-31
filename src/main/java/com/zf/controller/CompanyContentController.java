@@ -37,7 +37,7 @@ public class CompanyContentController {
             @ApiImplicitParam(dataType = "string", name = "userId", value = "员工id或者员工token", required = true),
     })
     public ResponseVo companyPictures(@RequestParam("userId") String userId){
-        return companyImgService.getcompanyPictures(userId);
+        return companyImgService.getcompanyPicturesByContent(userId);
 
     }
     //TODO 案例分类名称接口已修改

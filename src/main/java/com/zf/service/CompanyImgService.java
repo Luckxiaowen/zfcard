@@ -14,4 +14,6 @@ public interface CompanyImgService extends IService<CompanyImg> {
 
     //    获取顶部图片
     ResponseVo getcompanyPictures(String userId);
+
+    ResponseVo getcompanyPicturesByContent(String userId);
 }

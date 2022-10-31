@@ -32,5 +32,7 @@ public class CompanyDto {
     @NotBlank(message = "公司到期时间不能为空")
     private String expirationTime;
     @NotEmpty(message = "公司的权限不能为空")
+    private String appKey;
+    private String appSecret;
     private List<Integer> companyAuthority;
 }

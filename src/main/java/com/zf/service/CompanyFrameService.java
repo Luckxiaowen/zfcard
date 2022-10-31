@@ -19,5 +19,5 @@ public interface CompanyFrameService extends IService<CompanyFrame> {
 
     ResponseVo<?> delCompanyFrameworkById(Long id);
 
-    ResponseVo dingDingImport(AppKey appKey, String rootName);
+    ResponseVo dingDingImport(String userId,AppKey appKey, String rootName);
 }

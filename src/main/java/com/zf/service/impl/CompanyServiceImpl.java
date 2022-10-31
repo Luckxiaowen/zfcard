@@ -67,6 +67,7 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
         user.setNickName(companyDto.getAdminName());
         user.setUserType(0);
         user.setPhonenumber(companyDto.getAdminTel());
+        user.setCompanyid(Long.valueOf(company.getId()));
         userService.save(user);
         SysRole role = new SysRole();
         role.setCompanyId(Long.valueOf(company.getId()));
@@ -102,10 +103,12 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     @Override
     @Transactional
     public ResponseVo modify(CompanyDto companyDto) {
+        System.out.println("companyDto = " + companyDto);
         SysUser loginUser = UserUtils.getLoginUser().getSysUser();
         LambdaQueryWrapper<Company>companyLambdaQueryWrapper=new LambdaQueryWrapper<>();
         companyLambdaQueryWrapper.eq(Company::getId,companyDto.getCompanyId());
         Company company = companyMapper.selectOne(companyLambdaQueryWrapper);
+        System.out.println("company = " + company);
         if (Objects.isNull(company)){
             return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司修改失败:数据库中无此公司");
         }
@@ -116,13 +119,13 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
             throw new SystemException(AppHttpCodeEnum.COMPANY_NOF_FIND);
         }else {
             if (companyDto.getCompanyName().trim().equals(company.getCompanyName().trim())){
-                company.setAdminName(companyDto.getAdminName());
+                company.setCompanyName(company.getCompanyName());
             }else {
                 LambdaQueryWrapper<Company>companyQueryWrapper=new LambdaQueryWrapper<>();
                 companyQueryWrapper.eq(Company::getCompanyName,companyDto.getCompanyName()).eq(Company::getDelFlag,0);
                 Company company1 = companyMapper.selectOne(companyQueryWrapper);
                 if (Objects.isNull(company1)){
-                    company.setAdminName(companyDto.getAdminName());
+                    company.setCompanyName(companyDto.getCompanyName());
                 }else {
                     return new ResponseVo(AppHttpCodeEnum.FAIL.getCode(), "公司修改失败:当前公司名称已存在与平台中");
                 }
@@ -159,7 +162,6 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
             for (Integer menuId : companyDto.getCompanyAuthority()) {
                 roleMenuService.save(new SysRoleMenu(roleId,Long.valueOf(menuId)));
             }
-
 
             return ResponseVo.okResult(company);
         }
@@ -201,17 +203,14 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     @Override
     public ResponseVo selectOneCompany(Integer companyId) {
         Company company = companyMapper.selectById(companyId);
-        SysUser companyAdmin =
-                userService.getOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getPhonenumber, company.getAdminTel()));
-        if (Objects.isNull(companyAdmin))
-            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
+        SysUser companyAdmin = userService.getOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getPhonenumber, company.getAdminTel()));
+        if (Objects.isNull(companyAdmin)) throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
         SysUserRole userRole = sysUserRoleService.getById(companyAdmin.getId());
-        if (Objects.isNull(userRole))
-            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
-        List<SysRoleMenu> list =
-                roleMenuService.list(new LambdaQueryWrapper<SysRoleMenu>().eq(SysRoleMenu::getRoleId, userRole.getRoleId()));
+        if (Objects.isNull(userRole)) throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
+        List<SysRoleMenu> list = roleMenuService.list(new LambdaQueryWrapper<SysRoleMenu>().eq(SysRoleMenu::getRoleId, userRole.getRoleId()));
         List<Integer> roleIdList = list.stream().map(s -> Integer.parseInt(String.valueOf(s.getMenuId()))).collect(Collectors.toList());
         CompanyDto companyDto = BeanCopyUtils.copyBean(company, CompanyDto.class);
+        companyDto.setCompanyId(company.getId());
         companyDto.setCompanyAuthority(roleIdList);
         return ResponseVo.okResult(companyDto);
     }
