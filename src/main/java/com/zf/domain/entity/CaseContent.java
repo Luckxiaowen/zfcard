@@ -3,6 +3,8 @@ package com.zf.domain.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,6 +26,7 @@ public class CaseContent implements Serializable {
     /**
      * id id
      */
+    @TableId(value = "id",type = IdType.AUTO)
     @ApiModelProperty(value = "id",dataType = "long")
     private Long id;
 

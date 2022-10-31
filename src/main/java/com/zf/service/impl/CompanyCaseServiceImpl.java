@@ -118,7 +118,7 @@ public class CompanyCaseServiceImpl extends ServiceImpl<CompanyCaseMapper, Compa
                     wrapper.eq(CompanyCase::getDelFlag, 0);
                 });
                 CompanyCase companyCase = companyCaseMapper.selectOne(queryWrapper);
-                companyCase.setDelFlag(1);
+                removeById(companyCase.getId());
                 companyCase.setUpdateBy(Long.parseLong(userId));
                 companyCase.setUpdateTime(new Date());
                 companyCaseMapper.updateById(companyCase);
@@ -127,7 +127,6 @@ public class CompanyCaseServiceImpl extends ServiceImpl<CompanyCaseMapper, Compa
                 return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "当前公司未添加案列分类标题或者已删除，请刷新页面 !");
             }
         }
-
     }
     //TODO 查询案列分类名称已修改
     @Override

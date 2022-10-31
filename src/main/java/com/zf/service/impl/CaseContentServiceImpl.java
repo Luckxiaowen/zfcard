@@ -102,8 +102,8 @@ public class CaseContentServiceImpl extends ServiceImpl<CaseContentMapper, CaseC
                 CaseContent caseContent = caseContentMapper.selectById(casecontentid);
                 caseContent.setUpdateBy(userId);
                 caseContent.setUpdateTime(new Date());
-                caseContent.setDelFlag(1);
-                if (caseContentMapper.updateById(caseContent) > 0) {
+                boolean b = removeById(casecontentid);
+                if (b) {
                     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "删除成功");
                 } else {
                     return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "删除失败");

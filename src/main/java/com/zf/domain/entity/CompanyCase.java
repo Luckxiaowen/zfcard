@@ -3,6 +3,8 @@ package com.zf.domain.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -20,6 +22,7 @@ public class CompanyCase implements Serializable {
     /**
      * id 案列分类id
      */
+    @TableId(value = "id",type = IdType.AUTO)
     @ApiModelProperty(value = "案列分类id",dataType = "long")
     private Long id;
 

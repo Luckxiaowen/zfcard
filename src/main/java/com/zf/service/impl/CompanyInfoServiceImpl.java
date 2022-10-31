@@ -86,7 +86,7 @@ public class CompanyInfoServiceImpl extends ServiceImpl<CompanyInfoMapper, Compa
             } else {
                 CompanyInfo companyInfo = companyInfoMapper.selectById(cominfoid);
                 companyInfo.setUpdateBy(Long.parseLong(userId));
-                companyInfo.setDelFlag(1);
+                removeById(companyInfo.getId());
                 companyInfo.setUpdateTime(new Date());
                 companyInfoMapper.updateById(companyInfo);
                 return new ResponseVo(AppHttpCodeEnum.SUCCESS.getCode(), "分公司简介删除成功！");

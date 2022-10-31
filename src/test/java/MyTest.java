@@ -1,8 +1,10 @@
 import com.dingtalk.api.response.OapiV2DepartmentListsubResponse;
 import com.qiniu.util.Json;
 import com.zf.domain.entity.CompanyImg;
+import com.zf.domain.vo.ResponseVo;
 import com.zf.mapper.CompanyImgMapper;
 import com.zf.service.CaseContentService;
+import com.zf.service.PushService;
 import com.zf.service.impl.CaseContentServiceImpl;
 import com.zf.utils.JwtUtil;
 import com.zf.utils.Validator;
@@ -21,6 +23,10 @@ import java.util.List;
 
 @SpringBootTest
 public class MyTest {
+
+
+    @Resource
+    private PushService pushService;
 
 
 
